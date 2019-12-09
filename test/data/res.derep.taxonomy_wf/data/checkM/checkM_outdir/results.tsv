@@ -1,0 +1,9 @@
+Bin Id	Marker lineage	# genomes	# markers	# marker sets	0	1	2	3	4	5+	Completeness	Contamination	Strain heterogeneity
+Bin.012.fasta	Bacteria	5449	104	58	1	102	1	0	0	0	98.28	1.72	0.00
+Bin.018.fasta	Bacteria	5449	104	58	2	100	2	0	0	0	98.12	3.45	50.00
+Bin.027.fasta	Bacteria	5449	104	58	1	102	1	0	0	0	98.28	1.72	0.00
+Bin.034.fasta	Bacteria	5449	104	58	2	102	0	0	0	0	97.41	0.00	0.00
+Bin.038.fasta	Bacteria	5449	104	58	10	93	1	0	0	0	92.32	0.16	0.00
+Bin.039.fasta	Bacteria	5449	104	58	4	99	1	0	0	0	97.81	1.72	0.00
+Bin.040.fasta	Bacteria	5449	104	58	1	103	0	0	0	0	98.28	0.00	0.00
+Bin.044.fasta	Bacteria	5449	104	58	0	104	0	0	0	0	100.00	0.00	0.00

@@ -1,0 +1,1 @@
+/usr/local/bin/mash sketch /home/sumin/kbsdk-workspace/dRep/test/data/binned_contig_files_8bins/Bin.034.fasta -s 1000 -o /home/sumin/kbsdk-workspace/dRep/test/data/res.derep.taxonomy_wf/data/MASH_files/sketches/chunk_0/Bin.034.fasta

@@ -1,0 +1,1 @@
+/usr/local/bin/checkm taxonomy_wf domain Bacteria /home/sumin/kbsdk-workspace/dRep/test/data/res.derep.taxonomy_wf/data/prodigal/ /home/sumin/kbsdk-workspace/dRep/test/data/res.derep.taxonomy_wf/data/checkM/checkM_outdir/ -f /home/sumin/kbsdk-workspace/dRep/test/data/res.derep.taxonomy_wf/data/checkM/checkM_outdir//results.tsv --tab_table -t 6 -g -x faa
