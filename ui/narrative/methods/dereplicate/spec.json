@@ -26,7 +26,7 @@
         "service-mapping": {
             "url": "",
             "name": "dRep",
-            "method": "run_dRep",
+            "method": "dereplicate",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",

@@ -11,6 +11,6 @@ module dRep {
     /*
         This example function accepts any number of parameters and returns results in a KBaseReport
     */
-    funcdef run_dRep(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
+    funcdef dereplicate(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
 };

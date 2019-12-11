@@ -338,10 +338,10 @@ class Application(object):
         self.serverlog.set_log_level(6)
         self.rpc_service = JSONRPCServiceCustom()
         self.method_authentication = dict()
-        self.rpc_service.add(impl_dRep.run_dRep,
-                             name='dRep.run_dRep',
+        self.rpc_service.add(impl_dRep.dereplicate,
+                             name='dRep.dereplicate',
                              types=[dict])
-        self.method_authentication['dRep.run_dRep'] = 'required'  # noqa
+        self.method_authentication['dRep.dereplicate'] = 'required'  # noqa
         self.rpc_service.add(impl_dRep.status,
                              name='dRep.status',
                              types=[dict])

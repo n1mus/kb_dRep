@@ -38,8 +38,8 @@ class dRep:
     # the latter method is running.
     ######################################### noqa
     VERSION = "0.0.1"
-    GIT_URL = "https://github.com/n1mus/dRep.git"
-    GIT_COMMIT_HASH = "05f421114e50a04008d9897cdb20399b23a47b46"
+    GIT_URL = ""
+    GIT_COMMIT_HASH = ""
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -71,7 +71,7 @@ class dRep:
         pass
 
 
-    def dereplicate(self, ctx, params):
+    def run_dRep(self, ctx, params):
         """
         This example function accepts any number of parameters and returns results in a KBaseReport
         :param params: instance of mapping from String to unspecified object
@@ -80,10 +80,9 @@ class dRep:
         """
         # ctx is the context object
         # return variables are: output
- 
-        
-        #BEGIN dereplicate
+        #BEGIN run_dRep
 
+        
         dprint('ctx:', ctx)
         dprint('params:', params)
 
@@ -102,8 +101,7 @@ class dRep:
         #####
 
         if params.get('skip_dl'):
-            bins_dir = '/kb/module/work/tmp/binned_contig_files_8bins'
-            shutil.copytree('/kb/module/test/data/binned_contig_files_8bins', bins_dir)
+            bins_dir = '/kb/module/test/data/binned_contig_files_8bins'
 
         else:
 
@@ -132,15 +130,14 @@ class dRep:
 
 
         if params.get('skip_dRep'):
-            dRep_workDir = '/kb/module/work/tmp/res.derep.taxonomy_wf'
-            shutil.copytree('/kb/module/test/data/res.derep.taxonomy_wf', dRep_workDir)
+            dRep_workDir = '/kb/module/test/data/res.derep.taxonomy_wf'
 
         else:
             dRep_workDir = os.path.join(self.shared_folder, 'dRep_workDir_' + self.suffix)
 
-            dRep_cmd = f'dRep dereplicate {dRep_workDir} -g {bins_dir}/*.fasta --debug' 
-            if True or 'mode' in params and params['mode'] == 'local':
-                dRep_cmd += ' --checkM_method taxonomy_wf'
+            dRep_cmd = f'dRep dereplicate {dRep_workDir} -g {bins_dir}/*.fasta' 
+            if 'mode' in params and params['mode'] == 'local':
+                dRep_cmd += ' --debug --checkM_method taxonomy_wf'
             dprint(f'Running CMD: {dRep_cmd}')
             
 
@@ -169,9 +166,6 @@ class dRep:
 
         dRep_binnedContigs_objData = self.mgu.file_to_binned_contigs(mguFileToBinnedContigs_params)
 
-        #
-        dprint('dRep_binnedContigs_objData', dRep_binnedContigs_objData)
-
         {
             'obj_name': dRep_binnedContigs_objName,
             'obj_ref': dRep_binnedContigs_objData['binned_contig_obj_ref']
@@ -181,10 +175,7 @@ class dRep:
 
 
         #
-        #binnedContigs_wsObjInfo = self.ws.get_object_info([{'ref': dRep_binnedContigs_objData['binned_contig_obj_ref']}], 1)[0]
-        #dprint('binnedContigs_wsObjInfo', binnedContigs_wsObjInfo)
-
-        binnedContigs_wsObjInfo = self.dfu.get_objects({'object_refs': [dRep_binnedContigs_objData['binned_contig_obj_ref']]})
+        binnedContigs_wsObjInfo = self.ws.get_object_info([{'ref': dRep_binnedContigs_objData['binned_contig_obj_ref']}])[0]
         dprint('binnedContigs_wsObjInfo', binnedContigs_wsObjInfo)
 
 
@@ -225,11 +216,11 @@ class dRep:
             'report_ref': report_output['ref'],
         }
 
-        #END dereplicate
+        #END run_dRep
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method dereplicate return value ' +
+            raise ValueError('Method run_dRep return value ' +
                              'output is not type dict as required.')
         # return the results
         return [output]
