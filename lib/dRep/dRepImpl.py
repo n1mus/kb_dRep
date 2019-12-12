@@ -54,6 +54,7 @@ class dRep:
         self.shared_folder = config['scratch']
         self.config = config
         self.config['callback_url'] = self.callback_url
+
         self.suffix = str(uuid.uuid4())
 
         self.ws = Workspace(self.workspace_url)
@@ -126,6 +127,7 @@ class dRep:
         ### Run dRep dereplicate -> gen workDir
         ####
         #####
+        ######
 
 
 
@@ -138,9 +140,7 @@ class dRep:
         else:
             dRep_workDir = os.path.join(self.shared_folder, 'dRep_workDir_' + self.suffix)
 
-            dRep_cmd = f'dRep dereplicate {dRep_workDir} -g {bins_dir}/*.fasta --debug' 
-            if True or 'mode' in params and params['mode'] == 'local':
-                dRep_cmd += ' --checkM_method taxonomy_wf'
+            dRep_cmd = f'dRep dereplicate {dRep_workDir} -g {bins_dir}/*.fasta --debug --checkM_method taxonomy_wf' 
             dprint(f'Running CMD: {dRep_cmd}')
             
 
@@ -153,6 +153,7 @@ class dRep:
         ### Dereplicated BinnedContigs object
         ####
         #####
+        ######
 
 
         dRep_binnedContigs_objName = 'dRep.BinnedContigs'
@@ -169,37 +170,55 @@ class dRep:
 
         dRep_binnedContigs_objData = self.mgu.file_to_binned_contigs(mguFileToBinnedContigs_params)
 
-        #
+        
         dprint('dRep_binnedContigs_objData', dRep_binnedContigs_objData)
-
-        {
-            'obj_name': dRep_binnedContigs_objName,
-            'obj_ref': dRep_binnedContigs_objData['binned_contig_obj_ref']
-        }
-       
-        objects_created = [{'ref': dRep_binnedContigs_objData['binned_contig_obj_ref']}]
 
 
         #
         #binnedContigs_wsObjInfo = self.ws.get_object_info([{'ref': dRep_binnedContigs_objData['binned_contig_obj_ref']}], 1)[0]
         #dprint('binnedContigs_wsObjInfo', binnedContigs_wsObjInfo)
 
-        binnedContigs_wsObjInfo = self.dfu.get_objects({'object_refs': [dRep_binnedContigs_objData['binned_contig_obj_ref']]})
-        dprint('binnedContigs_wsObjInfo', binnedContigs_wsObjInfo)
+        dRep_binnedContigs_wsObjInfo = self.dfu.get_objects({'object_refs': [dRep_binnedContigs_objData['binned_contig_obj_ref']]})
+        dprint('dRep_binnedContigs_wsObjInfo', dRep_binnedContigs_wsObjInfo)
 
 
+        dRep_binnedContigs_wsObjData = self.ws.get_objects2({'objects':[{'ref': dRep_binnedContigs_objData['binned_contig_obj_ref']}]})
+        dprint('dRep_binnedContigs_wsObjData:', dRep_binnedContigs_wsObjData)
+
+
+
+###################################
+
+        '''
+        binnedContigs_mguObjData = self.mgu.binned_contigs_to_file({'input_ref': dRep_binnedContigs_objData['binned_contig_obj_ref'], 'save_to_shock': 0})
+        bins_dir = binnedContigs_mguObjData['bin_file_directory']
+
+        dprint('binnedContigs_mguObjData', binnedContigs_mguObjData)
+        dprint('os.listdir(bins_dir)', os.listdir(bins_dir))
+        '''
 
 
         #
         ##
-        ### Pdf outputs
+        ### workDir -> return obj
         ####
         #####
+        ######
+
+        
 
 
+        dfuFileToShock_ret = self.dfu.file_to_shock({
+            'file_path': dRep_workDir,
+            'make_handle': 0,
+            'pack': 'zip',
+            })
 
-
-
+        workDir_shockInfo = {
+            'shock_id': dfuFileToShock_ret['shock_id'],
+            'name': 'dRep_work_directory',
+            'description': 'Work directory used by dRep. Contains plots, (possibly) genome clustering warnings, logs, intermediary files'
+            }
 
 
 
@@ -208,13 +227,26 @@ class dRep:
         ### Report
         ####
         #####
+        ######
+
+
+        {
+            'obj_name': dRep_binnedContigs_objName,
+            'obj_ref': dRep_binnedContigs_objData['binned_contig_obj_ref']
+        }
+       
+        objects_created = [{'ref': dRep_binnedContigs_objData['binned_contig_obj_ref'],
+                            'description': 'Dereplicated genomes, ' + dRep_binnedContigs_objName}]
+
+
 
         report_params = {'message': '',
                          #'direct_html_link_index': 0,
                          #'html_links': [html_zipped],
-                         #'file_links': output_packages,
+                         'file_links': [workDir_shockInfo],
                          'report_object_name': 'dRep_report_' + self.suffix,
-                         'workspace_name': params['workspace_name']
+                         'workspace_name': params['workspace_name'],
+                         'objects_created': objects_created
                          }
 
         kbr = KBaseReport(self.callback_url)

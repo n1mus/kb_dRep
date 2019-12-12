@@ -1,7 +1,7 @@
 
 
 #############################################################################################################
-# From kb_Msuite -> lib/kb_Msuite/Utils/DataStagingUtils (with edits)
+# Franken from kb_Msuite -> lib/kb_Msuite/Utils/DataStagingUtils and lib/kb_Msuite/Utils/OutputBuilder (with edits)
 #############################################################################################################
 
 
@@ -100,5 +100,20 @@ class DataStagingUtils(object):
 
 
 
+####
+####
+#### This is from kb_Msuite's OutputBuilder
 
-
+    def package_folder(self, folder_path, zip_file_name, zip_file_description):
+        ''' Simple utility for packaging a folder and saving to shock '''
+        if folder_path == self.scratch:
+            raise ValueError("cannot package folder that is not a subfolder of scratch")
+        dfu = DataFileUtil(self.callback_url)
+        if not os.path.exists(folder_path):
+            raise ValueError("cannot package folder that doesn't exist: "+folder_path)
+        output = dfu.file_to_shock({'file_path': folder_path,
+                                    'make_handle': 0,
+                                    'pack': 'zip'})
+        return {'shock_id': output['shock_id'],
+                'name': zip_file_name,
+                'description': zip_file_description}
