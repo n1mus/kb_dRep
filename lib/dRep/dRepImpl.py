@@ -93,7 +93,9 @@ class dRep:
 
         
         binnedContigs_upa = params['genomes_ref']
-
+        
+        dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG')
+        dprint(subprocess.run('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
  
         # 
@@ -216,7 +218,7 @@ class dRep:
 
         workDir_shockInfo = {
             'shock_id': dfuFileToShock_ret['shock_id'],
-            'name': 'dRep_work_directory',
+            'name': 'dRep_work_directory.zip',
             'description': 'Work directory used by dRep. Contains plots, (possibly) genome clustering warnings, logs, intermediary files'
             }
 
