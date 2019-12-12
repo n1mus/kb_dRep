@@ -69,7 +69,7 @@ class dRepTest(unittest.TestCase):
         #
         # Check returned data with
         # self.assertEqual(ret[...], ...) or other unittest methods
-        ret = self.serviceImpl.dereplicate(self.ctx, { **local_params,
+        ret = self.serviceImpl.dereplicate(self.ctx, { #**local_params,
                                                         'workspace_name': self.wsName,
                                                         'genomes_ref': '33320/6/1'
                                                 })
