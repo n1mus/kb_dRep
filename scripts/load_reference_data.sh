@@ -37,11 +37,7 @@ safe_execute "curl --location https://data.ace.uq.edu.au/public/CheckM_databases
 safe_execute "tar -vxzf checkm_data.tar.gz -C /data/CHECKM_DATA" "failed to untar reference data!"
 safe_execute "rm checkm_data.tar.gz" "failed to remove reference data!"
 check_exists "/data/CHECKM_DATA/genome_tree" "failed to place reference data"
-if [ $fail -eq 1 ] ; then
-    echo "Unable to expand checkM Failing."
-    exit 1
-fi
-echo "Done expanding checkM dataa"
+
 
 echo "%%%%%%%%%%%%%%%%%% SETTING /data/CHECKM_DATA/ AS ROOT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 checkm data setRoot /data/CHECKM_DATA/
@@ -49,8 +45,14 @@ safe_execute "cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG"
 echo "%%%%%%%%%%%%%%%%%% ~DONE~ SETTING /data/CHECKM_DATA/ AS ROOT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 
 
+safe_execute "ls /data/CHECKM_DATA" "failed to ls /data/CHECKM_DATA"
 
+if [ $fail -eq 1 ] ; then
+    echo "Unable to expand checkM Failing."
+    exit 1
+fi
 
+echo "Done expanding checkM dataa"
 date
 
 echo "Success.  Writing __READY__ file."
