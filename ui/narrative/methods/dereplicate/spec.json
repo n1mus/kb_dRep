@@ -14,7 +14,7 @@
             "id": "genomes_ref",
             "optional": false,
             "advanced": false,
-            "allow_multiple": false,
+            "allow_multiple": true,
             "default_values": [ "" ],
             "field_type": "text",
             "text_options": {
@@ -36,8 +36,7 @@
                     "target_property": "workspace_id"
                 },{
                     "input_parameter": "genomes_ref",
-                    "target_property": "genomes_ref",
-		    "target_type_transform": "resolved-ref"
+                    "target_property": "genomes_ref"
                 }
             ],
             "output_mapping": [

@@ -90,7 +90,6 @@ class dRep:
 
 
 
-
         
         binnedContigs_upa = params['genomes_ref']
         
@@ -147,6 +146,9 @@ class dRep:
             
 
             subprocess.call(dRep_cmd, shell=True)
+
+        dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG')
+        dprint(subprocess.run('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
 
  
