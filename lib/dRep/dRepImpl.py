@@ -89,20 +89,26 @@ class dRep:
         dprint('params:', params)
 
 
-        params['genomes_ref'] = params['genomes_ref'][0]
 
         
-        binnedContigs_upa = params['genomes_ref']
         
         dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG')
         dprint(subprocess.run('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
- 
+        dprint('/kb/module/scripts/add_raise_to_expanduser.py')
+        dprint(subprocess.run('/kb/module/scripts/add_raise_to_expanduser.py', shell=True))
+
+        dprint("sed -n '160,168p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py")
+        dprint(subprocess.run("sed -n '160,168p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py", shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
+
         # 
         ##
         ### Load input ContigSet to scratch
         ####
         #####
+
+        params['genomes_ref'] = params['genomes_ref'][0]
+        binnedContigs_upa = params['genomes_ref']
 
         if params.get('skip_dl'):
             bins_dir = '/kb/module/work/tmp/binned_contig_files_8bins'

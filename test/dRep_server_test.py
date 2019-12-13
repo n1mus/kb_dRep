@@ -12,10 +12,10 @@ from installed_clients.WorkspaceClient import Workspace
 
 
 local_params = {
-        'mode' : 'local', # testing environment. 'local' => laptop
+#        'mode' : 'local', # testing environment. 'local' => laptop
         'skip_dl' : True,
-        'skip_dRep' : True,
-        'pull_back': True
+#        'skip_dRep' : True,
+#        'pull_back': True
 }
 
 class dRepTest(unittest.TestCase):
@@ -72,5 +72,5 @@ class dRepTest(unittest.TestCase):
         # self.assertEqual(ret[...], ...) or other unittest methods
         ret = self.serviceImpl.dereplicate(self.ctx, { **local_params,
                                                         'workspace_name': self.wsName,
-                                                        'genomes_ref': '33320/6/1'
+                                                        'genomes_ref': ['33320/6/1']
                                                 })
