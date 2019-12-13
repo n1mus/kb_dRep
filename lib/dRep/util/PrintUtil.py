@@ -2,7 +2,7 @@ import functools
 import pprint, json
 
 
-MAX_LINES = 200
+MAX_LINES = 70
 print = functools.partial(print, flush=True)
 
 def dprint(*args, **kwargs):
