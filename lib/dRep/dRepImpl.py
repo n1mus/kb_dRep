@@ -89,6 +89,7 @@ class dRep:
         dprint('params:', params)
 
 
+        params['genomes_ref'] = params['genomes_ref'][0]
 
         
         binnedContigs_upa = params['genomes_ref']
