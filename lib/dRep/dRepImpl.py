@@ -90,16 +90,26 @@ class dRep:
 
 
 
-        
-        
+        dprint('ls /data/CHECKM_DATA')
+        dprint(subprocess.run('ls /data/CHECKM_DATA', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
+
         dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG')
         dprint(subprocess.run('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
         dprint('/kb/module/scripts/add_raise_to_expanduser.py')
         dprint(subprocess.run('/kb/module/scripts/add_raise_to_expanduser.py', shell=True))
 
-        dprint("sed -n '160,168p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py")
-        dprint(subprocess.run("sed -n '160,168p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py", shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
+        dprint("sed -n '160,171p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py")
+        dprint(subprocess.run("sed -n '160,171p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py", shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
+
+        subprocess.run('touch /kb/module/test/data/a', shell=True)
+
+        debug = '/miniconda/bin/checkm taxonomy_wf domain Bacteria /kb/module/test/data/res.*.fail/data/prodigal/ /kb/module/test/data/res.*.fail/data/checkM/checkM_outdir/ -f /kb/module/test/data/res.*.fail/data/checkM/checkM_outdir//results.tsv --tab_table -t 6 -g -x faa'
+        dprint(debug)
+        subprocess.run(debug, shell=True)
+
+        exit()
+
 
         # 
         ##
