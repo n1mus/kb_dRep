@@ -90,8 +90,8 @@ class dRep:
 
 
 
-        dprint('ls /data/CHECKM_DATA')
-        dprint(subprocess.run('ls /data/CHECKM_DATA', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
+        dprint('ls -a /data/CHECKM_DATA')
+        dprint(subprocess.run('ls -a /data/CHECKM_DATA', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
         dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG')
         dprint(subprocess.run('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
@@ -101,6 +101,9 @@ class dRep:
 
         dprint("sed -n '160,171p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py")
         dprint(subprocess.run("sed -n '160,171p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py", shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
+
+        dprint("sed -n '112,115p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py")
+        dprint(subprocess.run("sed -n '112,115p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py", shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
         subprocess.run('touch /kb/module/test/data/a', shell=True)
 

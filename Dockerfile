@@ -48,7 +48,7 @@ RUN apt-get install --yes hmmer
 RUN apt-get install --yes libbz2-dev liblzma-dev
 
 RUN pip install checkm-genome && \
-    checkm data setRoot /data/CHECKM_DATA
+    checkm data setRoot /data/CHECKM_DATA 
 
 
 RUN apt-get install --yes vim
