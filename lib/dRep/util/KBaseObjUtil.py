@@ -1,7 +1,7 @@
 
 
 #############################################################################################################
-# Franken from kb_Msuite -> lib/kb_Msuite/Utils/DataStagingUtils and lib/kb_Msuite/Utils/OutputBuilder (with edits)
+# Franken-from kb_Msuite -> lib/kb_Msuite/Utils/DataStagingUtils and lib/kb_Msuite/Utils/OutputBuilder (with edits)
 #############################################################################################################
 
 

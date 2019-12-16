@@ -89,13 +89,13 @@ class dRep:
         dprint('params:', params)
 
 
-
         dprint('ls -a /data/CHECKM_DATA')
         dprint(subprocess.run('ls -a /data/CHECKM_DATA', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
         dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG')
         dprint(subprocess.run('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
+        '''
         dprint('/kb/module/scripts/add_raise_to_expanduser.py')
         dprint(subprocess.run('/kb/module/scripts/add_raise_to_expanduser.py', shell=True))
 
@@ -112,6 +112,27 @@ class dRep:
         subprocess.run(debug, shell=True)
 
         exit()
+        '''
+
+
+
+
+        # 
+        ##
+        ### copy reference data into writeable area, set data root
+        ####
+        #####
+
+        shutil.copytree('/data/CHECKM_DATA/', '/kb/module/data/')
+        subprocess.run('checkm data setRoot /kb/module/data/')
+
+
+        dprint('ls -a /kb/module/data/')
+        dprint(subprocess.run('ls -a /kb/module/data', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
+
+        dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG')
+        dprint(subprocess.run('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
+
 
 
         # 
@@ -120,27 +141,34 @@ class dRep:
         ####
         #####
 
-        params['genomes_ref'] = params['genomes_ref'][0]
-        binnedContigs_upa = params['genomes_ref']
+            
 
         if params.get('skip_dl'):
             bins_dir = '/kb/module/work/tmp/binned_contig_files_8bins'
             shutil.copytree('/kb/module/test/data/binned_contig_files_8bins', bins_dir)
 
         else:
-
-            binnedContigs_mguObjData = self.mgu.binned_contigs_to_file({'input_ref': binnedContigs_upa, 'save_to_shock': 0})
-            bins_dir = binnedContigs_mguObjData['bin_file_directory']
-
-            dprint('binnedContigs_mguObjData', binnedContigs_mguObjData)
             
-        binnedContigs_wsObjData = self.ws.get_objects2({'objects':[{'ref': binnedContigs_upa}]})
-        assembly_upa = binnedContigs_wsObjData['data'][0]['data']['assembly_ref']
-        
-        dprint('binnedContigs_wsObjData', binnedContigs_wsObjData)
+            bins_dir_list = []
 
-    #        binnedContigs_wsObjInfo = self.ws.get_object_info([{'ref': binnedContigs_upa}])[0]
-    #        dprint('binnedContigs_wsObjInfo', binnedContigs_wsObjInfo)
+            for binnedContigs_upa in params['genomes_refs']:
+
+                binnedContigs_mguObjData = self.mgu.binned_contigs_to_file({'input_ref': binnedContigs_upa, 'save_to_shock': 0})
+                bins_dir = binnedContigs_mguObjData['bin_file_directory']
+
+                bins_dir_list.append(bins_dir)
+
+                #dprint('binnedContigs_mguObjData', binnedContigs_mguObjData) # huge -- includes all the statistics
+                
+                binnedContigs_wsObjData = self.ws.get_objects2({'objects':[{'ref': binnedContigs_upa}]})
+                assembly_upa = binnedContigs_wsObjData['data'][0]['data']['assembly_ref']
+                
+
+
+                #dprint('binnedContigs_wsObjData', binnedContigs_wsObjData)
+
+        #        binnedContigs_wsObjInfo = self.ws.get_object_info([{'ref': binnedContigs_upa}])[0]
+        #        dprint('binnedContigs_wsObjInfo', binnedContigs_wsObjInfo)
 
 
         #

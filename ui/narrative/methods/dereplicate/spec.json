@@ -11,7 +11,7 @@
     },
     "parameters": [ 
         {
-            "id": "genomes_ref",
+            "id": "genomes_refs",
             "optional": false,
             "advanced": false,
             "allow_multiple": true,
@@ -35,8 +35,8 @@
                     "narrative_system_variable": "workspace_id",
                     "target_property": "workspace_id"
                 },{
-                    "input_parameter": "genomes_ref",
-                    "target_property": "genomes_ref"
+                    "input_parameter": "genomes_refs",
+                    "target_property": "genomes_refs"
                 }
             ],
             "output_mapping": [
