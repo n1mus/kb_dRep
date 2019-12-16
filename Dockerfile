@@ -12,10 +12,10 @@ WORKDIR /kb/module
 
 
 RUN apt-get update
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip==19.3.1
 
 
-RUN pip install drep
+RUN pip install drep==2.3.2
 
 
 RUN curl --location https://github.com/marbl/Mash/releases/download/v2.2/mash-Linux64-v2.2.tar > mash.tar && \
@@ -24,9 +24,10 @@ RUN curl --location https://github.com/marbl/Mash/releases/download/v2.2/mash-Li
     rm -r mash*
 
 
-RUN apt-get install --yes gcc && \
-    apt-get install --yes --reinstall zlibc zlib1g zlib1g-dev
+RUN apt-get install --yes gcc=4:6.3.0-4 && \
+    apt-get install --yes --reinstall zlibc=0.9k-4.3 zlib1g=1:1.2.8.dfsg-5 zlib1g-dev=1:1.2.8.dfsg-5
 
+# TODO version
 RUN git clone https://github.com/hyattpd/Prodigal && \
     cd Prodigal/ && \
     make install && \
@@ -42,15 +43,21 @@ RUN curl --location https://github.com/matsen/pplacer/releases/download/v1.1.alp
     rm -r pplacer*
 
 
-RUN apt-get install --yes hmmer
+RUN apt-get install --yes hmmer=3.1b2+dfsg-5
 
 
-RUN apt-get install --yes libbz2-dev liblzma-dev
-
-RUN pip install checkm-genome && \
-    checkm data setRoot /data/CHECKM_DATA 
+RUN apt-get install --yes libbz2-dev=1.0.6-8.1 liblzma-dev=5.2.2-1.2+b1
 
 
+RUN pip install checkm-genome==1.1.1
+
+# should not work
+RUN checkm data setRoot /data/CHECKM_DATA && \
+    echo "ls -a /data/CHECKM_DATA" && ls -a /data/CHECKM_DATA && \
+    echo "cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG" && cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG
+
+
+# Utilities for manual inspection of Docker container
 RUN apt-get install --yes vim
 RUN apt-get install --yes tree
 

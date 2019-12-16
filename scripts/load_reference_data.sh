@@ -26,7 +26,7 @@ fail=0
 
 date
 
-# Move to /data - that's got room for the big tar file.
+# Move to /data - that's got room for the big files
 cd /data
 
 mkdir CHECKM_DATA 
@@ -41,11 +41,11 @@ check_exists "/data/CHECKM_DATA/genome_tree" "failed to place reference data"
 
 echo "%%%%%%%%%%%%%%%%%% SETTING /data/CHECKM_DATA/ AS ROOT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 checkm data setRoot /data/CHECKM_DATA/
-safe_execute "cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG" 
+safe_execute "cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG" "failed to cat DATA_CONFIG"
+safe_execute "ls -a /data/CHECKM_DATA" "failed to ls -a /data/CHECKM_DATA"
 echo "%%%%%%%%%%%%%%%%%% ~DONE~ SETTING /data/CHECKM_DATA/ AS ROOT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 
 
-safe_execute "ls /data/CHECKM_DATA" "failed to ls /data/CHECKM_DATA"
 
 if [ $fail -eq 1 ] ; then
     echo "Unable to expand checkM Failing."
