@@ -1,1 +1,0 @@
-prodigal -i /kb/module/work/tmp/binned_contig_files_5c012ca1-5b60-409c-ab48-f1db61a6d853/Bin.034.fasta -d /kb/module/work/tmp/dRep_workDir_2149b7c3-2f79-47ff-9584-9f341831f64c/data/prodigal/Bin.034.fasta.fna -a /kb/module/work/tmp/dRep_workDir_2149b7c3-2f79-47ff-9584-9f341831f64c/data/prodigal/Bin.034.fasta.faa -m -p meta

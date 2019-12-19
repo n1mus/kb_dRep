@@ -1,9 +1,0 @@
-querry,reference,alignment_length,similarity_errors,ref_coverage,querry_coverage,ani,reference_length,querry_length,alignment_coverage,primary_cluster
-Bin.034.fasta,Bin.034.fasta,0,0,0.0,0.0,0.0,2319146,2319146,0.0,1
-Bin.040.fasta,Bin.040.fasta,0,0,0.0,0.0,0.0,2305394,2305394,0.0,2
-Bin.027.fasta,Bin.027.fasta,0,0,0.0,0.0,0.0,3803090,3803090,0.0,3
-Bin.039.fasta,Bin.039.fasta,0,0,0.0,0.0,0.0,3848186,3848186,0.0,4
-Bin.012.fasta,Bin.012.fasta,0,0,0.0,0.0,0.0,4051498,4051498,0.0,5
-Bin.018.fasta,Bin.018.fasta,0,0,0.0,0.0,0.0,2654986,2654986,0.0,6
-Bin.038.fasta,Bin.038.fasta,0,0,0.0,0.0,0.0,3428013,3428013,0.0,7
-Bin.044.fasta,Bin.044.fasta,0,0,0.0,0.0,0.0,2283539,2283539,0.0,8

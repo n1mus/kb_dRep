@@ -1,1 +1,0 @@
-/usr/local/bin/checkm qa /home/sumin/kbsdk-workspace/dRep/test/data/res.derep.taxonomy_wf/data/checkM/checkM_outdir/Bacteria.ms /home/sumin/kbsdk-workspace/dRep/test/data/res.derep.taxonomy_wf/data/checkM/checkM_outdir/ -f /home/sumin/kbsdk-workspace/dRep/test/data/res.derep.taxonomy_wf/data/checkM/checkM_outdir/Chdb.tsv -t 6 --tab_table -o 2

@@ -1,6 +1,6 @@
 import functools
 import pprint, json
-
+import subprocess
 
 MAX_LINES = 70
 print = functools.partial(print, flush=True)
@@ -22,6 +22,11 @@ def dprint(*args, **kwargs):
     print()
     print('--------------------------------------------------------------')
 
+
+def dprint_run(*args, **kwargs):
+    for arg in args:
+        dprint(arg, **kwargs)
+        dprint(subprocess.run(arg, shell=True, stdout=subprocess.PIPE).decode('utf-8'), **kwargs)
 
 
 

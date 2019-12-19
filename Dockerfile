@@ -28,6 +28,7 @@ RUN apt-get install --yes gcc=4:6.3.0-4 && \
     apt-get install --yes --reinstall zlibc=0.9k-4.3 zlib1g=1:1.2.8.dfsg-5 zlib1g-dev=1:1.2.8.dfsg-5
 
 # TODO version
+# dRep says v2.6.3 confirmed works, on its wiki
 RUN git clone https://github.com/hyattpd/Prodigal && \
     cd Prodigal/ && \
     make install && \
@@ -48,18 +49,38 @@ RUN apt-get install --yes hmmer=3.1b2+dfsg-5
 
 RUN apt-get install --yes libbz2-dev=1.0.6-8.1 liblzma-dev=5.2.2-1.2+b1
 
-
 RUN pip install checkm-genome==1.1.1
 
-# should not work
+# just to get dataRoot pointing to /data/CHECKM_DATA without a 'Permission denied' error
+# does this work when re-caching Dockerfile without running refdata scripts?
 RUN checkm data setRoot /data/CHECKM_DATA && \
     echo "ls -a /data/CHECKM_DATA" && ls -a /data/CHECKM_DATA && \
     echo "cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG" && cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG
 
 
+RUN apt-get install g++=4:6.3.0-4 csh=20110502-2.2+b1 --yes
+
+RUN curl --location https://sourceforge.net/projects/mummer/files/mummer/3.23/MUMmer3.23.tar.gz/download > mummer3.23.tar.gz && \
+tar -vxzf mummer3.23.tar.gz  && \
+mv MUMmer3.23 /usr/local/bin && \
+rm mummer3.23.tar.gz && \
+cd /usr/local/bin/MUMmer3.23/ && \
+make check && \
+make install
+
+ENV PATH="${PATH}:/usr/local/bin/MUMmer3.23"
+
+
+RUN curl --location https://ani.jgi.doe.gov/download_files/ANIcalculator_v1.tgz > ANIcalculator_v1.tgz && \
+tar vxzf ANIcalculator_v1.tgz && \
+rm ANIcalculator_v1.tgz && \
+mv ANIcalculator_v1 /usr/local/bin
+
+ENV PATH="${PATH}:/usr/local/bin/ANIcalculator_v1"
+
+
 # Utilities for manual inspection of Docker container
-RUN apt-get install --yes vim
-RUN apt-get install --yes tree
+RUN apt-get install --yes vim tree
 
 # -----------------------------------------
 

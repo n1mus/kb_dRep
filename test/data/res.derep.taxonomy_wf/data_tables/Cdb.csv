@@ -1,9 +1,0 @@
-genome,secondary_cluster,threshold,cluster_method,comparison_algorithm,primary_cluster
-Bin.034.fasta,1_0,0.010000000000000009,average,ANImf,1
-Bin.040.fasta,2_0,0.010000000000000009,average,ANImf,2
-Bin.027.fasta,3_0,0.010000000000000009,average,ANImf,3
-Bin.039.fasta,4_0,0.010000000000000009,average,ANImf,4
-Bin.012.fasta,5_0,0.010000000000000009,average,ANImf,5
-Bin.018.fasta,6_0,0.010000000000000009,average,ANImf,6
-Bin.038.fasta,7_0,0.010000000000000009,average,ANImf,7
-Bin.044.fasta,8_0,0.010000000000000009,average,ANImf,8

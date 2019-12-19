@@ -1,1 +1,0 @@
-/usr/local/bin/mash paste /home/sumin/kbsdk-workspace/dRep/test/data/res.derep.taxonomy_wf/data/MASH_files/ALL.msh /home/sumin/kbsdk-workspace/dRep/test/data/res.derep.taxonomy_wf/data/MASH_files/sketches/chunk_0/chunk_all.msh
