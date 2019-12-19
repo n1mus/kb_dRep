@@ -118,12 +118,31 @@ class dRep:
         exit()
         '''
 
+        # 
+        ##
+        ### input check
+        #### 
+        #####
+        ######
+
+        '''
+        if len(set(params['genomes_refs'])) < len(params['genomes_refs']):
+            
+            report = KBaseReport(self.callback_url)
+            report_info = report.create({'report': {'objects_created':[],
+                                                    'text_message': params['parameter_1']},
+                                                    'workspace_name': params['workspace_name']})
+            output = {
+                'report_name': report_info['name'],
+                'report_ref': report_info['ref'],
+            }
+        '''
 
 
         # 
         ##
         ### copy reference data into writeable area, set data root
-        #### TODO fix ref data on appdev
+        #### 
         #####
         ######
 
@@ -275,7 +294,7 @@ class dRep:
 
         #
         ##
-        ### Dereplicated BinnedContigs object
+        ### dRep BinnedContigs
         ####
         #####
         ######
@@ -347,7 +366,7 @@ class dRep:
 
         #
         ##
-        ### Build HTML
+        ### HTML
         ####
         #####
         ######
@@ -357,7 +376,7 @@ class dRep:
         shutil.copytree('/kb/module/ui/output', html_dir) # dir of html and accessories
 
         
-        html_path = os.path.join(html_dir, 'dRep_dereplicate_results.html')
+        html_path = os.path.join(html_dir, 'index.html')
         figures_dir = os.path.join(html_dir, 'figures')
         warnings_path = os.path.join(dRep_workDir, 'log/warnings.txt')
         
@@ -382,10 +401,13 @@ class dRep:
         htmlBuilder.build()
        
 
-        htmlZip_shockId = self.dfu.file_to_shock({'file_path': html_dir, 'pack': 'zip'})['shock_id']
+        htmlZip_shockId = self.dfu.file_to_shock(
+            {'file_path': html_dir, 
+            'make_handle': 0,
+            'pack': 'zip'})['shock_id']
+
         htmlZip_report_dict = {'shock_id': htmlZip_shockId,
-                'name': 'dRep.html.zip',
-                'label': 'dRep.html.zip',
+                'name': 'dRep_report_html.zip',
                 'description': 'dRep html report' } 
 
 
@@ -393,7 +415,7 @@ class dRep:
 
         #
         ##
-        ### workDir -> return obj
+        ### return workDir
         ####
         #####
         ######
