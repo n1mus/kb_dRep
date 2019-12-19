@@ -376,7 +376,7 @@ class dRep:
         shutil.copytree('/kb/module/ui/output', html_dir) # dir of html and accessories
 
         
-        html_path = os.path.join(html_dir, 'index.html')
+        html_path = os.path.join(html_dir, 'dRep_dereplicate_report.html')
         figures_dir = os.path.join(html_dir, 'figures')
         warnings_path = os.path.join(dRep_workDir, 'log/warnings.txt')
         
@@ -407,8 +407,8 @@ class dRep:
             'pack': 'zip'})['shock_id']
 
         htmlZip_report_dict = {'shock_id': htmlZip_shockId,
-                'name': 'dRep_report_html.zip',
-                'description': 'dRep html report' } 
+                'name': 'dRep_dereplicate_report.html',
+                'description': 'dRep dereplicate analyses and results' } 
 
 
 
