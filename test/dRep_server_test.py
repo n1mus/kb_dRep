@@ -13,8 +13,8 @@ from installed_clients.WorkspaceClient import Workspace
 
 local_params = {
         'mode' : 'local', # testing environment. 'local' => laptop
-#        'skip_dl' : True,
-#        'skip_dRep' : True,
+        'skip_dl' : True,
+        'skip_dRep' : True,
 #        'workaround_refdata': True
 }
 

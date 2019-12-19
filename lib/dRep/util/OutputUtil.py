@@ -21,20 +21,20 @@ class HTMLBuilder():
 
     def build_pdfs(self, pdfs):
 
-        def build_htmlPdfTag(pdf):
-            return fr'<a href="img/{pdf}>{pdf}<\a>'
+        def _pdfTag(pdf):
+            return f'<embed src="figures/{pdf}" width="1000px" height="1000px">'
 
         rep = ''
 
         for pdf in pdfs:
-            rep += build_htmlPdfTag(pdf) + '\n'
+            rep += self._encase_p(pdf) + self._encase_p(_pdfTag(pdf)) + '\n'
 
         self.replacements['FIGURES-TAG'] = rep
 
 
     def build_warnings(self, warnings):
         if warnings.strip() == '':
-            warnings = 'No warnings'
+            warnings = 'No warnings about almost divergent secondary clustering or remaining genome similarity'
 
         self.replacements['WARNINGS-TAG'] = warnings
 
@@ -43,11 +43,14 @@ class HTMLBuilder():
 
         
         for line in fileinput.input(self.html_path, inplace=True):
-            for TAG in TAGS:
-                if line.strip() == TAG:
-                    print(self.replacements[TAG])
+            line_stripped = line.strip()
+            if line_stripped in TAGS and line_stripped in self.replacements:
+                print(self.replacements[line_stripped])
+            else:
+                print(line, end='')
 
-
+    def _encase_p(self, paragraph):
+        return '<p>' + paragraph + '</p>'
 
 
 

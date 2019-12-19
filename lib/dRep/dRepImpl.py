@@ -109,9 +109,9 @@ class dRep:
         dprint("sed -n '112,115p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py")
         dprint(subprocess.run("sed -n '112,115p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py", shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
-        subprocess.run('touch /kb/module/test_local/data/a', shell=True)
+        subprocess.run('touch /kb/module/test/data/a', shell=True)
 
-        debug = '/miniconda/bin/checkm taxonomy_wf domain Bacteria /kb/module/test_local/data/res.*.fail/data/prodigal/ /kb/module/test_local/data/res.*.fail/data/checkM/checkM_outdir/ -f /kb/module/test_local/data/res.*.fail/data/checkM/checkM_outdir//results.tsv --tab_table -t 6 -g -x faa'
+        debug = '/miniconda/bin/checkm taxonomy_wf domain Bacteria /kb/module/test/data/res.*.fail/data/prodigal/ /kb/module/test/data/res.*.fail/data/checkM/checkM_outdir/ -f /kb/module/test/data/res.*.fail/data/checkM/checkM_outdir//results.tsv --tab_table -t 6 -g -x faa'
         dprint(debug)
         subprocess.run(debug, shell=True)
 
@@ -168,38 +168,34 @@ class dRep:
 
         bins_dir_list = []
         binnedContigs_name_list = []
-        assembly_upa_list = ['30870/4/3',]
+        assembly_upa_list = []
         
 
 
-        if params.get('skip_dl'): #TODO
-            bins_dir_name_list = ['binned_contig_files_8bins', 'binned_contig_files_3bins']
-            bins_dir_pathTo_orig = '/kb/module/test_local/data'
+        if params.get('skip_dl'): # use test data
 
-            bins_dir_orig_list = [os.path.join(bins_dir_pathTo_orig, bins_dir_name + '_' + self.suffix) for bins_dir_name in bins_dir_name_list]
+            params['genomes_refs'] = ['33320/6/1', '33320/8/1']
+            binnedContigs_name_list = ['SURF-B.MEGAHIT.metabat.CheckM', 'SURF-B.MEGAHIT.maxbin.CheckM']
+            assembly_upa_list = ['30870/4/3', '30870/4/3']
+          
+
+            bins_dir_name_list = ['binned_contig_files_8bins', 'binned_contig_files_3bins']
+            bins_dir_pathTo_orig = '/kb/module/test/data'
+
+            bins_dir_orig_list = [os.path.join(bins_dir_pathTo_orig, bins_dir_name) for bins_dir_name in bins_dir_name_list]
             bins_dir_list = [os.path.join(self.shared_folder, bins_dir_name + '_' + self.suffix) for bins_dir_name in bins_dir_name_list]
          
-            binsPooled_dir = os.path.join(self.shared_folder, 'binsPooled_' + self.suffix)
 
-
-            for (bins_dir_orig, bins_dir) in zip(bins_dir_orig_list, bins_dir_list):
+            for (binnedContigs_upa, binnedContigs_name, bins_dir_orig, bins_dir) in zip(params['genomes_refs'], binnedContigs_name_list, bins_dir_orig_list, bins_dir_list):
                 shutil.copytree(bins_dir_orig, bins_dir)
 
-            binnedContigs_name_list = ['SURF-B.MEGAHIT.metabat.CheckM']
-            assembly_upa_list = ['30870/4/3',]
+                for bin_name in os.listdir(bins_dir):
+                    shutil.copyfile(os.path.join(bins_dir, bin_name), os.path.join(binsPooled_dir, transform_binName(binnedContigs_upa, binnedContigs_name, bin_name)))
+               
+
 
         else:
             
-            #
-            binsPooled_dir = os.path.join(self.shared_folder, 'binsPooled_' + self.suffix)
-            os.mkdir(binsPooled_dir)
-
-
-            bins_dir_list = []
-            binnedContigs_name_list = []
-            assembly_upa_list = []
-
-
             
             for binnedContigs_upa in params['genomes_refs']:
 
@@ -224,8 +220,7 @@ class dRep:
                         dprint(f'WARNING: Found non .fasta bin name {bin_name} in dir {bins_dir} for BinnedContigs obj {name} with UPA {binnedContigs_upa}', file=sys.stderr)
                         continue
 
-                    bin_name_new = transform_binName(binnedContigs_upa, binnedContigs_name, bin_name) #binnedContigs_upa.replace('/','-') + 'UPA__' + binnedContigs_name + '__' + bin_name
-        
+                    bin_name_new = transform_binName(binnedContigs_upa, binnedContigs_name, bin_name)         
 
                     bin_fullpath = os.path.join(self.shared_folder, bins_dir, bin_name)
                     bin_fullpath_new = os.path.join(self.shared_folder, binsPooled_dir, bin_name_new)
@@ -233,7 +228,7 @@ class dRep:
                     shutil.copyfile(bin_fullpath, bin_fullpath_new) 
                 
 
-            dprint('os.listdir(binsPooled_dir)', os.listdir(binsPooled_dir))
+            dprint_run('os.listdir(binsPooled_dir)', key=locals())
 
 
                 #dprint('binnedContigs_wsObjData', binnedContigs_wsObjData)
@@ -258,8 +253,8 @@ class dRep:
 
 
         if params.get('skip_dRep'):
-            dRep_workDir = '/kb/module/work/tmp/res.derep.taxonomy_wf.multipleIn'
-            shutil.copytree('/kb/module/test_local/data/res.derep.taxonomy_wf.multipleIn', dRep_workDir)
+            dRep_workDir = '/kb/module/work/tmp/res.dRep.txwf.uniq'
+            shutil.copytree('/kb/module/test/data/res.dRep.txwf.uniq', dRep_workDir)
 
         else:
             dRep_workDir = os.path.join(self.shared_folder, 'dRep_workDir_' + self.suffix)
@@ -364,13 +359,16 @@ class dRep:
 
         
         html_path = os.path.join(html_dir, 'dRep_dereplicate_results.html')
+        figures_dir = os.path.join(html_dir, 'figures')
         warnings_path = os.path.join(dRep_workDir, 'log/warnings.txt')
         
         htmlBuilder = OutputUtil.HTMLBuilder(html_path)
 
         # pdfs
 
-        pdfs = os.listdir(os.path.join(dRep_workDir), 'figures')
+        shutil.copytree(os.path.join(dRep_workDir, 'figures'), figures_dir)
+
+        pdfs = os.listdir(figures_dir)
         htmlBuilder.build_pdfs(pdfs)
 
         # warnings
@@ -383,7 +381,15 @@ class dRep:
         # final build
 
         htmlBuilder.build()
-        
+       
+
+        htmlZip_shockId = self.dfu.file_to_shock({'file_path': html_dir, 'pack': 'zip'})['shock_id']
+        htmlZip_report_dict = {'shock_id': htmlZip_shockId,
+                'name': 'dRep.html.zip',
+                'label': 'dRep.html.zip',
+                'description': 'dRep html report' } 
+
+
 
 
         #
@@ -402,7 +408,7 @@ class dRep:
             'pack': 'zip',
             })
 
-        workDir_shockInfo = {
+        workDirZip_shockInfo = {
             'shock_id': dfuFileToShock_ret['shock_id'],
             'name': 'dRep_work_directory.zip',
             'description': 'Work directory used by dRep. Contains figures, (possibly) genome clustering warnings, logs, all intermediary files'
@@ -426,9 +432,9 @@ class dRep:
 
 
         report_params = {'message': '',
-                         #'direct_html_link_index': 0,
-                         #'html_links': [html_zipped],
-                         'file_links': [workDir_shockInfo],
+                         'direct_html_link_index': 0,
+                         'html_links': [htmlZip_report_dict],
+                         'file_links': [workDirZip_shockInfo],
                          'report_object_name': 'dRep_report_' + self.suffix,
                          'workspace_name': params['workspace_name'],
                          'objects_created': objects_created

@@ -1,6 +1,7 @@
 import functools
 import pprint, json
 import subprocess
+import sys
 
 MAX_LINES = 70
 print = functools.partial(print, flush=True)
@@ -23,11 +24,17 @@ def dprint(*args, **kwargs):
     print('--------------------------------------------------------------')
 
 
-def dprint_run(*args, **kwargs):
+def dprint_run(*args, mode=None, scope=None, **kwargs):
+    if None in [mode, scope]:
+        dprint(f'[dprint_run] Trying to dprint_run({arg}), but must supply `mode` and `scope`', file=sys.stderr)
+        return
+
     for arg in args:
         dprint(arg, **kwargs)
-        dprint(subprocess.run(arg, shell=True, stdout=subprocess.PIPE).decode('utf-8'), **kwargs)
-
+        if mode in ['p', 'python']:
+            dprint(eval(arg, scope), **kwargs)
+        elif mode in ['s', 'shell']:
+            dprint(eval('subprocess.run(' + arg + ', shell=True, stdout=subprocess.PIPE).decode("utf-8"), **kwargs)', scope), **kwargs)
 
 
 
