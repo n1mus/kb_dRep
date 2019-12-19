@@ -120,7 +120,6 @@ class dRep:
 
 
 
-
         # 
         ##
         ### copy reference data into writeable area, set data root
@@ -228,7 +227,7 @@ class dRep:
                     shutil.copyfile(bin_fullpath, bin_fullpath_new) 
                 
 
-            dprint_run('os.listdir(binsPooled_dir)', key=locals())
+            #dprint_run('os.listdir(binsPooled_dir)', mode='p', scope={**locals(), **globals()})
 
 
                 #dprint('binnedContigs_wsObjData', binnedContigs_wsObjData)
