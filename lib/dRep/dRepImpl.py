@@ -99,28 +99,12 @@ class dRep:
         dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG')
         dprint(subprocess.run('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
-        '''
-        dprint('/kb/module/scripts/add_raise_to_expanduser.py')
-        dprint(subprocess.run('/kb/module/scripts/add_raise_to_expanduser.py', shell=True))
 
-        dprint("sed -n '160,171p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py")
-        dprint(subprocess.run("sed -n '160,171p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py", shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
-        dprint("sed -n '112,115p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py")
-        dprint(subprocess.run("sed -n '112,115p' /miniconda/lib/python3.6/site-packages/checkm/checkmData.py", shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
-
-        subprocess.run('touch /kb/module/test/data/a', shell=True)
-
-        debug = '/miniconda/bin/checkm taxonomy_wf domain Bacteria /kb/module/test/data/res.*.fail/data/prodigal/ /kb/module/test/data/res.*.fail/data/checkM/checkM_outdir/ -f /kb/module/test/data/res.*.fail/data/checkM/checkM_outdir//results.tsv --tab_table -t 6 -g -x faa'
-        dprint(debug)
-        subprocess.run(debug, shell=True)
-
-        exit()
-        '''
 
         # 
         ##
-        ### input check
+        ### input check: unique UPAs, unique names (in ui?)
         #### 
         #####
         ######
@@ -146,11 +130,8 @@ class dRep:
         #####
         ######
 
-        dprint('ls -a /kb/module/data/CHECKM_DATA')
-        dprint(subprocess.run('ls -a /kb/module/data/CHECKM_DATA', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
-
-        dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG')
-        dprint(subprocess.run('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
+        dprint('ls -a /kb/module/data/CHECKM_DATA', run='cli')
+        dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
 
         if params.get('workaround_refdata'):
 
@@ -177,7 +158,7 @@ class dRep:
         ######
 
         def transform_binName(upa, binnedContigs_name, bin_name):
-            return upa.replace('/','-') + 'UPA__' + binnedContigs_name + '__' + bin_name
+            return upa.replace('/','-') + '__' + binnedContigs_name + '__' + bin_name
 
 
         binsPooled_dir = os.path.join(self.shared_folder, 'binsPooled_' + self.suffix)
@@ -187,6 +168,8 @@ class dRep:
         bins_dir_list = []
         binnedContigs_name_list = []
         assembly_upa_list = []
+
+        binnedContigs_naming_dict = dict() # dict of BinnedContigs names and corresponding bin names
         
 
 
@@ -206,10 +189,11 @@ class dRep:
 
             for (binnedContigs_upa, binnedContigs_name, bins_dir_orig, bins_dir) in zip(params['genomes_refs'], binnedContigs_name_list, bins_dir_orig_list, bins_dir_list):
                 shutil.copytree(bins_dir_orig, bins_dir)
+                
+                binnedContigs_naming_dict[binnedContigs_name] = os.listdir(bins_dir) # for use in making summary table
 
                 for bin_name in os.listdir(bins_dir):
                     shutil.copyfile(os.path.join(bins_dir, bin_name), os.path.join(binsPooled_dir, transform_binName(binnedContigs_upa, binnedContigs_name, bin_name)))
-               
 
 
         else:
@@ -229,10 +213,11 @@ class dRep:
                 binnedContigs_name = binnedContigs_wsObjData['data'][0]['info'][1]
                 binnedContigs_name_list.append(binnedContigs_name)
 
-                assembly_upa_list.append(binnedContigs_wsObjData['data'][0]['data']['assembly_ref'])
-                
-                # for all bins, modify name and copy into binsPooled 
+                binnedContigs_naming_dict[binnedContigs_name] = next(os.walk(bins_dir))[2]
 
+                assembly_upa_list.append(binnedContigs_wsObjData['data'][0]['data']['assembly_ref'])
+
+                # for all bins, modify name and copy into binsPooled 
                 for bin_name in next(os.walk(bins_dir))[2]:
                     if not re.search(r'.*\.fasta$', bin_name):
                         dprint(f'WARNING: Found non .fasta bin name {bin_name} in dir {bins_dir} for BinnedContigs obj {name} with UPA {binnedContigs_upa}', file=sys.stderr)
@@ -294,7 +279,7 @@ class dRep:
 
         #
         ##
-        ### dRep BinnedContigs
+        ### result BinnedContigs
         ####
         #####
         ######
@@ -329,7 +314,7 @@ class dRep:
             dRep_binnedContigs_objData = self.mgu.file_to_binned_contigs(mguFileToBinnedContigs_params)
 
             objects_created.append({'ref': dRep_binnedContigs_objData['binned_contig_obj_ref'],
-                                    'description': 'Dereplicated genomes, ' + binnedContigs_name + '. Include which removed genomes?'})
+                                    'description': 'Dereplicated genomes for ' + binnedContigs_name})
 
        
             dprint('dRep_binnedContigs_objData', dRep_binnedContigs_objData)
@@ -382,12 +367,14 @@ class dRep:
         
         htmlBuilder = OutputUtil.HTMLBuilder(html_path)
 
+        # summary
+
+        html_builder.build_summary(params['genomes_refs'], binnedContigs_naming_dict, transform_binName, dRep_workDir)
+
         # pdfs
 
         shutil.copytree(os.path.join(dRep_workDir, 'figures'), figures_dir)
-
-        pdfs = os.listdir(figures_dir)
-        htmlBuilder.build_pdfs(pdfs)
+        htmlBuilder.build_pdfs()
 
         # warnings
 
