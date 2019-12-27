@@ -30,7 +30,7 @@ class HTMLBuilder():
 
             for bin_name in binnedContigs_naming_dict[binnedContigs_name]:
 
-                df.loc[len(df)] = [
+                df.loc[len(df)] = [  
 
 
         ### len/CheckM filtered

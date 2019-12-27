@@ -1,4 +1,5 @@
 test_local
 sdk.cfg
 *.swp
+*.sw[a-z]
 test/data
