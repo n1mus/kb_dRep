@@ -16,8 +16,8 @@ def dprint(*args, run=False, **kwargs):
             print('>> ' + arg)
             if run in ['cli']:
                 print(subprocess.run(arg, stdout=subprocess.PIPE).decode('utf-8'))
-            elif run:
-                print(eval(arg, run[0], run[1]))
+            else:
+                print(eval(arg, run[0]))
         elif isinstance(arg, str):
             print(arg, end=' ')
         else:
