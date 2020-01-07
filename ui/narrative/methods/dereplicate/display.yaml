@@ -26,14 +26,30 @@ suggestions:
 parameters :
     genomes_refs :
         ui-name : |
-            Genomes binned contigs
+            Binned contigs
         short-hint : |
             Genomes or binned contigs to be dereplicated. All inputs will be pooled
     length :
+         ui-name : |
+            Min contigs length
+         short-hint : |
+            Min contigs length to enter pipeline
     completeness :
+         ui-name : |
+            Completeness
+         short-hint : |
+            Min % completeness to proceed in pipeline
     contamination : 
+         ui-name : |
+            Contamination
+         short-hint : |
+            Max % contamination to proceed in pipeline
     ignoreGenomeQuality :
-
+         ui-name: |
+            Ignore genome quality
+         short-hint : |
+            (NOT RECOMMENDED) Skip filtering by completeness/contamination
+ 
 description : |
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pulvinar efficitur felis, quis tincidunt sem congue at. Vivamus ornare feugiat faucibus. Fusce tincidunt mattis nunc, nec varius purus convallis quis. Nulla facilisi. In at magna dolor. Suspendisse sit amet felis at arcu auctor dapibus vitae pharetra dui. Nam semper mi quis tortor fermentum mollis. Donec a arcu pharetra, rutrum dolor vitae, rutrum mauris. Donec ornare fringilla sagittis. Nam laoreet est in elementum malesuada. Vestibulum id mi eget urna hendrerit feugiat. Donec et ultrices nulla. Phasellus diam eros, dapibus at tempus nec, semper vel ante.</p>
 
