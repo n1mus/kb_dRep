@@ -20,7 +20,48 @@
             "text_options": {
                 "valid_ws_types": ["KBaseMetagenomes.BinnedContigs" ]
 		}
+        },{
+            "id": "length",
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "default_values": [ "50000" ],
+            "field_type": "text",
+            "text_options": {
+		    "validate_as": "int"
+		}
+        },{
+            "id": "completeness",
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "default_values": [ "75" ],
+            "field_type": "text",
+            "text_options": {
+		    "validate_as": "float"
+		}
+        },{
+            "id": "contamination",
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "default_values": [ "25" ],
+            "field_type": "text",
+            "text_options": {
+		    "validate_as": "float"
+		}
+        },{
+            "id": "ignoreGenomeQuality",
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "default_values": [ "false" ],
+            "field_type": "text",
+            "text_options": {
+		    "validate_as": "bool"
+		}
         }
+
     ],
     "behavior": {
         "service-mapping": {
@@ -36,6 +77,7 @@
                     "target_property": "workspace_id"
                 },{
                     "input_parameter": "genomes_refs",
+		    "target_type_transform": "list<ref>",
                     "target_property": "genomes_refs"
                 }
             ],

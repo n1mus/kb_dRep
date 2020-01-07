@@ -20,9 +20,11 @@ from installed_clients.MetagenomeUtilsClient import MetagenomeUtils
 
 from .util import PrintUtil, KBaseObjUtil, OutputUtil
 from .util.PrintUtil import *
-
+from .util.KBaseObjUtil import *
 
 subprocess.run = functools.partial(subprocess.run, shell=True) 
+
+GlobalBinnedContigs = None
 
 #END_HEADER
 
@@ -94,9 +96,11 @@ class dRep:
         dprint('params:', params)
 
 
-        dprint('ls -a /data/CHECKM_DATA', run='cli')
-        dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
+        dprint('type(params["genomes_refs"])', run=locals())
 
+        # TODO why is this a string sometimes
+        if isinstance(params["genomes_refs"], str):
+            params['genomes_refs'] = [tok for tok in re.split(r'[\'\"]', params['genomes_refs']) if '/' in tok]
 
 
 
@@ -128,6 +132,7 @@ class dRep:
         #####
         ######
 
+        dprint('ls -a /data/CHECKM_DATA', run='cli')
         dprint('ls -a /kb/module/data/CHECKM_DATA', run='cli')
         dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
 
@@ -147,6 +152,10 @@ class dRep:
             dprint(subprocess.run('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
 
+        dprint('ls -a /data/CHECKM_DATA', run='cli')
+        dprint('ls -a /kb/module/data/CHECKM_DATA', run='cli')
+        dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
+
 
 
 
@@ -157,117 +166,19 @@ class dRep:
         #####
         ######
 
-
-
-        class BinnedContigs:
-            '''
-            DS for BinnedContigs information
-            Very mutable
-            '''
-
-            loaded_instances = list()
-            saved_instances = []
-            
-            dfu = self.dfu
-            mgu = self.mgu
-            dsu = self.dsu
-
-            
-            def __init__(self, upa, actions=['load'], **kwargs):
-               
-                self.loaded_instances.append(self)
-                self.upa = upa
-
-                for action in actions:
-                    if 'load' == action: self.load()
-
-
-            def load(self):
-                ''''''
-                mguObjData = self.mgu.binned_contigs_to_file(
-                        {
-                            'input_ref': binnedContigs_upa, 
-                            'save_to_shock': 0
-                        }
-                ) # dict with just bin_file_directory
-
-                self.bins_dir = mguObjData['bin_file_directory']
-            
-                dprint('os.listdir(bins_dir)', run=locals())
-
-                wsObjData = self.ws.get_objects2(
-                    {
-                        'objects': [
-                            {
-                                'ref': binnedContigs_upa
-                            }
-                        ]
-                    }
-                ) # huge -- includes all the statistics
-
-
-                self.name = wsObjData['data'][0]['info'][1]
-                self.assembly_upa = binnedContigs_wsObjData['data'][0]['data']['assembly_ref']
-
-                self.bin_name_list = []
-                for bin_name in next(os.walk(bins_dir))[2]:
-                    if not re.search(r'.*\.fasta$', bin_name):
-                        dprint(f'WARNING: Found non .fasta bin name {bin_name} in dir {self.bins_dir} for BinnedContigs obj {self.name} with UPA {self.upa}', file=sys.stderr)
-                    else:
-                        self.bin_name_list.append(bin_name)
-            
-            
-            def save(self, name, workspace_name):
-                ''''''
-                summary_path = self.dsu.build_bin_summary_file_from_binnedcontigs_obj(self.upa, self.bins_dir)
-                dprint('summary_path', summary_path)
-
-                mguFileToBinnedContigs_params = {
-                    'file_directory': self.bins_dir,
-                    'assembly_ref': self.assembly_upa,
-                    'binned_contig_name': name,
-                    'workspace_name': workspace_name
-                }
-
-                binnedContigs_objData = self.mgu.file_to_binned_contigs(mguFileToBinnedContigs_params)
-
-                dprint('dRep_binnedContigs_objData', dRep_binnedContigs_objData)
-
-                self.saved_instances.append(self)
-
-                return {
-                    'ref': dRep_binnedContigs_objData['binned_contig_obj_ref'],
-                    'description': 'Dereplicated genomes for ' + binnedContigs_name
-                }
-
-
-            def pool(self, binsPooled_dir):
-                '''for all bins, modify name and copy into binsPooled''' 
-                for bin_name in self.bin_name_list:
-                    bin_name_new = self.transform_binName(bin_name)         
-
-                    bin_path = os.path.join(bins_dir, bin_name)
-                    bin_path_new = os.path.join(binsPooled_dir, bin_name_new)
-
-                    shutil.copyfile(bin_path, bin_path_new) 
-                
-            
-            def transform_binName(self, bin_name):
-                return self.upa.replace('/','-') + '__' + self.name + '__' + bin_name
-
-
-            def reduce_to_dereplicated(self, bins_derep_dir):
-                '''remove bins not in dereplicated'''
-                bins_derep_name_list = os.listdir(bins_derep_dir)
-                for bin_name in self.bin_name_list:
-                    if self.transform_binName(bin_name) not in bins_derep_name_list:
-                        os.remove(os.path.join(self.bins_dir, bin_name))
+        # class var refs to utils
+        BinnedContigs.dfu = self.dfu
+        BinnedContigs.mgu = self.mgu
+        BinnedContigs.dsu = self.dsu
+        BinnedContigs.ws = self.ws
 
 
 
+        
+        dprint('BinnedContigs', run=globals())
+        dprint('BinnedContigs.__dict__', run=globals())
 
-
-
+       
 
 
 
@@ -280,22 +191,43 @@ class dRep:
        
 
         pkl_loc = '/kb/module/test/data/BinnedContigs_SURF-B_3bins_8bins.pkl'
+        bins_dir_names = ['SURF-B_8bins', 'SURF-B_3bins']
 
+        # load from pickle and put bins dirs in shared_folder
+        if params.get('skip_dl') and os.path.isfile(pkl_loc):
+            dprint(f'Loading `BinnedContigs.loaded_instances` from {pkl_loc}')
 
-        if params.get('skip_dl') and os.path.isfile(pkl_loc): # use test data
             with open(pkl_loc, 'rb') as f:
                 BinnedContigs.loaded_instances = pickle.load(f)
 
+            for bins_dir_name in bins_dir_names:
+                shutil.copytree(os.path.join('/kb/module/test/data', bins_dir_name), os.path.join(self.shared_folder, bins_dir_name))
+
+        # load from KBase and write to pickle
         else:
-            
             for binnedContigs_upa in params['genomes_refs']:
+                dprint('binnedContigs_upa', run=locals())
                 BinnedContigs(binnedContigs_upa, actions=['load'])
 
             if not os.path.isfile(pkl_loc):
-                with open(pickle_loc, 'wb') as f:
-                    pickle.dump(BinnedContigs.loaded_instances, f)
+                for binnedContigs, bins_dir in zip(BinnedContigs.loaded_instances, [os.path.join(self.shared_folder, bins_dir_name) for bins_dir_name in bins_dir_names]):
+                    binnedContigs.rename_dir_for_pickling(bins_dir)
 
+                with open(os.path.join(self.shared_folder, os.path.basename(pkl_loc)), 'wb') as f: # write to shared folder. black magic
+                    dprint('BinnedContigs.loaded_instances', run=globals())
+                    dprint(f'Writing `BinnedContigs.loaded_instances` as pickle to shared folder')
+                    pickle.dump(BinnedContigs.loaded_instances, f, protocol=pickle.HIGHEST_PROTOCOL)
+                    dprint(f'Done writing pickle to shared foler')
 
+                '''    
+                a = {'hi': 'cat', 'hello': 'dog'}
+                with open(os.path.join(os.path.dirname(pkl_loc), 'temp.pkl'), 'wb') as f:
+                    pickle.dump(a, f)
+                '''
+
+                dprint(f'ls -lh /kb/module/test/data', run='cli')
+                dprint(f'ls -lh {self.shared_folder}', run='cli')
+                
 
 
         #
@@ -323,20 +255,20 @@ class dRep:
 
 
         if params.get('skip_dRep'):
-            dRep_workDir = '/kb/module/work/tmp/res.dRep.txwf.uniq'
-            shutil.copytree('/kb/module/test/data/res.dRep.txwf.uniq', dRep_workDir)
+            dRep_workDir = '/kb/module/work/tmp/dRep_workDir_SURF_B_2binners_checkm_txwf'
+            shutil.copytree('/kb/module/test/data/dRep_workDir_SURF_B_2binners_checkm_txwf', dRep_workDir)
 
         else:
             dRep_workDir = os.path.join(self.shared_folder, 'dRep_workDir_' + self.suffix)
 
-            dRep_cmd = f'dRep dereplicate {dRep_workDir} -g {BinnedContigs.binsPooled_dir}/*.fasta --debug --checkM_method taxonomy_wf' 
+            dRep_cmd = f'dRep dereplicate {dRep_workDir} -g {binsPooled_dir}/*.fasta --debug --checkM_method taxonomy_wf' 
 
             dprint(f'Running dRep cmd: {dRep_cmd}')
             dprint(dRep_cmd, run='cli')
 
 
         dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
-        dprint('os.listdir(binsPooled_dir)', run=locals())
+        dprint('os.listdir(binsPooled_dir)', run={**locals(), **globals()})
  
 
 
@@ -354,10 +286,13 @@ class dRep:
 
 
         # for each original BinnedContigs
-        for binnedContigs in BinnedContigs.loaded_instances
-
+        for binnedContigs in BinnedContigs.loaded_instances:
             binnedContigs.reduce_to_dereplicated(bins_derep_dir)
-            objects_created.append(binnedContigs.save(binnedContigs.name + ".dRep", params['workspace_name']))
+
+            if params.get('skip_save'):
+                BinnedContigs.saved_instances.append(binnedContigs)
+            else:
+                objects_created.append(binnedContigs.save(binnedContigs.name + ".dRep", params['workspace_name']))
             
 
 
@@ -373,33 +308,8 @@ class dRep:
         html_dir = os.path.join(self.shared_folder, 'html_dir_' + self.suffix)
         shutil.copytree('/kb/module/ui/output', html_dir) # dir of html and accessories
 
-        
-        html_path = os.path.join(html_dir, 'dRep_dereplicate_report.html')
-        figures_dir = os.path.join(html_dir, 'figures')
-        warnings_path = os.path.join(dRep_workDir, 'log/warnings.txt')
-        
-        htmlBuilder = OutputUtil.HTMLBuilder(html_path)
+        OutputUtil.HTMLBuilder(BinnedContigs.saved_instances, dRep_workDir, html_dir)
 
-        # summary
-
-        html_builder.build_summary(params['genomes_refs'], binnedContigs_naming_dict, transform_binName, dRep_workDir)
-
-        # pdfs
-
-        shutil.copytree(os.path.join(dRep_workDir, 'figures'), figures_dir)
-        htmlBuilder.build_pdfs()
-
-        # warnings
-
-        with open(warnings_path) as f:
-            warnings = f.read()
-        htmlBuilder.build_warnings(warnings)
-
-
-        # final build
-
-        htmlBuilder.build()
-       
 
         htmlZip_shockId = self.dfu.file_to_shock(
             {'file_path': html_dir, 
@@ -445,13 +355,6 @@ class dRep:
         ######
 
 
-        #{
-        #    'obj_name': dRep_binnedContigs_objName,
-        #    'obj_ref': dRep_binnedContigs_objData['binned_contig_obj_ref']
-        #}
-       
-
-
         report_params = {'message': '',
                          'direct_html_link_index': 0,
                          'html_links': [htmlZip_report_dict],
@@ -468,6 +371,11 @@ class dRep:
             'report_name': report_output['name'],
             'report_ref': report_output['ref'],
         }
+
+
+
+
+
 
         #END dereplicate
 

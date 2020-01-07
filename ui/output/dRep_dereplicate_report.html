@@ -2,23 +2,17 @@
 <html>
   <head>
     <title>dRep dereplicate Results</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.3.1.js"> </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"> </script>
   </head>
   <body>
 
 	<h1>dRep dereplicate Results</h1>
 		  
-		  <h2>Filtered by CheckM</h2>
-		  <p>
-		  FILTERED-TAG
-		  </p>
-
-
+		  <h2>Summary</h2>
+		  <table id="summary" class="display" width="100%"></table>
 		  
-
-		  <h2>Dereplicated by dRep</h2>
-			<p>
-			DEREPLICATED-TAG
-			</p>
 
 
 
@@ -28,7 +22,7 @@
 		  <h2>Figures</h2>
 
 		<p>
-		FIGURES-TAG
+		FIGURES_TAG
 		</p>
 
 
@@ -39,7 +33,7 @@
 
 		  <h2>Warnings</h2>
   			<p>
-			WARNINGS-TAG
+			WARNINGS_TAG
 			</p>
 
 
@@ -49,4 +43,18 @@
 
 
   </body>
+	<script>
+		var dataset = 
+		JSON_TAG
+		;
+		var columnset = 
+		COLUMNS_TAG
+		;
+		$(document).ready(function() {
+    $('#summary').DataTable( {
+        data: dataset,
+        columns: columnset
+    } );
+} );
+	</script>
 </html>
