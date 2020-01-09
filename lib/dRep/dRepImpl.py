@@ -114,7 +114,7 @@ class dRep:
             
             kbr = KBaseReport(self.callback_url)
             report_params = {
-                    'message': 'Please input unique BinnedContigs',
+                    'message': 'Please do not input duplicate BinnedContigs',
                     'workspace_name': params['workspace_name'],
                     }
             report_info = kbr.create_extended_report(report_params)
@@ -261,14 +261,14 @@ class dRep:
                     'length': 50000,
                     'completeness': 75,
                     'contamination': 25, 
-                    'ignoreGenomeQuality': False, 
+                    'ignoreGenomeQuality': "False", 
                     'MASH_sketch': 1000,
                     'S_algorithm': 'ANImf',
                     'n_PRESET': 'normal',
                     'P_ani': 0.9,
                     'S_ani': 0.99,
-                    'SkipMash': False, 
-                    'SkipSecondary': False,
+                    'SkipMash': "False", 
+                    'SkipSecondary': "False",
                     'cov_thresh': 0.1,
                     'coverage_method': 'larger',
                     'clusterAlg': 'average', 
@@ -277,7 +277,7 @@ class dRep:
                     'strain_heterogeneity_weight': 1, 
                     'N50_weight': 0.5,
                     'size_weight': 0,
-                    'run_tax': False,
+                    'run_tax': "False",
                     'tax_method': 'percent',
                     'percent': 50,
                     'warn_dist': 0.25, 

@@ -83,27 +83,23 @@
             "optional": true,
             "advanced": true,
             "allow_multiple": false,
-            "default_values": [ "false" ],
+            "default_values": [ "False" ],
             "field_type": "dropdown",
 	    "dropdown_options": {
 		    "options": [
 			 {
-			    "value": "false",
-			    "display": "false",
-			    "id": "false",
-			    "ui-name": "false"
+			    "value": "False",
+			    "display": "False",
+			    "id": "False",
+			    "ui-name": "False"
 			 },{
-			    "value": "true",
-			    "display": "true",
-			    "id": "true",
-			    "ui-name": "true"
+			    "value": "True",
+			    "display": "True",
+			    "id": "True",
+			    "ui-name": "True"
 			 }
 		    ]
-	    },
-	    "text_options" : {
-                "validate_as" : "bool"
-            }
-
+	    }
         },{
             "id": "MASH_sketch",
             "optional": true,
@@ -195,20 +191,20 @@
             "optional": true,
             "advanced": true,
             "allow_multiple": false,
-            "default_values": [ "false" ],
+            "default_values": [ "False" ],
             "field_type": "dropdown",
 	    "dropdown_options": {
 		    "options": [
 			 {
-			    "value": "false",
-			    "display": "false",
-			    "id": "false",
-			    "ui-name": "false"
+			    "value": "False",
+			    "display": "False",
+			    "id": "False",
+			    "ui-name": "False"
 			 },{
-			    "value": "true",
-			    "display": "true",
-			    "id": "true",
-			    "ui-name": "true"
+			    "value": "True",
+			    "display": "True",
+			    "id": "True",
+			    "ui-name": "True"
 			 }
 		    ]
 	    }
@@ -218,20 +214,20 @@
             "optional": true,
             "advanced": true,
             "allow_multiple": false,
-            "default_values": [ "false" ],
+            "default_values": [ "False" ],
             "field_type": "dropdown",
 	    "dropdown_options": {
 		    "options": [
 			 {
-			    "value": "false",
-			    "display": "false",
-			    "id": "false",
-			    "ui-name": "false"
+			    "value": "False",
+			    "display": "False",
+			    "id": "False",
+			    "ui-name": "False"
 			 },{
-			    "value": "true",
-			    "display": "true",
-			    "id": "true",
-			    "ui-name": "true"
+			    "value": "True",
+			    "display": "True",
+			    "id": "True",
+			    "ui-name": "True"
 			 }
 		    ]
 	    }
@@ -373,20 +369,20 @@
             "optional": true,
             "advanced": true,
             "allow_multiple": false,
-            "default_values": [ "false" ],
+            "default_values": [ "False" ],
             "field_type": "dropdown",
 	    "dropdown_options": {
 		    "options": [
 			 {
-			    "value": "false",
-			    "display": "false",
-			    "id": "false",
-			    "ui-name": "false"
+			    "value": "False",
+			    "display": "False",
+			    "id": "False",
+			    "ui-name": "False"
 			 },{
-			    "value": "true",
-			    "display": "true",
-			    "id": "true",
-			    "ui-name": "true"
+			    "value": "True",
+			    "display": "True",
+			    "id": "True",
+			    "ui-name": "True"
 			 }
 		    ]
 	    }
@@ -495,7 +491,6 @@
                     "target_property": "contamination"
                 },{
                     "input_parameter": "ignoreGenomeQuality",
-		    "target_type_transform": "bool",
                     "target_property": "ignoreGenomeQuality"
                 },{
                     "input_parameter": "MASH_sketch",
@@ -514,11 +509,9 @@
                     "target_property": "S_ani"
                 },{
                     "input_parameter": "SkipMash",
-		    "target_type_transform": "bool",
                     "target_property": "SkipMash"
                 },{
                     "input_parameter": "SkipSecondary",
-		    "target_type_transform": "bool",
                     "target_property": "SkipSecondary"
                 },{
                     "input_parameter": "cov_thresh",
@@ -543,7 +536,6 @@
                     "target_property": "N50_weight"
                 },{
                     "input_parameter": "run_tax",
-		    "target_type_transform": "bool",
                     "target_property": "run_tax"
                 },{
                     "input_parameter": "tax_method",
