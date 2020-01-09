@@ -495,6 +495,7 @@
                     "target_property": "contamination"
                 },{
                     "input_parameter": "ignoreGenomeQuality",
+		    "target_type_transform": "bool",
                     "target_property": "ignoreGenomeQuality"
                 },{
                     "input_parameter": "MASH_sketch",
@@ -513,9 +514,11 @@
                     "target_property": "S_ani"
                 },{
                     "input_parameter": "SkipMash",
+		    "target_type_transform": "bool",
                     "target_property": "SkipMash"
                 },{
                     "input_parameter": "SkipSecondary",
+		    "target_type_transform": "bool",
                     "target_property": "SkipSecondary"
                 },{
                     "input_parameter": "cov_thresh",
@@ -540,6 +543,7 @@
                     "target_property": "N50_weight"
                 },{
                     "input_parameter": "run_tax",
+		    "target_type_transform": "bool",
                     "target_property": "run_tax"
                 },{
                     "input_parameter": "tax_method",

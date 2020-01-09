@@ -112,11 +112,12 @@ class dRep:
 
         if len(set(params['genomes_refs'])) < len(params['genomes_refs']):
             
-            report = KBaseReport(self.callback_url)
-            report_info = report.create({'report': {'objects_created':[],
-                                                    'text_message': 'Please input unique BinnedContigs',
-                                                    'workspace_name': params['workspace_name']
-                                                    }})
+            kbr = KBaseReport(self.callback_url)
+            report_params = {
+                    'message': 'Please input unique BinnedContigs',
+                    'workspace_name': params['workspace_name'],
+                    }
+            report_info = kbr.create_extended_report(report_params)
             output = {
                 'report_name': report_info['name'],
                 'report_ref': report_info['ref'],
