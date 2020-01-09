@@ -10,6 +10,7 @@ import uuid
 import re
 import functools
 import pickle
+import warnings
 
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
@@ -99,6 +100,7 @@ class dRep:
         if isinstance(params["genomes_refs"], str):
             params['genomes_refs'] = [tok for tok in re.split(r'[\'\"]', params['genomes_refs']) if '/' in tok]
 
+        warnings.filterwarnings("ignore", category=RuntimeWarning) 
 
 
         # 
@@ -108,18 +110,19 @@ class dRep:
         #####
         ######
 
-        '''
         if len(set(params['genomes_refs'])) < len(params['genomes_refs']):
             
             report = KBaseReport(self.callback_url)
             report_info = report.create({'report': {'objects_created':[],
-                                                    'text_message': params['parameter_1']},
-                                                    'workspace_name': params['workspace_name']})
+                                                    'text_message': 'Please input unique BinnedContigs',
+                                                    'workspace_name': params['workspace_name']
+                                                    }})
             output = {
                 'report_name': report_info['name'],
                 'report_ref': report_info['ref'],
             }
-        '''
+
+            return [output]
 
 
         # 
@@ -248,19 +251,45 @@ class dRep:
         else:
             dRep_workDir = os.path.join(self.shared_folder, 'dRep_workDir_' + self.suffix)
 
-            dRep_cmd = f'dRep dereplicate {dRep_workDir} -g {binsPooled_dir}/* --debug --checkM_method taxonomy_wf'
+            dRep_cmd = f'dRep dereplicate {dRep_workDir} --genomes {binsPooled_dir}/* --debug'
 
             dRep_params = []
 
-            dRep_param_flags = ['length', 'completeness', 'contamination', 'ignoreGenomeQuality', 
-                    'S_algorithm', 'P_ani', 'S_ani', 'SkipMash', 'SkipSecondary', 'clusterAlg', 
-                    'completeness_weight', 'contamination_weight', 'strain_heterogeneity_weight', 
-                    'N50_weight', 'size_weight', 'run_tax', 'tax_method', 'percent', 'warn_dist', 
-                    'warn_sim', 'warn_aln', 'checkM_method']
+            dRep_param_defaults = {
+                    'checkM_method': 'lineage_wf',
+                    'length': 50000,
+                    'completeness': 75,
+                    'contamination': 25, 
+                    'ignoreGenomeQuality': False, 
+                    'MASH_sketch': 1000,
+                    'S_algorithm': 'ANImf',
+                    'n_PRESET': 'normal',
+                    'P_ani': 0.9,
+                    'S_ani': 0.99,
+                    'SkipMash': False, 
+                    'SkipSecondary': False,
+                    'cov_thresh': 0.1,
+                    'coverage_method': 'larger',
+                    'clusterAlg': 'average', 
+                    'completeness_weight': 1,
+                    'contamination_weight': 5,
+                    'strain_heterogeneity_weight': 1, 
+                    'N50_weight': 0.5,
+                    'size_weight': 0,
+                    'run_tax': False,
+                    'tax_method': 'percent',
+                    'percent': 50,
+                    'warn_dist': 0.25, 
+                    'warn_sim': 0.98,
+                    'warn_aln': 0.25
+                    }
 
-            for dRep_param_flag in dRep_param_flags:
-                if params.get(dRep_param_flag) != None:
-                    dRep_params.extend(['--' + dRep_param_flag, params.get(dRep_param_flag)])
+            for flag in dRep_param_defaults:
+                if flag in params and params[flag] != dRep_param_defaults[flag]:
+                    dRep_params.extend(['--' + flag, params[flag]])
+            
+            dprint(' '.join(dRep_params))
+
 
             dRep_cmd = ' '.join([dRep_cmd] + dRep_params)
                     

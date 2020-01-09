@@ -13,7 +13,7 @@ from installed_clients.WorkspaceClient import Workspace
 
 local_params = {
         'skip_dl' : True,
-        'skip_dRep' : True,
+#        'skip_dRep' : True,
 #        'skip_save': True,
 }
 
@@ -76,5 +76,6 @@ class dRepTest(unittest.TestCase):
         # self.assertEqual(ret[...], ...) or other unittest methods
         ret = self.serviceImpl.dereplicate(self.ctx, { **local_params,
                                                         'workspace_name': self.wsName,
-                                                        'genomes_refs': SURF_B_2binners
+                                                        'genomes_refs': SURF_B_2binners,
+                                                        'checkM_method': 'taxonomy_wf',
                                                 })

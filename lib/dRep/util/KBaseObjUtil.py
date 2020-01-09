@@ -16,6 +16,14 @@ class BinnedContigs:
     '''
     DS for BinnedContigs information
     Very mutable, not necessarily in a fully consistent state
+
+    Instance variables:
+    * upa
+    * bins_dir
+    * name
+    * assembly_upa
+    * bin_name_list
+
     '''
 
     loaded_instances = list() # loaded from KBase

@@ -15,40 +15,151 @@ icon: icon.png
 #
 suggestions:
     apps:
-        related:
-            [app1, app2]
-        next:
-            [app3, app4]
+       related:
+           [app1, app2]
+       next:
+           [app3, app4]
 
 #
 # Configure the display and description of parameters
 #
 parameters :
     genomes_refs :
-        ui-name : |
-            Binned contigs
-        short-hint : |
-            Genomes or binned contigs to be dereplicated. All inputs will be pooled
+       ui-name : |
+           Binned contigs
+       short-hint : |
+           Genomes or binned contigs to be dereplicated
+    checkM_method :
+       ui-name : |
+           CheckM method
+       short-hint : |
+           CheckM method
     length :
-         ui-name : |
-            Min contigs length
-         short-hint : |
-            Min contigs length to enter pipeline
+        ui-name : |
+           Min contigs length
+        short-hint : |
+           Min contigs length to enter pipeline
     completeness :
-         ui-name : |
-            Completeness
-         short-hint : |
-            Min % completeness to proceed in pipeline
+        ui-name : |
+           Completeness
+        short-hint : |
+           Min % completeness to proceed in pipeline
     contamination : 
-         ui-name : |
-            Contamination
-         short-hint : |
-            Max % contamination to proceed in pipeline
+        ui-name : |
+           Contamination
+        short-hint : |
+           Max % contamination to proceed in pipeline
     ignoreGenomeQuality :
+        ui-name: |
+           Ignore genome quality
+        short-hint : |
+           (NOT RECOMMENDED) Skip filtering by completeness/contamination
+    MASH_sketch :
+        ui-name : |
+            MASH sketch size
+        short-hint : |
+            MASH sketch size
+    S_algorithm :
+        ui-name : |
+            Secondary clustering algorithm
+        short-hint: |
+            Secondary clustering algorithm
+    n_PRESET : 
+        ui-name : |
+                nucmer preset
+        short-hint: |
+                nucmer preset
+    P_ani :
+        ui-name: |
+                Primary (MASH) ANI threshold
+        short-hint: |
+                ANI threshold to form primary (MASH) clusters
+    S_ani:
+        ui-name: |
+                Secondary ANI threshold
+        short-hint: |
+                ANI threshold to form secondary clusters
+    SkipMash:
+        ui-name: |
+                Skip MASH
+        short-hint: |
+                Skip MASH clustering, just do secondary clustering on all genomes
+    SkipSecondary:
+        ui-name: |
+                Skip secondary clustering
+        short-hint: |
+                Skip secondary clustering, just perform MASH clustering
+    cov_thresh:
+        ui-name: |
+                Coverage threshold
+        short-hint: |
+                Minimum level of overlap between genomes when doing secondary comparisons
+    coverage_method:
+        ui-name: |
+                Coverage method
+        short-hint: |
+                Method to calculate coverage of an alignment (for ANIn/ANImf only; gANI can only do larger method)
+    clusterAlg:
          ui-name: |
-            Ignore genome quality
-         short-hint : |
-            (NOT RECOMMENDED) Skip filtering by completeness/contamination
+                Clustering algorithm
+         short-hint: |
+                 Algorithm to cluster genomes (passed to scipy.cluster.hierarchy.linkage)
+    completeness_weight:
+         ui-name: |
+                 Completeness weight
+         short-hint: |
+                 Completeness weight for genome scoring formula
+    contamination_weight:
+         ui-name: |
+                 Contamination weight
+         short-hint: |
+                 Contamination weight for genome scoring formula
+    strain_heterogeneity_weight:
+         ui-name: |
+                 Strain heterogeneity weight
+         short-hint: |
+                 Strain heterogeneity weight for genome scoring formula
+    N50_weight:
+         ui-name: |
+                 N50 weight
+         short-hint: |
+                 N50 weight for genome scoring formula
+    size_weight:
+               ui-name: |
+                       Size weight
+               short-hint: |
+                       Size weight for genome scoring formula
+    run_tax:
+               ui-name: |
+                       Generate taxonomy information
+               short-hint: |
+                       Generate taxonomy information (Tdb)
+    tax_method:
+               ui-name: |
+                       Taxonomy method
+               short-hint: |
+                       Method of determining taxonomy
+    percent:
+               ui-name: |
+                       Percent
+               short-hint: |
+                       Minimum percent for percent taxonomy method
+    warn_dist:
+               ui-name: |
+                       Warn distance
+               short-hint:
+                       How far from the threshold to throw cluster warnings
+    warn_sim:
+               ui-name: |
+                       Warn similarity
+               short-hint: |
+                       Similarity threshold for warnings between dereplicated genomes
+    warn_aln:
+               ui-name: |
+                       Warn align
+               short-hint: |
+                       Minimum aligned fraction for warnings between dereplicated genomes (ANIn)
+    
  
 description : |
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pulvinar efficitur felis, quis tincidunt sem congue at. Vivamus ornare feugiat faucibus. Fusce tincidunt mattis nunc, nec varius purus convallis quis. Nulla facilisi. In at magna dolor. Suspendisse sit amet felis at arcu auctor dapibus vitae pharetra dui. Nam semper mi quis tortor fermentum mollis. Donec a arcu pharetra, rutrum dolor vitae, rutrum mauris. Donec ornare fringilla sagittis. Nam laoreet est in elementum malesuada. Vestibulum id mi eget urna hendrerit feugiat. Donec et ultrices nulla. Phasellus diam eros, dapibus at tempus nec, semper vel ante.</p>
