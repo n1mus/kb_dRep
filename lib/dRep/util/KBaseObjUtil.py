@@ -4,6 +4,7 @@ import glob
 import re
 import subprocess
 import shutil
+import pandas as pd
 
 from installed_clients.WorkspaceClient import Workspace
 from installed_clients.MetagenomeUtilsClient import MetagenomeUtils
@@ -57,18 +58,29 @@ class BinnedContigs:
         self.name = wsObjData['data'][0]['info'][1]
         self.assembly_upa = wsObjData['data'][0]['data']['assembly_ref']
 
-        self.bin_name_list = []
+        self.bin_name_list = self.get_curr_bins_names()
+
+   
+    def get_curr_bins_names(self):
+        bin_name_list = []
         for bin_name in next(os.walk(self.bins_dir))[2]:
             if not re.search(r'.*\.fasta$', bin_name):
                 dprint(f'WARNING: Found non .fasta bin name {bin_name} in dir {self.bins_dir} for BinnedContigs obj {self.name} with UPA {self.upa}', file=sys.stderr)
-            else:
-                self.bin_name_list.append(bin_name)
+            bin_name_list.append(bin_name)
+        return bin_name_list
     
-    
+
+    def is_empty(self):
+        return len(self.get_curr_bins_names()) == 0
+
+
     def save(self, name, workspace_name):
         ''''''
-        summary_path = self.dsu.build_bin_summary_file_from_binnedcontigs_obj(self.upa, self.bins_dir)
-        dprint('summary_path', summary_path)
+        if self.is_empty():
+            dprint('WARNING: not saving empty BinnedContigs {self.name}', file=sys.stderr)
+            return
+
+        self.write_reduced_bin_summary()
 
         mguFileToBinnedContigs_params = {
             'file_directory': self.bins_dir,
@@ -110,10 +122,50 @@ class BinnedContigs:
         for bin_name in self.bin_name_list:
             if self.transform_binName(bin_name) not in bins_derep_name_list:
                 os.remove(os.path.join(self.bins_dir, bin_name))
+        
 
-    def build_bin_summary(self):
-        '''Written with template from kb_Msuite's DataStagingUtils.py and OutputBuilder.py'''
-        pass
+
+    def write_reduced_bin_summary(self):
+        '''
+        Assuming that self was loaded and has had its bins in bins_dir reduced,
+        build summary of reduced bins from original BinnedContigs' information
+        
+        *.summary file could be one of below format:
+
+        Bin name                  Abundance  Completeness    Genome size     GC content
+        maxbin_output.001.fasta   0.00       97.2%           2690533         52.9
+        
+        Bin name                  Completeness    Genome size     GC content
+        maxbin_output.001.fasta   97.2%           2690533         52.9
+        '''
+        stats_dict_list = self.ws.get_objects2(
+            {
+                'objects': [
+                    {
+                        'ref': self.upa
+                    }
+                ]
+            }
+        )['data'][0]['data']['bins']
+
+        columns = ['Bin name', 'Completeness', 'Genome size', 'GC content']
+        smmr = pd.DataFrame(columns=columns)
+
+        bins_reduced_name_list = self.get_curr_bins_names()
+
+        for stats_dict in stats_dict_list:
+            if stats_dict['bid'] in bins_reduced_name_list:
+                smmr.loc[len(smmr)] = [stats_dict[key] for key in ['bid', 'cov', 'sum_contig_len', 'gc']]
+
+        smmr['Completeness'] = smmr['Completeness'].apply(lambda x: str(x * 100) + '%')
+        smmr['GC content'] = smmr['GC content'].apply(lambda x: x * 100)
+
+        dprint(smmr.to_csv(sep='\t', index=False))
+
+        with open(os.path.join(self.bins_dir, 'MaxBin2.summary'), 'w') as f:
+            f.write(smmr.to_csv(sep='\t', index=False))
+
+
 
     def rename_dir_for_pickling(self, bins_dir):
         shutil.copytree(self.bins_dir, bins_dir)
@@ -210,21 +262,3 @@ class DataStagingUtils(object):
         return bin_fasta_files
 
 
-
-####
-####
-#### This is from kb_Msuite's OutputBuilder
-
-def package_folder(self, folder_path, zip_file_name, zip_file_description):
-    ''' Simple utility for packaging a folder and saving to shock '''
-    if folder_path == self.scratch:
-        raise ValueError("cannot package folder that is not a subfolder of scratch")
-    dfu = DataFileUtil(self.callback_url)
-    if not os.path.exists(folder_path):
-        raise ValueError("cannot package folder that doesn't exist: "+folder_path)
-    output = dfu.file_to_shock({'file_path': folder_path,
-                                'make_handle': 0,
-                                'pack': 'zip'})
-    return {'shock_id': output['shock_id'],
-            'name': zip_file_name,
-            'description': zip_file_description}

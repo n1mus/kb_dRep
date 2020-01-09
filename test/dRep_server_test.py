@@ -12,15 +12,14 @@ from installed_clients.WorkspaceClient import Workspace
 
 
 local_params = {
-        'mode' : 'local', # testing environment. 'local' => laptop
         'skip_dl' : True,
         'skip_dRep' : True,
-        'skip_save': True,
-#        'workaround_refdata': True
+#        'skip_save': True,
 }
 
 bins8 = ['33320/6/1']
 upas = ['30870/183/1', '30870/171/1', '30870/169/1']
+SURF_B_2binners = ['34837/23/1', '34837/3/1'] # maxbin, metabat
 SURF_B_2binners_checkm = ['33320/6/1', '33320/8/1']
 
 class dRepTest(unittest.TestCase):
@@ -75,7 +74,7 @@ class dRepTest(unittest.TestCase):
         #
         # Check returned data with
         # self.assertEqual(ret[...], ...) or other unittest methods
-        ret = self.serviceImpl.dereplicate(self.ctx, { #**local_params,
+        ret = self.serviceImpl.dereplicate(self.ctx, { **local_params,
                                                         'workspace_name': self.wsName,
-                                                        'genomes_refs': SURF_B_2binners_checkm
+                                                        'genomes_refs': SURF_B_2binners
                                                 })

@@ -16,15 +16,13 @@ from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.WorkspaceClient import Workspace
 from installed_clients.MetagenomeUtilsClient import MetagenomeUtils
 
-
-
 from .util import PrintUtil, KBaseObjUtil, OutputUtil
 from .util.PrintUtil import *
 from .util.KBaseObjUtil import *
 
-subprocess.run = functools.partial(subprocess.run, shell=True) 
+subprocess.run = functools.partial(subprocess.run, shell=True, stdout=subprocess.PIPE, 
+        stderr=subprocess.PIPE) 
 
-GlobalBinnedContigs = None
 
 #END_HEADER
 
@@ -67,7 +65,6 @@ class dRep:
         self.ws = Workspace(self.workspace_url)
         self.mgu = MetagenomeUtils(self.callback_url)
         self.dfu = DataFileUtil(self.callback_url)
-        self.dsu = KBaseObjUtil.DataStagingUtils(config)
 
 
         dprint('os.environ:', os.environ)
@@ -142,19 +139,11 @@ class dRep:
                 dprint('Copying reference tree into writeable location...')
                 shutil.copytree('/data/CHECKM_DATA/', '/kb/module/data/CHECKM_DATA')
 
-            subprocess.run('checkm data setRoot /kb/module/data/CHECKM_DATA', shell=True)
+            dprint('checkm data setRoot /kb/module/data/CHECKM_DATA', run='cli')
 
-
-            dprint('ls -a /kb/module/data/CHECKM_DATA')
-            dprint(subprocess.run('ls -a /kb/module/data/CHECKM_DATA', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
-
-            dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG')
-            dprint(subprocess.run('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8'))
-
-
-        dprint('ls -a /data/CHECKM_DATA', run='cli')
-        dprint('ls -a /kb/module/data/CHECKM_DATA', run='cli')
-        dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
+            dprint('ls -a /data/CHECKM_DATA', run='cli')
+            dprint('ls -a /kb/module/data/CHECKM_DATA', run='cli')
+            dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
 
 
 
@@ -169,7 +158,6 @@ class dRep:
         # class var refs to utils
         BinnedContigs.dfu = self.dfu
         BinnedContigs.mgu = self.mgu
-        BinnedContigs.dsu = self.dsu
         BinnedContigs.ws = self.ws
 
 
@@ -189,9 +177,13 @@ class dRep:
         #####
         ######
        
-
+        
         pkl_loc = '/kb/module/test/data/BinnedContigs_SURF-B_3bins_8bins.pkl'
         bins_dir_names = ['SURF-B_8bins', 'SURF-B_3bins']
+        '''
+        pkl_loc = '/kb/module/test/data/BinnedContigs_SURF-B_2binners.pkl'
+        bins_dir_names = ['SURF-B_45bins', 'SURF-B_40bins']
+        '''
 
         # load from pickle and put bins dirs in shared_folder
         if params.get('skip_dl') and os.path.isfile(pkl_loc):
@@ -213,17 +205,11 @@ class dRep:
                 for binnedContigs, bins_dir in zip(BinnedContigs.loaded_instances, [os.path.join(self.shared_folder, bins_dir_name) for bins_dir_name in bins_dir_names]):
                     binnedContigs.rename_dir_for_pickling(bins_dir)
 
-                with open(os.path.join(self.shared_folder, os.path.basename(pkl_loc)), 'wb') as f: # write to shared folder. black magic
+                with open(os.path.join(self.shared_folder, os.path.basename(pkl_loc)), 'wb') as f: # write to shared folder or it will disappear
                     dprint('BinnedContigs.loaded_instances', run=globals())
                     dprint(f'Writing `BinnedContigs.loaded_instances` as pickle to shared folder')
                     pickle.dump(BinnedContigs.loaded_instances, f, protocol=pickle.HIGHEST_PROTOCOL)
                     dprint(f'Done writing pickle to shared foler')
-
-                '''    
-                a = {'hi': 'cat', 'hello': 'dog'}
-                with open(os.path.join(os.path.dirname(pkl_loc), 'temp.pkl'), 'wb') as f:
-                    pickle.dump(a, f)
-                '''
 
                 dprint(f'ls -lh /kb/module/test/data', run='cli')
                 dprint(f'ls -lh {self.shared_folder}', run='cli')
@@ -244,6 +230,7 @@ class dRep:
         for binnedContigs in BinnedContigs.loaded_instances:
             binnedContigs.pool(binsPooled_dir)
         
+        dprint("os.listdir(binsPooled_dir)", run={**locals(), **globals()})
 
 
         #
@@ -261,10 +248,26 @@ class dRep:
         else:
             dRep_workDir = os.path.join(self.shared_folder, 'dRep_workDir_' + self.suffix)
 
-            dRep_cmd = f'dRep dereplicate {dRep_workDir} -g {binsPooled_dir}/*.fasta --debug --checkM_method taxonomy_wf' 
+            dRep_cmd = f'dRep dereplicate {dRep_workDir} -g {binsPooled_dir}/* --debug --checkM_method taxonomy_wf'
+
+            dRep_params = []
+
+            dRep_param_flags = ['length', 'completeness', 'contamination', 'ignoreGenomeQuality', 
+                    'S_algorithm', 'P_ani', 'S_ani', 'SkipMash', 'SkipSecondary', 'clusterAlg', 
+                    'completeness_weight', 'contamination_weight', 'strain_heterogeneity_weight', 
+                    'N50_weight', 'size_weight', 'run_tax', 'tax_method', 'percent', 'warn_dist', 
+                    'warn_sim', 'warn_aln', 'checkM_method']
+
+            for dRep_param_flag in dRep_param_flags:
+                if params.get(dRep_param_flag) != None:
+                    dRep_params.extend(['--' + dRep_param_flag, params.get(dRep_param_flag)])
+
+            dRep_cmd = ' '.join([dRep_cmd] + dRep_params)
+                    
+
 
             dprint(f'Running dRep cmd: {dRep_cmd}')
-            dprint(dRep_cmd, run='cli')
+            subprocess.run(dRep_cmd, shell=True)
 
 
         dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
@@ -289,10 +292,11 @@ class dRep:
         for binnedContigs in BinnedContigs.loaded_instances:
             binnedContigs.reduce_to_dereplicated(bins_derep_dir)
 
-            if params.get('skip_save'):
-                BinnedContigs.saved_instances.append(binnedContigs)
-            else:
-                objects_created.append(binnedContigs.save(binnedContigs.name + ".dRep", params['workspace_name']))
+            if not binnedContigs.is_empty():
+                if params.get('skip_save'):
+                    BinnedContigs.saved_instances.append(binnedContigs)
+                else:
+                    objects_created.append(binnedContigs.save(binnedContigs.name + ".dRep", params['workspace_name']))
             
 
 

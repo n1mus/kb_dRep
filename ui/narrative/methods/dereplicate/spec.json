@@ -22,7 +22,7 @@
 		}
         },{
             "id": "length",
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [ "50000" ],
@@ -32,7 +32,7 @@
 		}
         },{
             "id": "completeness",
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [ "75" ],
@@ -42,7 +42,7 @@
 		}
         },{
             "id": "contamination",
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [ "25" ],
@@ -52,14 +52,27 @@
 		}
         },{
             "id": "ignoreGenomeQuality",
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [ "false" ],
-            "field_type": "text",
-            "text_options": {
-		    "validate_as": "bool"
-		}
+            "field_type": "dropdown",
+	    "dropdown_options": {
+		    "options": [
+			 {
+			    "value": "false",
+			    "display": "false",
+			    "id": "false",
+			    "ui-name": "false"
+			 },{
+			    "value": "true",
+			    "display": "true",
+			    "id": "true",
+			    "ui-name": "true"
+			 }
+		    ]
+	    }
+
         }
 
     ],
