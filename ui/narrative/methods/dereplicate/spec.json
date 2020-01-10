@@ -18,7 +18,7 @@
 		"contamination",
 		"ignoreGenomeQuality"
 	    ],
-	    "optional": false,
+	    "optional": true,
 	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
@@ -29,7 +29,7 @@
 		"S_algorithm",
 		"n_PRESET"
 	    ],
-	    "optional": false,
+	    "optional": true,
 	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
@@ -44,7 +44,7 @@
 		"coverage_method",
 		"clusterAlg"
 	    ],
-	    "optional": false,
+	    "optional": true,
 	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
@@ -57,7 +57,7 @@
 		"N50_weight",
 		"size_weight"
 	    ],
-	    "optional": false,
+	    "optional": true,
 	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
@@ -68,7 +68,7 @@
 		"tax_method",
 		"percent"
 	    ],
-	    "optional": false,
+	    "optional": true,
 	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
@@ -79,7 +79,7 @@
 		"warn_sim",
 		"warn_aln"
 	    ],
-	    "optional": false,
+	    "optional": true,
 	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
