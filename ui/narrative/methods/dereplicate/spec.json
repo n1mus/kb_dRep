@@ -100,7 +100,7 @@
         },{
             "id": "length",
             "optional": true,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [ "50000" ],
             "field_type": "text",
@@ -110,7 +110,7 @@
 		}
         },{
             "id": "completeness",
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [ "75" ],
@@ -122,8 +122,8 @@
 		}
         },{
             "id": "contamination",
-            "optional": false,
-            "advanced": false,
+            "optional": true,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [ "25" ],
             "field_type": "text",
@@ -572,78 +572,6 @@
                     "input_parameter": "genomes_refs",
 		    "target_type_transform": "list<ref>",
                     "target_property": "genomes_refs"
-                },{
-                    "input_parameter": "length",
-                    "target_property": "length"
-                },{
-                    "input_parameter": "completeness",
-                    "target_property": "completeness"
-                },{
-                    "input_parameter": "contamination",
-                    "target_property": "contamination"
-                },{
-                    "input_parameter": "ignoreGenomeQuality",
-                    "target_property": "ignoreGenomeQuality"
-                },{
-                    "input_parameter": "MASH_sketch",
-                    "target_property": "MASH_sketch"
-                },{
-                    "input_parameter": "S_algorithm",
-                    "target_property": "S_algorithm"
-                },{
-                    "input_parameter": "n_PRESET",
-                    "target_property": "n_PRESET"
-                },{
-                    "input_parameter": "P_ani",
-                    "target_property": "P_ani"
-                },{
-                    "input_parameter": "S_ani",
-                    "target_property": "S_ani"
-                },{
-                    "input_parameter": "SkipMash",
-                    "target_property": "SkipMash"
-                },{
-                    "input_parameter": "SkipSecondary",
-                    "target_property": "SkipSecondary"
-                },{
-                    "input_parameter": "cov_thresh",
-                    "target_property": "cov_thresh"
-                },{
-                    "input_parameter": "coverage_method",
-                    "target_property": "coverage_method"
-                },{
-                    "input_parameter": "clusterAlg",
-                    "target_property": "clusterAlg"
-                },{
-                    "input_parameter": "completeness_weight",
-                    "target_property": "completeness_weight"
-                },{
-                    "input_parameter": "contamination_weight",
-                    "target_property": "contamination_weight"
-                },{
-                    "input_parameter": "strain_heterogeneity_weight",
-                    "target_property": "strain_heterogeneity_weight"
-                },{
-                    "input_parameter": "N50_weight",
-                    "target_property": "N50_weight"
-                },{
-                    "input_parameter": "run_tax",
-                    "target_property": "run_tax"
-                },{
-                    "input_parameter": "tax_method",
-                    "target_property": "tax_method"
-                },{
-                    "input_parameter": "percent",
-                    "target_property": "percent"
-                },{
-                    "input_parameter": "warn_dist",
-                    "target_property": "warn_dist"
-                },{
-                    "input_parameter": "warn_sim",
-                    "target_property": "warn_sim"
-                },{
-                    "input_parameter": "warn_aln",
-                    "target_property": "warn_aln"
                 },{
                     "input_parameter": "checkM_method",
                     "target_property": "checkM_method"
