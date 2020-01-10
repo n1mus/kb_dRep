@@ -111,7 +111,7 @@
         },{
             "id": "completeness",
             "optional": true,
-            "advanced": true,
+            "advanced": false,
             "allow_multiple": false,
             "default_values": [ "75" ],
             "field_type": "text",
@@ -122,7 +122,7 @@
 		}
         },{
             "id": "contamination",
-            "optional": true,
+            "optional": false,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [ "25" ],
@@ -134,8 +134,8 @@
 		}
         },{
             "id": "ignoreGenomeQuality",
-            "optional": true,
-            "advanced": true,
+            "optional": false,
+            "advanced": false,
             "allow_multiple": false,
             "default_values": [ "False" ],
             "field_type": "dropdown",
