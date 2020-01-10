@@ -122,40 +122,40 @@ parameters :
          short-hint: |
                  Weight of log(genoome N50) in genome scoring formula
     size_weight:
-               ui-name: |
-                       size_weight
-               short-hint: |
-                       Weight of log(genome size) in genome scoring formula
+           ui-name: |
+                   size_weight
+           short-hint: |
+                   Weight of log(genome size) in genome scoring formula
     run_tax:
-               ui-name: |
-                       run_tax
-               short-hint: |
-                       Generate taxonomy information (Tdb)
+           ui-name: |
+                   run_tax
+           short-hint: |
+                   Generate taxonomy information (Tdb)
     tax_method:
-               ui-name: |
-                       tax_method
-               short-hint: |
-                       Method of determining taxonomy
+           ui-name: |
+                   tax_method
+           short-hint: |
+                   Method of determining taxonomy
     percent:
-               ui-name: |
-                       percent
-               short-hint: |
-                       Minimum percent for percent taxonomy method
+           ui-name: |
+                   percent
+           short-hint: |
+                   Minimum percent for percent taxonomy method
     warn_dist:
-               ui-name: |
-                       warn_dist
-               short-hint:
-                       How far from the threshold to throw cluster warnings
+       ui-name: |
+           warn_dist
+       short-hint:
+           How far from the threshold to throw cluster warnings
     warn_sim:
-               ui-name: |
-                       warn_sim
-               short-hint: |
-                       Similarity threshold for warnings between dereplicated genomes
+       ui-name: |
+           warn_sim
+       short-hint: |
+           Similarity threshold for warnings between dereplicated genomes
     warn_aln:
-               ui-name: |
-                       warn_aln
-               short-hint: |
-                       Minimum aligned fraction for warnings between dereplicated genomes (ANIn)
+       ui-name: |
+           warn_aln
+       short-hint: |
+           Minimum aligned fraction for warnings between dereplicated genomes (ANIn)
     checkM_method :
         ui-name : |
             checkM_method
@@ -182,7 +182,9 @@ parameter-groups:
         ui-name: |
             SCORING CRITERIA
         short-hint:
-            Based off of genome scoring formula
+            <p>Based off of the formula:</p>
+            <p>A*Completeness - B*Contamination + C*(Contamination * (strain_heterogeneity/100)) + D*log(N50) + E*log(size)</p>
+            <p>A = completeness_weight; B = contamination_weight; C = strain_heterogeneity_weight; D = N50_weight; E = size_weight</p>
         long-hint:
             <p>Based off of the formula:</p>
             <p>A*Completeness - B*Contamination + C*(Contamination * (strain_heterogeneity/100)) + D*log(N50) + E*log(size)</p>

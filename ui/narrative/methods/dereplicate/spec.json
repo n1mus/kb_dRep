@@ -15,7 +15,8 @@
 	    "parameters": [
 	        "length",
 		"completeness",
-		"contamination"
+		"contamination",
+		"ignoreGenomeQuality"
 	    ],
 	    "optional": false,
 	    "advanced": true,
@@ -99,7 +100,7 @@
         },{
             "id": "length",
             "optional": true,
-            "advanced": true,
+            "advanced": false,
             "allow_multiple": false,
             "default_values": [ "50000" ],
             "field_type": "text",
@@ -109,7 +110,7 @@
 		}
         },{
             "id": "completeness",
-            "optional": true,
+            "optional": false,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [ "75" ],
@@ -121,8 +122,8 @@
 		}
         },{
             "id": "contamination",
-            "optional": true,
-            "advanced": true,
+            "optional": false,
+            "advanced": false,
             "allow_multiple": false,
             "default_values": [ "25" ],
             "field_type": "text",
