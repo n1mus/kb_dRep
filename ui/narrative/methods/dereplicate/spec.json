@@ -17,7 +17,7 @@
 		"completeness",
 		"contamination"
 	    ],
-	    "optional": true,
+	    "optional": false,
 	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
@@ -28,7 +28,7 @@
 		"S_algorithm",
 		"n_PRESET"
 	    ],
-	    "optional": true,
+	    "optional": false,
 	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
@@ -43,7 +43,7 @@
 		"coverage_method",
 		"clusterAlg"
 	    ],
-	    "optional": true,
+	    "optional": false,
 	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
@@ -56,8 +56,7 @@
 		"N50_weight",
 		"size_weight"
 	    ],
-	    "ui_name": "SCORING CRITERIA",
-	    "optional": true,
+	    "optional": false,
 	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
@@ -68,7 +67,7 @@
 		"tax_method",
 		"percent"
 	    ],
-	    "optional": true,
+	    "optional": false,
 	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
@@ -79,7 +78,7 @@
 		"warn_sim",
 		"warn_aln"
 	    ],
-	    "optional": true,
+	    "optional": false,
 	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true

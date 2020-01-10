@@ -184,9 +184,9 @@ parameter-groups:
         short-hint:
             Based off of genome scoring formula
         long-hint:
-	        Based off of the formula
-            A*Completeness - B*Contamination + C*(Contamination * (strain_heterogeneity/100)) + D*log(N50) + E*log(size)\n\nA = completeness_weight;
-            B = contamination_weight; C = strain_heterogeneity_weight; D = N50_weight; E = size_weight
+            <p>Based off of the formula:</p>
+            <p>A*Completeness - B*Contamination + C*(Contamination * (strain_heterogeneity/100)) + D*log(N50) + E*log(size)</p>
+            <p>A = completeness_weight; B = contamination_weight; C = strain_heterogeneity_weight; D = N50_weight; E = size_weight</p>
     taxonomy:
         ui-name: |
             TAXONOMY
