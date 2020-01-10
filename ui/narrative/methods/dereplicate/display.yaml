@@ -29,7 +29,7 @@ parameters :
            Binned contigs
        short-hint : |
            Genomes or binned contigs to be clustered and dereplicated
-   length :
+    length :
         ui-name : |
            length
         short-hint : |
@@ -161,6 +161,42 @@ parameters :
             checkM_method
         short-hint : |
             checkM method
+        
+parameter-groups:
+    filtering:
+        ui-name: |
+            FILTERING OPTIONS
+        short-hint: |
+
+    genome_comparison:
+        ui-name: |
+            GENOME COMPARISON PARAMETERS
+        short-hint: |
+
+    clustering:
+        ui-name: |
+            CLUSTERING PARAMETERS
+        short-hint: |
+
+    scoring:
+        ui-name: |
+            SCORING CRITERIA
+        short-hint:
+            Based off of genome scoring formula
+        long-hint:
+	        Based off of the formula
+            A*Completeness - B*Contamination + C*(Contamination * (strain_heterogeneity/100)) + D*log(N50) + E*log(size)\n\nA = completeness_weight;
+            B = contamination_weight; C = strain_heterogeneity_weight; D = N50_weight; E = size_weight
+    taxonomy:
+        ui-name: |
+            TAXONOMY
+        short-hint: |
+
+    warnings:
+        ui-name: |
+            WARNINGS
+        short-hint: |
+
     
  
 description : |

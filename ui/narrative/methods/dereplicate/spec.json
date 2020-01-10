@@ -17,7 +17,6 @@
 		"completeness",
 		"contamination"
 	    ],
-	    "ui_name": "FILTERING OPTIONS",
 	    "optional": true,
 	    "advanced": true,
 	    "allow_multiple": false,
@@ -58,8 +57,6 @@
 		"size_weight"
 	    ],
 	    "ui_name": "SCORING CRITERIA",
-	    "short_hint": "Based off of formula",
-	    "description": "Based off of the formula:\n A*Completeness - B*Contamination + C*(Contamination * (strain_heterogeneity/100)) + D*log(N50) + E*log(size)\n\nA = completeness_weight; B = contamination_weight; C = strain_heterogeneity_weight; D = N50_weight; E = size_weight",
 	    "optional": true,
 	    "advanced": true,
 	    "allow_multiple": false,
@@ -553,6 +550,24 @@
                 },{
                     "narrative_system_variable": "workspace_id",
                     "target_property": "workspace_id"
+                },{
+                    "input_parameter": "filtering",
+                    "target_property": "filtering"
+                },{
+                    "input_parameter": "genome_comparison",
+                    "target_property": "genome_comparison"
+                },{
+                    "input_parameter": "clustering",
+                    "target_property": "clustering"
+                },{
+                    "input_parameter": "scoring",
+                    "target_property": "scoring"
+                },{
+                    "input_parameter": "taxonomy",
+                    "target_property": "taxonomy"
+                },{
+                    "input_parameter": "warnings",
+                    "target_property": "warnings"
                 },{
                     "input_parameter": "genomes_refs",
 		    "target_type_transform": "list<ref>",
