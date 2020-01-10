@@ -126,31 +126,6 @@ class dRep:
             return [output]
 
 
-        # 
-        ##
-        ### copy reference data into writeable area, set data root
-        #### 
-        #####
-        ######
-
-        dprint('ls -a /data/CHECKM_DATA', run='cli')
-        dprint('ls -a /kb/module/data/CHECKM_DATA', run='cli')
-        dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
-
-        if params.get('workaround_refdata'):
-
-            if not os.path.exists('/kb/module/data/CHECKM_DATA'):
-                dprint('Copying reference tree into writeable location...')
-                shutil.copytree('/data/CHECKM_DATA/', '/kb/module/data/CHECKM_DATA')
-
-            dprint('checkm data setRoot /kb/module/data/CHECKM_DATA', run='cli')
-
-            dprint('ls -a /data/CHECKM_DATA', run='cli')
-            dprint('ls -a /kb/module/data/CHECKM_DATA', run='cli')
-            dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
-
-
-
 
         #
         ##
@@ -182,12 +157,12 @@ class dRep:
         ######
        
         
+        '''
         pkl_loc = '/kb/module/test/data/BinnedContigs_SURF-B_3bins_8bins.pkl'
         bins_dir_names = ['SURF-B_8bins', 'SURF-B_3bins']
         '''
         pkl_loc = '/kb/module/test/data/BinnedContigs_SURF-B_2binners.pkl'
         bins_dir_names = ['SURF-B_45bins', 'SURF-B_40bins']
-        '''
 
         # load from pickle and put bins dirs in shared_folder
         if params.get('skip_dl') and os.path.isfile(pkl_loc):
@@ -252,9 +227,9 @@ class dRep:
         else:
             dRep_workDir = os.path.join(self.shared_folder, 'dRep_workDir_' + self.suffix)
 
-            dRep_cmd = f'dRep dereplicate {dRep_workDir} --genomes {binsPooled_dir}/* --debug'
+            dRep_cmd = f'dRep dereplicate {dRep_workDir} --genomes {binsPooled_dir}/*'
 
-            dRep_params = []
+            dRep_params = ['--debug']
 
             dRep_param_defaults = {
                     'checkM_method': 'lineage_wf',
@@ -285,9 +260,13 @@ class dRep:
                     'warn_aln': 0.25
                     }
 
+            params_bool = [flag for flag in dRep_param_defaults if dRep_param_defaults[flag] == 'False']
+
             for flag in dRep_param_defaults:
-                if flag in params and params[flag] != dRep_param_defaults[flag]:
-                    dRep_params.extend(['--' + flag, params[flag]])
+                if params.get(flag, dRep_param_defaults[flag]) != dRep_param_defaults[flag]:
+                    dRep_params.append('--' + flag)
+                    if flag not in params_bool:
+                        dRep_params.append(params[flag])
             
             dprint(' '.join(dRep_params))
 
@@ -342,7 +321,7 @@ class dRep:
         html_dir = os.path.join(self.shared_folder, 'html_dir_' + self.suffix)
         shutil.copytree('/kb/module/ui/output', html_dir) # dir of html and accessories
 
-        OutputUtil.HTMLBuilder(BinnedContigs.saved_instances, dRep_workDir, html_dir)
+        OutputUtil.HTMLBuilder(BinnedContigs.saved_instances, dRep_params, dRep_workDir, html_dir)
 
 
         htmlZip_shockId = self.dfu.file_to_shock(

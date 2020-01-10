@@ -15,13 +15,14 @@ pd.set_option('display.width', 1000)
 
 
 
-TAGS = [tag + '_TAG' for tag in ['JSON', 'COLUMNS', 'FIGURES', 'WARNINGS']]
+TAGS = [tag + '_TAG' for tag in ['JSON', 'COLUMNS', 'FIGURES', 'WARNINGS', 'PARAMETERS']]
 
 class HTMLBuilder():
 
-    def __init__(self, binnedContigs, dRep_workDir, html_dir):
+    def __init__(self, binnedContigs, dRep_params, dRep_workDir, html_dir):
         self.binnedContigs = binnedContigs
 
+        self.dRep_params = dRep_params
         self.dRep_workDir = dRep_workDir
         self.html_dir = html_dir
         self.html_path = os.path.join(html_dir, 'dRep_dereplicate_report.html')
@@ -36,6 +37,7 @@ class HTMLBuilder():
         self._build_summary()
         self._build_figures()
         self._build_warnings()
+        self._build_parameters()
         
         for line in fileinput.input(self.html_path, inplace=True):
             line_stripped = line.strip()
@@ -44,6 +46,9 @@ class HTMLBuilder():
             else:
                 print(line, end='')
 
+
+    def _build_parameters(self):
+        self.replacements['PARAMETERS'] = self.dRep_params
 
 
     def _build_summary(self):
