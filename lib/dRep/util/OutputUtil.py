@@ -48,7 +48,7 @@ class HTMLBuilder():
 
 
     def _build_parameters(self):
-        self.replacements['PARAMETERS'] = self.dRep_params
+        self.replacements['PARAMETERS_TAG'] = self.dRep_params
 
 
     def _build_summary(self):
@@ -107,7 +107,7 @@ class HTMLBuilder():
         dprint(r'smmr.to_json(orient="values").replace("null", "\"-\"")', run=locals())
         dprint("json.dumps([{'title': column} for column in columns])", run={**locals(), **globals()})
 
-        self.replacements['JSON_TAG'] = smmr.to_json(orient='values').replace('null', '-')
+        self.replacements['JSON_TAG'] = smmr.to_json(orient='values').replace('null', '"-"')
         self.replacements['COLUMNS_TAG'] = json.dumps([{'title': column} for column in columns])
 
 

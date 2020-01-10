@@ -9,6 +9,86 @@
         "input": null,
         "output": "no-display"
     },
+    "parameter-groups": [
+        {
+	    "id": "filtering",
+	    "parameters": [
+	        "length",
+		"completeness",
+		"contamination"
+	    ],
+	    "ui_name": "FILTERING OPTIONS",
+	    "optional": true,
+	    "advanced": true,
+	    "allow_multiple": false,
+	    "with_border": true
+	},{
+	    "id": "genome_comparison",
+	    "parameters": [
+		"MASH_sketch",
+		"S_algorithm",
+		"n_PRESET"
+	    ],
+	    "optional": true,
+	    "advanced": true,
+	    "allow_multiple": false,
+	    "with_border": true
+	},{
+	    "id": "clustering",
+	    "parameters": [
+		"P_ani",
+		"S_ani",
+		"SkipMash",
+		"SkipSecondary",
+		"cov_thresh",
+		"coverage_method",
+		"clusterAlg"
+	    ],
+	    "optional": true,
+	    "advanced": true,
+	    "allow_multiple": false,
+	    "with_border": true
+	},{
+	    "id": "scoring",
+	    "parameters": [
+		"completeness_weight",
+		"contamination_weight",
+		"strain_heterogeneity_weight",
+		"N50_weight",
+		"size_weight"
+	    ],
+	    "ui_name": "SCORING CRITERIA",
+	    "short_hint": "Based off of formula",
+	    "description": "Based off of the formula:\n A*Completeness - B*Contamination + C*(Contamination * (strain_heterogeneity/100)) + D*log(N50) + E*log(size)\n\nA = completeness_weight; B = contamination_weight; C = strain_heterogeneity_weight; D = N50_weight; E = size_weight",
+	    "optional": true,
+	    "advanced": true,
+	    "allow_multiple": false,
+	    "with_border": true
+	},{
+	    "id": "taxonomy",
+	    "parameters": [
+		"run_tax",
+		"tax_method",
+		"percent"
+	    ],
+	    "optional": true,
+	    "advanced": true,
+	    "allow_multiple": false,
+	    "with_border": true
+	},{
+	    "id": "warnings",
+	    "parameters": [
+		"warn_dist",
+		"warn_sim",
+		"warn_aln"
+	    ],
+	    "optional": true,
+	    "advanced": true,
+	    "allow_multiple": false,
+	    "with_border": true
+	}
+
+    ],
     "parameters": [ 
         {
             "id": "genomes_refs",
@@ -20,29 +100,6 @@
             "text_options": {
                 "valid_ws_types": ["KBaseMetagenomes.BinnedContigs" ]
 		}
-        },{
-            "id": "checkM_method",
-            "optional": true,
-            "advanced": true,
-            "allow_multiple": false,
-            "default_values": [ "taxonomy_wf" ],
-            "field_type": "dropdown",
-	    "dropdown_options": {
-		    "options": [
-			 {
-			    "value": "taxonomy_wf",
-			    "display": "taxonomy_wf",
-			    "id": "taxonomy_wf",
-			    "ui-name": "taxonomy_wf - faster"
-			 },{
-			    "value": "lineage_wf",
-			    "display": "lineage_wf",
-			    "id": "lineage_wf",
-			    "ui-name": "lineage_wf - more accurate"
-			 }
-		    ]
-	    }
-
         },{
             "id": "length",
             "optional": true,
@@ -458,6 +515,29 @@
 		    "min_float": "0",
 		    "max_float": "1"
 		}
+        },{
+            "id": "checkM_method",
+            "optional": true,
+            "advanced": true,
+            "allow_multiple": false,
+            "default_values": [ "taxonomy_wf" ],
+            "field_type": "dropdown",
+	    "dropdown_options": {
+		    "options": [
+			 {
+			    "value": "taxonomy_wf",
+			    "display": "taxonomy_wf",
+			    "id": "taxonomy_wf",
+			    "ui-name": "taxonomy_wf - faster"
+			 },{
+			    "value": "lineage_wf",
+			    "display": "lineage_wf",
+			    "id": "lineage_wf",
+			    "ui-name": "lineage_wf - more accurate"
+			 }
+		    ]
+	    }
+
         }
 
     ],
@@ -477,9 +557,6 @@
                     "input_parameter": "genomes_refs",
 		    "target_type_transform": "list<ref>",
                     "target_property": "genomes_refs"
-                },{
-                    "input_parameter": "checkM_method",
-                    "target_property": "checkM_method"
                 },{
                     "input_parameter": "length",
                     "target_property": "length"
@@ -552,6 +629,9 @@
                 },{
                     "input_parameter": "warn_aln",
                     "target_property": "warn_aln"
+                },{
+                    "input_parameter": "checkM_method",
+                    "target_property": "checkM_method"
                 }
             ],
             "output_mapping": [

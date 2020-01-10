@@ -28,137 +28,139 @@ parameters :
        ui-name : |
            Binned contigs
        short-hint : |
-           Genomes or binned contigs to be dereplicated
-    checkM_method :
-       ui-name : |
-           CheckM method
-       short-hint : |
-           CheckM method
-    length :
+           Genomes or binned contigs to be clustered and dereplicated
+   length :
         ui-name : |
-           Min contigs length
+           length
         short-hint : |
-           Min contigs length to enter pipeline
+           Minimum genome length
     completeness :
         ui-name : |
-           Completeness
+           completeness
         short-hint : |
-           Min % completeness to proceed in pipeline
+           Minimum genome completeness
     contamination : 
         ui-name : |
-           Contamination
+           contamination
         short-hint : |
-           Max % contamination to proceed in pipeline
+           Maximum genome contamination
     ignoreGenomeQuality :
         ui-name: |
-           Ignore genome quality
+           ignoreGenomeQuality
         short-hint : |
-           (NOT RECOMMENDED) Skip filtering by completeness/contamination
+           (NOT RECOMMENDED) Don't run checkM or do any quality filtering
+        long-hint : |
+           (NOT RECOMMENDED) Don't run checkM or do any quality filtering. This is useful for use with bacteriophages or eukaryotes or things where checkM scoring does not work. Will only choose genomes based on length and N50
     MASH_sketch :
         ui-name : |
-            MASH sketch size
+            MASH_sketch
         short-hint : |
             MASH sketch size
     S_algorithm :
         ui-name : |
-            Secondary clustering algorithm
+            S_algorithm
         short-hint: |
-            Secondary clustering algorithm
+            Algorithm for secondary clustering comparisons
     n_PRESET : 
         ui-name : |
-                nucmer preset
+                n_PRESET
         short-hint: |
-                nucmer preset
+                Presets to pass to nucmer
     P_ani :
         ui-name: |
-                Primary (MASH) ANI threshold
+                P_ani
         short-hint: |
                 ANI threshold to form primary (MASH) clusters
     S_ani:
         ui-name: |
-                Secondary ANI threshold
+                S_ani
         short-hint: |
                 ANI threshold to form secondary clusters
     SkipMash:
         ui-name: |
-                Skip MASH
+                SkipMash
         short-hint: |
                 Skip MASH clustering, just do secondary clustering on all genomes
     SkipSecondary:
         ui-name: |
-                Skip secondary clustering
+                SkipSecondary
         short-hint: |
                 Skip secondary clustering, just perform MASH clustering
     cov_thresh:
         ui-name: |
-                Coverage threshold
+                cov_thresh
         short-hint: |
                 Minimum level of overlap between genomes when doing secondary comparisons
     coverage_method:
         ui-name: |
-                Coverage method
+                coverage_method
         short-hint: |
                 Method to calculate coverage of an alignment (for ANIn/ANImf only; gANI can only do larger method)
     clusterAlg:
          ui-name: |
-                Clustering algorithm
+                clusterAlg
          short-hint: |
                  Algorithm to cluster genomes (passed to scipy.cluster.hierarchy.linkage)
     completeness_weight:
          ui-name: |
-                 Completeness weight
+                 completeness_weight
          short-hint: |
-                 Completeness weight for genome scoring formula
+                 Completeness weight in genome scoring formula
     contamination_weight:
          ui-name: |
-                 Contamination weight
+                 contamination_weight
          short-hint: |
-                 Contamination weight for genome scoring formula
+                 Contamination weight in genome scoring formula
     strain_heterogeneity_weight:
          ui-name: |
-                 Strain heterogeneity weight
+                 strain_heterogeneity_weight
          short-hint: |
-                 Strain heterogeneity weight for genome scoring formula
+                 Strain heterogeneity weight in genome scoring formula
     N50_weight:
          ui-name: |
-                 N50 weight
+                 N50_weight
          short-hint: |
-                 N50 weight for genome scoring formula
+                 Weight of log(genoome N50) in genome scoring formula
     size_weight:
                ui-name: |
-                       Size weight
+                       size_weight
                short-hint: |
-                       Size weight for genome scoring formula
+                       Weight of log(genome size) in genome scoring formula
     run_tax:
                ui-name: |
-                       Generate taxonomy information
+                       run_tax
                short-hint: |
                        Generate taxonomy information (Tdb)
     tax_method:
                ui-name: |
-                       Taxonomy method
+                       tax_method
                short-hint: |
                        Method of determining taxonomy
     percent:
                ui-name: |
-                       Percent
+                       percent
                short-hint: |
                        Minimum percent for percent taxonomy method
     warn_dist:
                ui-name: |
-                       Warn distance
+                       warn_dist
                short-hint:
                        How far from the threshold to throw cluster warnings
     warn_sim:
                ui-name: |
-                       Warn similarity
+                       warn_sim
                short-hint: |
                        Similarity threshold for warnings between dereplicated genomes
     warn_aln:
                ui-name: |
-                       Warn align
+                       warn_aln
                short-hint: |
                        Minimum aligned fraction for warnings between dereplicated genomes (ANIn)
+    checkM_method :
+        ui-name : |
+            checkM_method
+        short-hint : |
+            checkM method
     
  
 description : |
