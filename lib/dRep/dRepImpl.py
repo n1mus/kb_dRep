@@ -232,7 +232,7 @@ class dRep:
         param_groups = ['filtering', 'genome_comparison', 'clustering', 'scoring', 'taxonomy', 'warnings']
 
         for flag_grp in param_groups:
-            if flag_grp in params:
+            if params.get(flag_grp):
                 param_group_d = params[flag_grp]
                 for flag_indiv in param_group_d:
                     params[flag_indiv] = param_group_d[flag_indiv]
