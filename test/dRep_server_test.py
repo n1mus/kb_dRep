@@ -78,7 +78,9 @@ class dRepTest(unittest.TestCase):
         ret = self.serviceImpl.dereplicate(self.ctx, { **local_params,
                                                         'workspace_name': self.wsName,
                                                         'genomes_refs': SURF_B_2binners_checkm,
-                                                        #'ignoreGenomeQuality': 'True',
+                                                        'filtering' : {
+                                                           'ignoreGenomeQuality': 'True',
+                                                        },
                                                         #'checkM_method': 'taxonomy_wf',
                                                         #'SkipSecondary': 'True',
                                                 })

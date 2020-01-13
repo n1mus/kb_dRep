@@ -120,7 +120,7 @@ parameters :
          ui-name: |
                  N50_weight
          short-hint: |
-                 Weight of log(genoome N50) in genome scoring formula
+                 Weight of log(genome N50) in genome scoring formula
     size_weight:
            ui-name: |
                    size_weight
@@ -140,7 +140,7 @@ parameters :
            ui-name: |
                    percent
            short-hint: |
-                   Minimum percent for percent taxonomy method
+                   Minimum percent for percent method (option of tax_method parameter)
     warn_dist:
        ui-name: |
            warn_dist

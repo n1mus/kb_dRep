@@ -454,7 +454,7 @@
 			    "value": "percent",
 			    "display": "percent",
 			    "id": "percent",
-			    "ui-name": "percent - The most descriptive taxonomic level with at least `percent` hits"
+			    "ui-name": "percent - The most descriptive taxonomic level with at least `percent` (following parameter) hits"
 			 },{
 			    "value": "max",
 			    "display": "max",
