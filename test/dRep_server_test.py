@@ -12,6 +12,7 @@ from installed_clients.WorkspaceClient import Workspace
 
 
 local_params = {
+        'mode': 'local',
         'skip_dl' : True,
         'skip_dRep' : True,
         'skip_save': True,

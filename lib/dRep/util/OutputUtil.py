@@ -111,8 +111,7 @@ class HTMLBuilder():
     
         else:
             smmr['Length Filtered'] = ~ smmr.index.isin(bdb.index)
-            
-            smmr[attr[3:]] = df_stats.loc[smmr.index, attr[3:]]
+            smmr[attr[3:]] = df_stats.loc[smmr.index, attr[3:]] # avail stats (not from checkm)
             smmr.loc[cdb.index, 'Primary/Secondary Cluster'] = cdb['secondary_cluster']
             smmr.loc[smmr['Length Filtered'].eq(False) , 'Dereplicated'] = ~ smmr.index[smmr['Length Filtered'].eq(False)].isin(wdb.index) # dereplicated col
 

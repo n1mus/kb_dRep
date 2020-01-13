@@ -180,13 +180,14 @@ class dRep:
             for binnedContigs in BinnedContigs.loaded_instances: # do re-write?
                 binnedContigs.calc_stats()
 
-        # load from KBase and write to pickle
+        # load from KBase 
+        # if local write to pickle
         else:
             for binnedContigs_upa in params['genomes_refs']:
                 dprint('binnedContigs_upa', run=locals())
                 BinnedContigs(binnedContigs_upa, actions=['load', 'calc'])
 
-            if not os.path.isfile(pkl_loc):
+            if params.get('mode') == 'local' and not os.path.isfile(pkl_loc):
                 for binnedContigs, bins_dir in zip(BinnedContigs.loaded_instances, [os.path.join(self.shared_folder, bins_dir_name) for bins_dir_name in bins_dir_names]):
                     binnedContigs.rename_dir_for_pickling(bins_dir)
 
@@ -221,9 +222,23 @@ class dRep:
         #
         ##
         ### Run dRep dereplicate -> gen workDir
-        ####
+        #### handle different ways narrative passes params
         #####
         ######
+       
+
+        # flatten param groups, if any
+
+        param_groups = ['filtering', 'genome_comparison', 'clustering', 'scoring', 'taxonomy', 'warnings']
+
+        for flag_grp in param_groups:
+            if flag_grp in params:
+                param_group_d = params[flag_grp]
+                for flag_indiv in param_group_d:
+                    params[flag_indiv] = dRep_param_group_d[flag_indiv]
+                params.pop(flag_grp)
+
+        # extract non-default parameters
 
         dRep_params = ['--debug']
 
@@ -264,9 +279,10 @@ class dRep:
                 if flag not in params_bool:
                     dRep_params.append(params[flag])
         
-        dprint(' '.join(dRep_params))
+        dprint("' '.join(dRep_params)", run=locals())
 
 
+        # run dRep
 
         if params.get('skip_dRep'):
             dRep_workDir = '/kb/module/work/tmp/dRep_workDir_SURF_B_2binners_checkm_txwf'
