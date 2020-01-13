@@ -41,7 +41,7 @@ def dprint(*args, run=False, **kwargs):
                 assert False
         else:
             try_json_print(arg)
-    print()
+        print()
     print('--------------------------------------------------------------')
 
 

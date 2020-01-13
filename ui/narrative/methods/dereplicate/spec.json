@@ -18,8 +18,8 @@
 		"contamination",
 		"ignoreGenomeQuality"
 	    ],
-	    "optional": true,
-	    "advanced": true,
+	    "optional": false,
+	    "advanced": false,
 	    "allow_multiple": false,
 	    "with_border": true
 	},{
@@ -29,8 +29,8 @@
 		"S_algorithm",
 		"n_PRESET"
 	    ],
-	    "optional": true,
-	    "advanced": true,
+	    "optional": false,
+	    "advanced": false,
 	    "allow_multiple": false,
 	    "with_border": true
 	},{
@@ -44,8 +44,8 @@
 		"coverage_method",
 		"clusterAlg"
 	    ],
-	    "optional": true,
-	    "advanced": true,
+	    "optional": false,
+	    "advanced": false,
 	    "allow_multiple": false,
 	    "with_border": true
 	},{
@@ -57,8 +57,8 @@
 		"N50_weight",
 		"size_weight"
 	    ],
-	    "optional": true,
-	    "advanced": true,
+	    "optional": false,
+	    "advanced": false,
 	    "allow_multiple": false,
 	    "with_border": true
 	},{
@@ -68,8 +68,8 @@
 		"tax_method",
 		"percent"
 	    ],
-	    "optional": true,
-	    "advanced": true,
+	    "optional": false,
+	    "advanced": false,
 	    "allow_multiple": false,
 	    "with_border": true
 	},{
@@ -80,7 +80,7 @@
 		"warn_aln"
 	    ],
 	    "optional": true,
-	    "advanced": true,
+	    "advanced": false,
 	    "allow_multiple": false,
 	    "with_border": true
 	}

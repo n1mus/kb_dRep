@@ -54,45 +54,70 @@ class HTMLBuilder():
     def _build_summary(self):
         '''Build data frame from dRep output'''
         
+        ignoreGenomeQuality = '--ignoreGenomeQuality' in self.dRep_params
 
         ###
         ### Initialize dataframe with names and NaNs
         
         names = ['BinnedContigs Name', 'Bin Name', 'File Name']
         preproc = ['Length Filtered']
-        attr = ['Completeness', 'Contamination', 'Strain Heterogeneity', 'Length', 'N50 (contigs)', 'GC']
+        attr = ['Completeness', 'Contamination', 'Strain Heterogeneity', 'Length', 'N50', 'GC']
         res = ['CheckM (Compl/Contam) Filtered', 'Primary/Secondary Cluster', 'Dereplicated']
 
-        columns = names + preproc + attr + res
+        attr_chdb = ['Completeness', 'Contamination', 'Strain heterogeneity', 'Genome size (bp)', 'N50 (scaffolds)', 'GC'] # Chdb.csv header names corresponding to attr
+
+        if not ignoreGenomeQuality:
+            columns = names + preproc + attr + res
+        else:
+            columns = names + preproc + attr[3:] + res[1:]
         
         smmr = pd.DataFrame(columns=columns)
 
-        for binnedContig in self.binnedContigs:
-            for bin_name in binnedContig.bin_name_list:
+        for binnedContigs in self.binnedContigs:
+            for bin_name in binnedContigs.bin_name_list:
 
-                smmr.loc[len(smmr)] = [binnedContig.name, bin_name, binnedContig.transform_binName(bin_name)] + [np.nan] * (len(columns) - len(names))
+                smmr.loc[len(smmr)] = [binnedContigs.name, bin_name, binnedContigs.transform_binName(bin_name)] + [np.nan] * (len(columns) - len(names))
 
         ###
         ### Insert genome attribute info
 
         smmr = smmr.set_index('File Name')
 
-        attr_chdb = ['Completeness', 'Contamination', 'Strain heterogeneity', 'Genome size (bp)', 'N50 (contigs)', 'GC']
-
-
         # read drep's data tables with the transformed bin/genome/file name as index
-        chdb = pd.read_csv(os.path.join(self.dRep_workDir, 'data_tables/Chdb.csv'), index_col='Bin Id') # has all genomes that passed length filter
         bdb = pd.read_csv(os.path.join(self.dRep_workDir, 'data_tables/Bdb.csv'), index_col='genome') # has all genomes that passed length then completeness/contamination filter
         cdb = pd.read_csv(os.path.join(self.dRep_workDir, 'data_tables/Cdb.csv'), index_col='genome') # ''
         wdb = pd.read_csv(os.path.join(self.dRep_workDir, 'data_tables/Wdb.csv'), index_col='genome') # has all genomes that passed length filter then completeness/contamination filter then dereplication
+        if not ignoreGenomeQuality:
+            chdb = pd.read_csv(os.path.join(self.dRep_workDir, 'data_tables/Chdb.csv'), index_col='Bin Id') # has all genomes that passed length filter
 
-        smmr.loc[chdb.index, attr] = chdb[attr_chdb] # attr columns
-        smmr.loc[chdb.index, attr[2]] = chdb[attr_chdb[2]] # for some reason have to do attr[2,3] separately
-        smmr.loc[chdb.index, attr[3]] = chdb[attr_chdb[3]]
-        smmr['Length Filtered'] = ~ smmr.index.isin(chdb.index) # length-filtered column
-        smmr.loc[~ smmr['Length Filtered'], 'CheckM (Compl/Contam) Filtered'] = ~ smmr.loc[~ smmr['Length Filtered']].index.isin(bdb.index) # checkm-filtered column
-        smmr.loc[cdb.index, 'Primary/Secondary Cluster'] = cdb['secondary_cluster']
-        smmr.loc[smmr['CheckM (Compl/Contam) Filtered'].eq(False) , 'Dereplicated'] = ~ smmr.index[smmr['CheckM (Compl/Contam) Filtered'].eq(False)].isin(wdb.index) # dereplicated col
+        # get custom stats for each BinnedContigs and concat with file name as index
+        df_stats_l = []
+        for binnedContigs in self.binnedContigs:
+            df_stats = pd.DataFrame.from_dict(binnedContigs.stats['bin_stats'], orient='index')
+            df_stats_l.append(df_stats)
+
+        df_stats = pd.concat(df_stats_l)
+        df_stats.index.name = 'File Name'
+        df_stats.rename(columns={'length': 'Length'}, inplace=True)
+
+        # populate
+        if not ignoreGenomeQuality:
+            smmr[attr[:5]] = chdb.loc[smmr.index, attr_chdb[:5]] # all rel Chdb.csv columns except GC, which is wrong
+            smmr[attr[5]] = df_stats.loc[smmr.index, attr_chdb[5]] # fixed GC 
+            smmr['Length Filtered'] = ~ smmr.index.isin(chdb.index)
+            smmr.loc[~ smmr['Length Filtered'], 'CheckM (Compl/Contam) Filtered'] = ~ smmr.loc[~ smmr['Length Filtered']].index.isin(bdb.index) # checkm-filtered column
+            smmr.loc[cdb.index, 'Primary/Secondary Cluster'] = cdb['secondary_cluster']
+            smmr.loc[smmr['CheckM (Compl/Contam) Filtered'].eq(False) , 'Dereplicated'] = ~ smmr.index[smmr['CheckM (Compl/Contam) Filtered'].eq(False)].isin(wdb.index) # dereplicated col
+    
+        else:
+            smmr['Length Filtered'] = ~ smmr.index.isin(bdb.index)
+            
+            smmr[attr[3:]] = df_stats.loc[smmr.index, attr[3:]]
+            smmr.loc[cdb.index, 'Primary/Secondary Cluster'] = cdb['secondary_cluster']
+            smmr.loc[smmr['Length Filtered'].eq(False) , 'Dereplicated'] = ~ smmr.index[smmr['Length Filtered'].eq(False)].isin(wdb.index) # dereplicated col
+
+        dprint('ignoreGenomeQuality', 'smmr[preproc + attr[3:] + res[1:]]', run=locals())
+
 
         smmr.reset_index(inplace=True)
         smmr = smmr[columns]

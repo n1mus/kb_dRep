@@ -110,11 +110,10 @@ class dRep:
         #####
         ######
 
-        if len(set(params['genomes_refs'])) < len(params['genomes_refs']):
-            
+        def simple_return(msg):
             kbr = KBaseReport(self.callback_url)
             report_params = {
-                    'message': 'Please do not input duplicate BinnedContigs',
+                    'message': msg,
                     'workspace_name': params['workspace_name'],
                     }
             report_info = kbr.create_extended_report(report_params)
@@ -125,6 +124,10 @@ class dRep:
 
             return [output]
 
+
+        if len(set(params['genomes_refs'])) < len(params['genomes_refs']):
+            return simple_return('Please do not input duplicate BinnedContigs')
+            
 
 
         #
@@ -157,16 +160,16 @@ class dRep:
         ######
        
         
-        '''
         pkl_loc = '/kb/module/test/data/BinnedContigs_SURF-B_3bins_8bins.pkl'
         bins_dir_names = ['SURF-B_8bins', 'SURF-B_3bins']
         '''
         pkl_loc = '/kb/module/test/data/BinnedContigs_SURF-B_2binners.pkl'
         bins_dir_names = ['SURF-B_45bins', 'SURF-B_40bins']
+        '''
 
         # load from pickle and put bins dirs in shared_folder
         if params.get('skip_dl') and os.path.isfile(pkl_loc):
-            dprint(f'Loading `BinnedContigs.loaded_instances` from {pkl_loc}')
+            dprint(f'Loading `BinnedContigs.loaded_instances` from {pkl_loc} and copying bins directories into {self.shared_folder}')
 
             with open(pkl_loc, 'rb') as f:
                 BinnedContigs.loaded_instances = pickle.load(f)
@@ -174,11 +177,14 @@ class dRep:
             for bins_dir_name in bins_dir_names:
                 shutil.copytree(os.path.join('/kb/module/test/data', bins_dir_name), os.path.join(self.shared_folder, bins_dir_name))
 
+            for binnedContigs in BinnedContigs.loaded_instances: # do re-write?
+                binnedContigs.calc_stats()
+
         # load from KBase and write to pickle
         else:
             for binnedContigs_upa in params['genomes_refs']:
                 dprint('binnedContigs_upa', run=locals())
-                BinnedContigs(binnedContigs_upa, actions=['load'])
+                BinnedContigs(binnedContigs_upa, actions=['load', 'calc'])
 
             if not os.path.isfile(pkl_loc):
                 for binnedContigs, bins_dir in zip(BinnedContigs.loaded_instances, [os.path.join(self.shared_folder, bins_dir_name) for bins_dir_name in bins_dir_names]):
@@ -219,6 +225,48 @@ class dRep:
         #####
         ######
 
+        dRep_params = ['--debug']
+
+        dRep_param_defaults = {
+                'checkM_method': 'lineage_wf',
+                'length': 50000,
+                'completeness': 75,
+                'contamination': 25, 
+                'ignoreGenomeQuality': "False", 
+                'MASH_sketch': 1000,
+                'S_algorithm': 'ANImf',
+                'n_PRESET': 'normal',
+                'P_ani': 0.9,
+                'S_ani': 0.99,
+                'SkipMash': "False", 
+                'SkipSecondary': "False",
+                'cov_thresh': 0.1,
+                'coverage_method': 'larger',
+                'clusterAlg': 'average', 
+                'completeness_weight': 1,
+                'contamination_weight': 5,
+                'strain_heterogeneity_weight': 1, 
+                'N50_weight': 0.5,
+                'size_weight': 0,
+                'run_tax': "False",
+                'tax_method': 'percent',
+                'percent': 50,
+                'warn_dist': 0.25, 
+                'warn_sim': 0.98,
+                'warn_aln': 0.25
+                }
+
+        params_bool = [flag for flag in dRep_param_defaults if dRep_param_defaults[flag] == 'False']
+
+        for flag in dRep_param_defaults:
+            if params.get(flag, dRep_param_defaults[flag]) != dRep_param_defaults[flag] and params.get(flag) != None:
+                dRep_params.append('--' + flag)
+                if flag not in params_bool:
+                    dRep_params.append(params[flag])
+        
+        dprint(' '.join(dRep_params))
+
+
 
         if params.get('skip_dRep'):
             dRep_workDir = '/kb/module/work/tmp/dRep_workDir_SURF_B_2binners_checkm_txwf'
@@ -228,51 +276,7 @@ class dRep:
             dRep_workDir = os.path.join(self.shared_folder, 'dRep_workDir_' + self.suffix)
 
             dRep_cmd = f'dRep dereplicate {dRep_workDir} --genomes {binsPooled_dir}/*'
-
-            dRep_params = ['--debug']
-
-            dRep_param_defaults = {
-                    'checkM_method': 'lineage_wf',
-                    'length': 50000,
-                    'completeness': 75,
-                    'contamination': 25, 
-                    'ignoreGenomeQuality': "False", 
-                    'MASH_sketch': 1000,
-                    'S_algorithm': 'ANImf',
-                    'n_PRESET': 'normal',
-                    'P_ani': 0.9,
-                    'S_ani': 0.99,
-                    'SkipMash': "False", 
-                    'SkipSecondary': "False",
-                    'cov_thresh': 0.1,
-                    'coverage_method': 'larger',
-                    'clusterAlg': 'average', 
-                    'completeness_weight': 1,
-                    'contamination_weight': 5,
-                    'strain_heterogeneity_weight': 1, 
-                    'N50_weight': 0.5,
-                    'size_weight': 0,
-                    'run_tax': "False",
-                    'tax_method': 'percent',
-                    'percent': 50,
-                    'warn_dist': 0.25, 
-                    'warn_sim': 0.98,
-                    'warn_aln': 0.25
-                    }
-
-            params_bool = [flag for flag in dRep_param_defaults if dRep_param_defaults[flag] == 'False']
-
-            for flag in dRep_param_defaults:
-                if params.get(flag, dRep_param_defaults[flag]) != dRep_param_defaults[flag]:
-                    dRep_params.append('--' + flag)
-                    if flag not in params_bool:
-                        dRep_params.append(params[flag])
-            
-            dprint(' '.join(dRep_params))
-
-
             dRep_cmd = ' '.join([dRep_cmd] + dRep_params)
-                    
 
 
             dprint(f'Running dRep cmd: {dRep_cmd}')
@@ -292,7 +296,6 @@ class dRep:
         #####
         ######
 
-
         bins_derep_dir = os.path.join(dRep_workDir, 'dereplicated_genomes')
         objects_created = []
 
@@ -304,7 +307,7 @@ class dRep:
             if not binnedContigs.is_empty():
                 if params.get('skip_save'):
                     BinnedContigs.saved_instances.append(binnedContigs)
-                else:
+                else: 
                     objects_created.append(binnedContigs.save(binnedContigs.name + ".dRep", params['workspace_name']))
             
 
@@ -322,6 +325,10 @@ class dRep:
         shutil.copytree('/kb/module/ui/output', html_dir) # dir of html and accessories
 
         OutputUtil.HTMLBuilder(BinnedContigs.saved_instances, dRep_params, dRep_workDir, html_dir)
+
+        if params.get('skip_save'):
+            return
+
 
 
         htmlZip_shockId = self.dfu.file_to_shock(
