@@ -1,0 +1,1 @@
+/miniconda/bin/checkm qa /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/Bacteria.ms /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/ -f /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/Chdb.tsv -t 8 --tab_table -o 2

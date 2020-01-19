@@ -1,0 +1,526 @@
+01-17 23:10 DEBUG    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+01-17 23:10 DEBUG    ***Logger started up at /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/log/logger.log***
+01-17 23:10 DEBUG    Command to run dRep was: /miniconda/bin/dRep dereplicate /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2 --genomes /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.012.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.027.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.034.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.038.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.040.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta --debug --processors 8 --checkM_method taxonomy_wf
+
+01-17 23:10 DEBUG    dRep version 2.3.2 was run 
+
+01-17 23:10 DEBUG    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+01-17 23:10 DEBUG    Namespace(MASH_sketch=1000, N50_weight=0.5, P_ani=0.9, S_algorithm='ANImf', S_ani=0.99, SkipMash=False, SkipSecondary=False, cent_index=None, checkM_method='taxonomy_wf', clusterAlg='average', completeness=75, completeness_weight=1, contamination=25, contamination_weight=5, cov_thresh=0.1, coverage_method='larger', debug=True, genomeInfo=None, genomes=['/kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta', '/kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta', '/kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta', '/kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.012.fasta', '/kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta', '/kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.027.fasta', '/kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.034.fasta', '/kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.038.fasta', '/kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta', '/kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.040.fasta', '/kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta'], ignoreGenomeQuality=False, length=50000, n_PRESET='normal', operation='dereplicate', percent='50', processors=8, run_tax=False, size_weight=0, strain_heterogeneity_weight=1, tax_method='percent', warn_aln=0.25, warn_dist=0.25, warn_sim=0.98, work_directory='/kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2')
+01-17 23:10 DEBUG    Starting the dereplicate operation
+01-17 23:10 INFO     ***************************************************
+    ..:: dRep dereplicate Step 1. Filter ::..
+***************************************************
+    
+01-17 23:10 DEBUG    Loading work directory in filter
+01-17 23:10 DEBUG    Located: /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2
+Datatables: []
+Cluster files: []
+Arguments: []
+01-17 23:10 DEBUG    Validating filter arguments
+01-17 23:10 INFO     Will filter the genome list
+01-17 23:10 INFO     Calculating genome info of genomes
+01-17 23:10 DEBUG    Filtering genomes by size
+01-17 23:10 INFO     100.00% of genomes passed length filtering
+01-17 23:10 DEBUG    Running CheckM
+01-17 23:10 INFO     Running prodigal
+01-17 23:12 INFO     Running checkM
+01-17 23:12 DEBUG    Running CheckM with command: ['/miniconda/bin/checkm', 'taxonomy_wf', 'domain', 'Bacteria', '/kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/prodigal/', '/kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/', '-f', '/kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir//results.tsv', '--tab_table', '-t', '8', '-g', '-x', 'faa']
+01-17 23:14 DEBUG    Running CheckM with command: ['/miniconda/bin/checkm', 'qa', '/kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/Bacteria.ms', '/kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/', '-f', '/kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/Chdb.tsv', '-t', '8', '--tab_table', '-o', '2']
+01-17 23:14 DEBUG    Filtering genomes
+01-17 23:14 INFO     100.00% of genomes passed checkM filtering
+01-17 23:14 DEBUG    Storing resulting files
+01-17 23:14 INFO     ***************************************************
+    ..:: dRep dereplicate Step 2. Cluster ::..
+***************************************************
+    
+01-17 23:14 DEBUG    Loading work directory
+01-17 23:14 DEBUG    Located: /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2
+Datatables: ['Chdb', 'genomeInfo', 'Bdb']
+Cluster files: []
+Arguments: []
+01-17 23:14 DEBUG    Calling cluster genomes
+01-17 23:14 INFO     Clustering Step 1. Parse Arguments
+01-17 23:14 DEBUG    kwargs to cluster: {'wd': <drep.WorkDirectory.WorkDirectory object at 0x7fb4178a0588>, 'operation': 'dereplicate', 'work_directory': '/kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2', 'processors': 8, 'debug': True, 'length': 50000, 'completeness': 75, 'contamination': 25, 'ignoreGenomeQuality': False, 'MASH_sketch': 1000, 'S_algorithm': 'ANImf', 'n_PRESET': 'normal', 'P_ani': 0.9, 'S_ani': 0.99, 'SkipMash': False, 'SkipSecondary': False, 'cov_thresh': 0.1, 'coverage_method': 'larger', 'clusterAlg': 'average', 'completeness_weight': 1, 'contamination_weight': 5, 'strain_heterogeneity_weight': 1, 'N50_weight': 0.5, 'size_weight': 0, 'run_tax': False, 'tax_method': 'percent', 'percent': '50', 'cent_index': None, 'warn_dist': 0.25, 'warn_sim': 0.98, 'warn_aln': 0.25, 'checkM_method': 'taxonomy_wf', 'genomeInfo': None}
+01-17 23:14 INFO     Clustering Step 2. Perform MASH (primary) clustering
+01-17 23:14 INFO     2a. Run pair-wise MASH clustering
+01-17 23:14 DEBUG    Debug mode on - saving Mdb ASAP
+01-17 23:14 INFO     2b. Cluster pair-wise MASH clustering
+01-17 23:14 DEBUG    Clustering MASH database
+01-17 23:14 DEBUG    Debug mode on - saving CdbF ASAP
+01-17 23:14 DEBUG    Saving primary_linkage pickle to /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/Clustering_files/
+01-17 23:14 INFO     8 primary clusters made
+01-17 23:14 INFO     Step 3. Perform secondary clustering
+01-17 23:14 INFO     Running 17 ANImf comparisons- should take ~ 1.1 min
+01-17 23:14 DEBUG    running cluster 1
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta.delta.filtered
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta.delta.filtered
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.009.fasta.delta.filtered
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.044.fasta.delta.filtered
+01-17 23:14 DEBUG    running cluster 2
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.034.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.034.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.034.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.034.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.034.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.034.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.034.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.034.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.034.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.034.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.034.fasta.delta.filtered
+01-17 23:14 DEBUG    running cluster 3
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.040.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.040.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.040.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.040.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.040.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.040.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.040.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.040.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.040.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.040.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.040.fasta.delta.filtered
+01-17 23:14 DEBUG    running cluster 4
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta.delta.filtered
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta.delta.filtered
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.012.fasta.delta.filtered
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.018.fasta.delta.filtered
+01-17 23:14 DEBUG    running cluster 5
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta.delta.filtered
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta.delta.filtered
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta_vs_34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta.delta.filtered
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.039.fasta.delta.filtered
+01-17 23:14 DEBUG    running cluster 6
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.027.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.027.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.027.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.027.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.027.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.027.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.027.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.027.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.027.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.027.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.027.fasta.delta.filtered
+01-17 23:14 DEBUG    running cluster 7
+01-17 23:14 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.012.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.012.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.012.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.012.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.012.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.012.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.012.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.012.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.012.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.012.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.012.fasta.delta.filtered
+01-17 23:15 DEBUG    running cluster 8
+01-17 23:15 DEBUG    nucmer --mum -p /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.038.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.038.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.038.fasta -c 65 -g 90 /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.038.fasta /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.038.fasta; delta-filter -r -q /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.038.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.038.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.038.fasta.delta > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/ANImf_files/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.038.fasta/34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.038.fasta_vs_34837-2-1__SURF-B.MEGAHIT.metabat.CheckM__Bin.038.fasta.delta.filtered
+01-17 23:15 DEBUG    Debug mode on - saving Ndb ASAP
+01-17 23:15 DEBUG    Clustering ANIn database
+01-17 23:15 DEBUG    making dictionary for average_ani
+01-17 23:15 DEBUG    list comprehension for average_ani
+01-17 23:15 DEBUG    averageing done
+01-17 23:15 DEBUG    Clustering ANIn database
+01-17 23:15 DEBUG    Clustering ANIn database
+01-17 23:15 DEBUG    Clustering ANIn database
+01-17 23:15 DEBUG    making dictionary for average_ani
+01-17 23:15 DEBUG    list comprehension for average_ani
+01-17 23:15 DEBUG    averageing done
+01-17 23:15 DEBUG    Clustering ANIn database
+01-17 23:15 DEBUG    making dictionary for average_ani
+01-17 23:15 DEBUG    list comprehension for average_ani
+01-17 23:15 DEBUG    averageing done
+01-17 23:15 DEBUG    Clustering ANIn database
+01-17 23:15 DEBUG    Clustering ANIn database
+01-17 23:15 DEBUG    Clustering ANIn database
+01-17 23:15 DEBUG    Saving secondary_linkage pickle /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/Clustering_files/ to secondary_linkage_cluster_1.pickle
+01-17 23:15 DEBUG    Saving secondary_linkage pickle /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/Clustering_files/ to secondary_linkage_cluster_4.pickle
+01-17 23:15 DEBUG    Saving secondary_linkage pickle /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/Clustering_files/ to secondary_linkage_cluster_5.pickle
+01-17 23:15 INFO     Step 4. Return output
+01-17 23:15 DEBUG    Main program run complete- saving output to /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/
+01-17 23:15 INFO     ***************************************************
+    ..:: dRep dereplicate Step 3. Choose ::..
+***************************************************
+    
+01-17 23:15 INFO     Loading work directory
+01-17 23:15 DEBUG    Located: /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2
+Datatables: ['Chdb', 'Ndb', 'genomeInfo', 'Mdb', 'Cdb', 'Bdb', 'CdbF']
+Cluster files: ['secondary_linkage_cluster_4', 'primary_linkage', 'secondary_linkage_cluster_1', 'secondary_linkage_cluster_5']
+Arguments: ['cluster']
+01-17 23:15 DEBUG    Loading genomeInfo.csv from work directory
+01-17 23:15 DEBUG    Sdb finished
+01-17 23:15 DEBUG    Wdb finished
+01-17 23:15 DEBUG    saving dereplicated genomes
+01-17 23:15 INFO     ***************************************************
+    ..:: dRep dereplicate Step 4. Bonus ::..
+***************************************************
+    
+01-17 23:15 INFO     Loading work directory
+01-17 23:15 DEBUG    Located: /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2
+Datatables: ['Chdb', 'Ndb', 'genomeInfo', 'Mdb', 'Cdb', 'genomeInformation', 'Bdb', 'CdbF', 'Sdb', 'Wdb']
+Cluster files: ['secondary_linkage_cluster_4', 'primary_linkage', 'secondary_linkage_cluster_1', 'secondary_linkage_cluster_5']
+Arguments: ['cluster']
+01-17 23:15 INFO     ***************************************************
+    ..:: dRep dereplicate Step 5. Evaluate ::..
+***************************************************
+    
+01-17 23:15 DEBUG    Loading work directory
+01-17 23:15 DEBUG    Located: /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2
+Datatables: ['Chdb', 'Ndb', 'genomeInfo', 'Mdb', 'Cdb', 'genomeInformation', 'Bdb', 'CdbF', 'Sdb', 'Wdb']
+Cluster files: ['secondary_linkage_cluster_4', 'primary_linkage', 'secondary_linkage_cluster_1', 'secondary_linkage_cluster_5']
+Arguments: ['cluster']
+01-17 23:15 DEBUG    evaluating ['2', '3']
+01-17 23:15 INFO     will provide warnings about clusters
+01-17 23:15 INFO     0 warnings generated: saved to /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/log/warnings.txt
+01-17 23:15 INFO     will produce Widb (winner information db)
+01-17 23:15 INFO     Winner database saved to /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2data_tables/Widb.csv
+01-17 23:15 INFO     ***************************************************
+    ..:: dRep dereplicate Step 6. Analyze ::..
+***************************************************
+    
+01-17 23:15 INFO     making plots 1, 2, 3, 4, 5, 6
+01-17 23:15 INFO     Plotting primary dendrogram
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=8.0.
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Display' (DejaVuSansDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmsy10' (cmsy10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniIta.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Oblique.ttf) oblique normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmmi10' (cmmi10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans.ttf) normal normal 400 normal>) = 2.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif Display' (DejaVuSerifDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmb10' (cmb10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFiveSym' (STIXSizFiveSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmss10' (cmss10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmtt10' (cmtt10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralItalic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneral.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-BoldOblique.ttf) oblique normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUni.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmex10' (cmex10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmr10' (cmr10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Oblique.ttf) oblique normal 400 normal>) = 3.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-BoldItalic.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Bold.ttf) normal normal bold normal>) = 2.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Italic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-BoldOblique.ttf) oblique normal bold normal>) = 3.335
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=8.0 to DejaVu Sans ('/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 2.050000.
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0.
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Display' (DejaVuSansDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmsy10' (cmsy10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniIta.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Oblique.ttf) oblique normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmmi10' (cmmi10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans.ttf) normal normal 400 normal>) = 2.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif Display' (DejaVuSerifDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmb10' (cmb10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFiveSym' (STIXSizFiveSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmss10' (cmss10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmtt10' (cmtt10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralItalic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneral.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-BoldOblique.ttf) oblique normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUni.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmex10' (cmex10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmr10' (cmr10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Oblique.ttf) oblique normal 400 normal>) = 3.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-BoldItalic.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Bold.ttf) normal normal bold normal>) = 2.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Italic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-BoldOblique.ttf) oblique normal bold normal>) = 3.335
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 2.050000.
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=12.0.
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Display' (DejaVuSansDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmsy10' (cmsy10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniIta.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Oblique.ttf) oblique normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmmi10' (cmmi10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans.ttf) normal normal 400 normal>) = 2.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif Display' (DejaVuSerifDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmb10' (cmb10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFiveSym' (STIXSizFiveSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmss10' (cmss10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmtt10' (cmtt10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralItalic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneral.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-BoldOblique.ttf) oblique normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUni.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmex10' (cmex10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmr10' (cmr10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Oblique.ttf) oblique normal 400 normal>) = 3.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-BoldItalic.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Bold.ttf) normal normal bold normal>) = 2.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Italic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-BoldOblique.ttf) oblique normal bold normal>) = 3.335
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=12.0 to DejaVu Sans ('/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 2.050000.
+01-17 23:15 DEBUG    Assigning font /b'F1' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf'
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 DEBUG    Assigning font /b'F1' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf'
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 INFO     Plotting secondary dendrograms
+01-17 23:15 DEBUG    Assigning font /b'F1' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf'
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=18.0.
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Display' (DejaVuSansDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmsy10' (cmsy10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniIta.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Oblique.ttf) oblique normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmmi10' (cmmi10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans.ttf) normal normal 400 normal>) = 2.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif Display' (DejaVuSerifDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmb10' (cmb10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFiveSym' (STIXSizFiveSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmss10' (cmss10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmtt10' (cmtt10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralItalic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneral.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-BoldOblique.ttf) oblique normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUni.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmex10' (cmex10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmr10' (cmr10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Oblique.ttf) oblique normal 400 normal>) = 3.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-BoldItalic.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Bold.ttf) normal normal bold normal>) = 2.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Italic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-BoldOblique.ttf) oblique normal bold normal>) = 3.335
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=18.0 to DejaVu Sans ('/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 2.050000.
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 INFO     Plotting MDS plot
+01-17 23:15 DEBUG    Assigning font /b'F1' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf'
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=italic:variant=normal:weight=normal:stretch=normal:size=10.0.
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Display' (DejaVuSansDisplay.ttf) normal normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmsy10' (cmsy10.ttf) normal normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniIta.ttf) italic normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBolIta.ttf) italic normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Oblique.ttf) oblique normal 400 normal>) = 10.15
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Bold.ttf) normal normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymBol.ttf) normal normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmmi10' (cmmi10.ttf) normal normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif.ttf) normal normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans.ttf) normal normal 400 normal>) = 3.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono.ttf) normal normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymReg.ttf) normal normal regular normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif Display' (DejaVuSerifDisplay.ttf) normal normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymBol.ttf) normal normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmb10' (cmb10.ttf) normal normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFiveSym' (STIXSizFiveSymReg.ttf) normal normal regular normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymBol.ttf) normal normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmss10' (cmss10.ttf) normal normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymReg.ttf) normal normal regular normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmtt10' (cmtt10.ttf) normal normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralItalic.ttf) italic normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneral.ttf) normal normal regular normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymReg.ttf) normal normal regular normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-BoldOblique.ttf) oblique normal bold normal>) = 10.434999999999999
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBol.ttf) normal normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBolIta.ttf) italic normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymBol.ttf) normal normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUni.ttf) normal normal regular normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmex10' (cmex10.ttf) normal normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmr10' (cmr10.ttf) normal normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Oblique.ttf) oblique normal 400 normal>) = 2.15
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymReg.ttf) normal normal regular normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBol.ttf) normal normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-BoldItalic.ttf) italic normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Bold.ttf) normal normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Bold.ttf) normal normal bold normal>) = 3.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Italic.ttf) italic normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-BoldOblique.ttf) oblique normal bold normal>) = 2.435
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=italic:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Oblique.ttf') with score of 2.150000.
+01-17 23:15 DEBUG    Assigning font /b'F2' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Oblique.ttf'
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Oblique.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 DEBUG    Assigning font /b'F1' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf'
+01-17 23:15 DEBUG    Assigning font /b'F2' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Oblique.ttf'
+01-17 23:15 DEBUG    Assigning font /b'F1' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf'
+01-17 23:15 DEBUG    Assigning font /b'F2' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Oblique.ttf'
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Oblique.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 DEBUG    Assigning font /b'F1' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf'
+01-17 23:15 DEBUG    Assigning font /b'F2' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Oblique.ttf'
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Oblique.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Oblique.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 INFO     Plotting scatterplots
+01-17 23:15 DEBUG    Assigning font /b'F1' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf'
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 DEBUG    Loading genomeInfo.csv from work directory
+01-17 23:15 INFO     Plotting bin scorring plot
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=12.0.
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Display' (DejaVuSansDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmsy10' (cmsy10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniIta.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Oblique.ttf) oblique normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmmi10' (cmmi10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans.ttf) normal normal 400 normal>) = 0.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif Display' (DejaVuSerifDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmb10' (cmb10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFiveSym' (STIXSizFiveSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmss10' (cmss10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmtt10' (cmtt10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralItalic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneral.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-BoldOblique.ttf) oblique normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUni.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmex10' (cmex10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmr10' (cmr10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Oblique.ttf) oblique normal 400 normal>) = 1.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-BoldItalic.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Bold.ttf) normal normal bold normal>) = 0.33499999999999996
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Italic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-BoldOblique.ttf) oblique normal bold normal>) = 1.335
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=12.0 to DejaVu Sans ('/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=8.0.
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Display' (DejaVuSansDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmsy10' (cmsy10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniIta.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Oblique.ttf) oblique normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmmi10' (cmmi10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans.ttf) normal normal 400 normal>) = 0.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif Display' (DejaVuSerifDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmb10' (cmb10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFiveSym' (STIXSizFiveSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmss10' (cmss10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmtt10' (cmtt10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralItalic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneral.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-BoldOblique.ttf) oblique normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUni.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmex10' (cmex10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmr10' (cmr10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Oblique.ttf) oblique normal 400 normal>) = 1.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-BoldItalic.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Bold.ttf) normal normal bold normal>) = 0.33499999999999996
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Italic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-BoldOblique.ttf) oblique normal bold normal>) = 1.335
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=8.0 to DejaVu Sans ('/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
+01-17 23:15 DEBUG    Assigning font /b'F1' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf'
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0.
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Display' (DejaVuSansDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmsy10' (cmsy10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniIta.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Oblique.ttf) oblique normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmmi10' (cmmi10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans.ttf) normal normal 400 normal>) = 0.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif Display' (DejaVuSerifDisplay.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeTwoSym' (STIXSizTwoSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmb10' (cmb10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFiveSym' (STIXSizFiveSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'cmss10' (cmss10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeOneSym' (STIXSizOneSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmtt10' (cmtt10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralItalic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneral.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeThreeSym' (STIXSizThreeSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-BoldOblique.ttf) oblique normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUniBolIta.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXNonUnicode' (STIXNonUni.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmex10' (cmex10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'cmr10' (cmr10.ttf) normal normal 400 normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Oblique.ttf) oblique normal 400 normal>) = 1.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXSizeFourSym' (STIXSizFourSymReg.ttf) normal normal regular normal>) = 10.05
+01-17 23:15 DEBUG    findfont: score(<Font 'STIXGeneral' (STIXGeneralBol.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-BoldItalic.ttf) italic normal bold normal>) = 11.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans Mono' (DejaVuSansMono-Bold.ttf) normal normal bold normal>) = 10.335
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-Bold.ttf) normal normal bold normal>) = 0.33499999999999996
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Serif' (DejaVuSerif-Italic.ttf) italic normal 400 normal>) = 11.05
+01-17 23:15 DEBUG    findfont: score(<Font 'DejaVu Sans' (DejaVuSans-BoldOblique.ttf) oblique normal bold normal>) = 1.335
+01-17 23:15 DEBUG    findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 DEBUG    Loading genomeInfo.csv from work directory
+01-17 23:15 INFO     Plotting winning genomes plot...
+01-17 23:15 DEBUG    Assigning font /b'F1' = '/miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf'
+01-17 23:15 DEBUG    Embedding font /miniconda/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf.
+01-17 23:15 DEBUG    Writing TrueType font.
+01-17 23:15 INFO     
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+    ..:: dRep dereplicate finished ::..
+
+Dereplicated genomes................. /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/dereplicated_genomes/
+Dereplicated genomes information..... /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data_tables/Widb.csv
+Figures.............................. /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/figures/
+Warnings............................. /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/log/warnings.txt
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    
+01-17 23:15 DEBUG    Finished the dereplicate operation!

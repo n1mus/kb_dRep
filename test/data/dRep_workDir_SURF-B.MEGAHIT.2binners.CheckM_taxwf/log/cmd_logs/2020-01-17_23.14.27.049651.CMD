@@ -1,0 +1,1 @@
+/usr/local/bin/mash dist -p 8 /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/MASH_files/ALL.msh /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/MASH_files/ALL.msh > /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/MASH_files/MASH_table.tsv

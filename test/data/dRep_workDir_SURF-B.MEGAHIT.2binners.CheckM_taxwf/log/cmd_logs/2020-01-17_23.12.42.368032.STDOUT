@@ -1,0 +1,22 @@
+[2020-01-17 23:12:42] INFO: CheckM v1.1.1
+[2020-01-17 23:12:42] INFO: checkm taxonomy_wf domain Bacteria /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/prodigal/ /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/ -f /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir//results.tsv --tab_table -t 8 -g -x faa
+[2020-01-17 23:12:42] INFO: [CheckM - taxon_set] Generate taxonomic-specific marker set.
+[2020-01-17 23:12:46] INFO: Marker set for Bacteria contains 104 marker genes arranged in 58 sets.
+[2020-01-17 23:12:46] INFO: Marker set inferred from 5449 reference genomes.
+[2020-01-17 23:12:46] INFO: Marker set written to: /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/Bacteria.ms
+[2020-01-17 23:12:46] INFO: { Current stage: 0:00:03.702 || Total: 0:00:03.702 }
+[2020-01-17 23:12:46] INFO: [CheckM - analyze] Identifying marker genes in bins.
+[2020-01-17 23:12:46] INFO: Identifying marker genes in 11 bins with 8 threads:
+[2020-01-17 23:14:18] INFO: Saving HMM info to file.
+[2020-01-17 23:14:18] INFO: { Current stage: 0:01:32.047 || Total: 0:01:35.750 }
+[2020-01-17 23:14:18] INFO: Parsing HMM hits to marker genes:
+[2020-01-17 23:14:20] INFO: Aligning marker genes with multiple hits in a single bin:
+[2020-01-17 23:14:20] INFO: { Current stage: 0:00:02.214 || Total: 0:01:37.964 }
+[2020-01-17 23:14:20] INFO: Calculating genome statistics for 11 bins with 8 threads:
+[2020-01-17 23:14:20] INFO: { Current stage: 0:00:00.138 || Total: 0:01:38.102 }
+[2020-01-17 23:14:20] INFO: [CheckM - qa] Tabulating genome statistics.
+[2020-01-17 23:14:20] INFO: Calculating AAI between multi-copy marker genes.
+[2020-01-17 23:14:20] INFO: Reading HMM info from file.
+[2020-01-17 23:14:21] INFO: Parsing HMM hits to marker genes:
+[2020-01-17 23:14:23] INFO: QA information written to: /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir//results.tsv
+[2020-01-17 23:14:23] INFO: { Current stage: 0:00:02.174 || Total: 0:01:40.277 }

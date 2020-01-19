@@ -1,0 +1,7 @@
+binned_contig_files_3bins 
+binned_contig_files_8bins
+dRep_workDir_SURF_B_2binners_checkm_txwf - dRep work dir for sample 3bins/8bins with names UPA-mangled
+res.dRep.txwf.SURF_B.2binners.checkm - dRep work dir for sample 3bins/8bins with no UPA-mangling
+html_dir - sample html_dir
+BinnedContigs_SURF-B_2binners.pkl - pickle used in container corresponding to binned_contig_files_45bins and binned_contig_files_40bins
+BinnedContigs_SURF-B_3bins_8bins.pkl - pickle used in container corresponding to binned_contig_files_3bins and binned_contig_files_8bins

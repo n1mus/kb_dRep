@@ -1,0 +1,15 @@
+1: PREPARING DATA
+2,3: RUNNING mummer AND CREATING CLUSTERS
+# reading input file "/home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/ANImf_files/Bin.012.fasta/Bin.012.fasta_vs_Bin.012.fasta.ntref" of length 4051621
+# construct suffix tree for sequence of length 4051621
+# (maximum reference length is 536870908)
+# (maximum query length is 4294967295)
+# process 40516 characters per dot
+#....................................................................................................
+# CONSTRUCTIONTIME /usr/local/bin/MUMmer3.23/mummer /home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/ANImf_files/Bin.012.fasta/Bin.012.fasta_vs_Bin.012.fasta.ntref 1.62
+# reading input file "/home/sumin/kbsdk-workspace/dRep/test/data/binned_contig_files_8bins/Bin.012.fasta" of length 4051620
+# matching query-file "/home/sumin/kbsdk-workspace/dRep/test/data/binned_contig_files_8bins/Bin.012.fasta"
+# against subject-file "/home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/ANImf_files/Bin.012.fasta/Bin.012.fasta_vs_Bin.012.fasta.ntref"
+# COMPLETETIME /usr/local/bin/MUMmer3.23/mummer /home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/ANImf_files/Bin.012.fasta/Bin.012.fasta_vs_Bin.012.fasta.ntref 5.19
+# SPACE /usr/local/bin/MUMmer3.23/mummer /home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/ANImf_files/Bin.012.fasta/Bin.012.fasta_vs_Bin.012.fasta.ntref 7.79
+4: FINISHING DATA
