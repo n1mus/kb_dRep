@@ -18,9 +18,9 @@ from .PrintUtil import *
 class BinnedContigs:
     '''
     DS for BinnedContigs information
-    Very mutable, not necessarily in a fully consistent state
+    Very mutable, not necessarily in a consistent state
 
-    Instance variables created in load():
+    Instance variables created during init:
     * upa
     * bins_dir
     * name
@@ -30,24 +30,35 @@ class BinnedContigs:
     Other instance variables
     * stats
 
+    TODO type-check downloaded type?
+
     '''
 
-    loaded_instances = list() # loaded from KBase
+    created_instances = list() # loaded from KBase
     saved_instances = [] # saved to KBase
     
       
-    def __init__(self, upa, actions=['load'], **kwargs):
+    def __init__(self, upa, get_bins_dir=None, **kwargs):
        
-        self.loaded_instances.append(self)
+        self.created_instances.append(self)
         self.upa = upa
 
-        for action in actions:
-            if 'load' == action: self.load()
-            if 'calc' == action: self.calc_stats()
+        if get_bins_dir == 'download': 
+            self.load_bins_dir()
+        elif get_bins_dir == 'local': 
+            self.get_obj_data()
+            self.bins_dir = kwargs['bins_dir']
+        else:
+            assert False, 'must specify get_bins_dir mode'
+
+        self.get_obj_data()
+        self.bin_name_list = self.get_curr_bin_name_list()
 
 
-    def load(self):
+    def load_bins_dir(self):
         ''''''
+        dprint(f'Downloading BinnedContigs with upa: {self.upa}')
+
         mguObjData = self.mgu.binned_contigs_to_file(
                 {
                     'input_ref': self.upa, 
@@ -59,6 +70,8 @@ class BinnedContigs:
     
         dprint('os.listdir(self.bins_dir)', run={**locals(), **globals()})
 
+
+    def get_obj_data(self):
         wsObjData = self.ws.get_objects2(
             {
                 'objects': [
@@ -69,11 +82,8 @@ class BinnedContigs:
             }
         ) # huge -- includes all the statistics
 
-
         self.name = wsObjData['data'][0]['info'][1]
         self.assembly_upa = wsObjData['data'][0]['data']['assembly_ref']
-
-        self.bin_name_list = self.get_curr_bin_name_list()
 
    
     def get_curr_bin_name_list(self):
@@ -83,6 +93,7 @@ class BinnedContigs:
                 dprint(f'WARNING: Found non .fasta bin name {bin_name} in dir {self.bins_dir} for BinnedContigs obj {self.name} with UPA {self.upa}', file=sys.stderr)
             bin_name_list.append(bin_name)
         return bin_name_list
+
 
     def get_curr_bin_path_list(self):
         return [os.path.join(self.bins_dir, bin_name) for bin_name in self.get_curr_bin_name_list]
@@ -109,7 +120,7 @@ class BinnedContigs:
 
         objData = self.mgu.file_to_binned_contigs(mguFileToBinnedContigs_params)
 
-        dprint('objData', objData)
+        dprint('objData:', objData, f'for BinnedContigs {self.name}')
 
         self.saved_instances.append(self)
 
@@ -140,6 +151,7 @@ class BinnedContigs:
         for bin_name in self.bin_name_list:
             if self.transform_binName(bin_name) not in bins_derep_name_list:
                 os.remove(os.path.join(self.bins_dir, bin_name))
+
        
     def calc_stats(self, use_file_name=True):
         '''
@@ -236,10 +248,22 @@ class BinnedContigs:
             f.write(smmr.to_csv(sep='\t', index=False))
 
 
+    def prepare_dir_for_pickling(self, bins_dir):
+        '''
+        Params:
+        * bins_dir - pre-chosen/user-friendly name, with shared_folder path
 
-    def rename_dir_for_pickling(self, bins_dir):
+        self was instantiated by loading
+        self.bins_dir named binned_contigs_files_<hash>
+
+        rename self.bins_dir (in both obj and file)
+        '''
         shutil.copytree(self.bins_dir, bins_dir)
         self.bins_dir = bins_dir
 
 
 
+    @classmethod
+    def clear(cls):
+        cls.created_instances = []
+        cls.saved_instances = []

@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 #BEGIN_HEADER
+####################################################################################################
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+
+
 import logging
 import os
 import sys
@@ -11,6 +17,7 @@ import re
 import functools
 import pickle
 import warnings
+import dRep_server_test
 
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
@@ -24,7 +31,13 @@ from .util.KBaseObjUtil import *
 subprocess.run = functools.partial(subprocess.run, shell=True, stdout=subprocess.PIPE, 
         stderr=subprocess.PIPE) 
 
+warnings.filterwarnings("ignore")
 
+
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+####################################################################################################
 #END_HEADER
 
 
@@ -53,15 +66,21 @@ class dRep:
     # config contains contents of config file in a hash or None if it couldn't
     # be found
     def __init__(self, config):
-        #BEGIN_CONSTRUCTOR
+####################################################################################################
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+       #BEGIN_CONSTRUCTOR
         self.callback_url = os.environ['SDK_CALLBACK_URL']
         self.workspace_url = config['workspace-url']
         self.srv_wiz_url = config['srv-wiz-url']
         self.shared_folder = config['scratch']
+        self.testData_dir = '/kb/module/test/data'
         self.config = config
         self.config['callback_url'] = self.callback_url
 
         self.suffix = str(uuid.uuid4())
+        dprint(f"suffix is {self.suffix}")
 
         self.ws = Workspace(self.workspace_url)
         self.mgu = MetagenomeUtils(self.callback_url)
@@ -73,6 +92,10 @@ class dRep:
 
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+####################################################################################################
         #END_CONSTRUCTOR
         pass
 
@@ -87,28 +110,19 @@ class dRep:
         # ctx is the context object
         # return variables are: output
  
-        
         #BEGIN dereplicate
+####################################################################################################
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 
-        dprint('ctx:', ctx)
-        dprint('params:', params)
-
-
-        dprint('type(params["genomes_refs"])', run=locals())
+        dprint('ctx', run=locals())
+        dprint('params', run=locals())
 
         # TODO why is this a string sometimes
         if isinstance(params["genomes_refs"], str):
+            assert False
             params['genomes_refs'] = [tok for tok in re.split(r'[\'\"]', params['genomes_refs']) if '/' in tok]
-
-        warnings.filterwarnings("ignore", category=RuntimeWarning) 
-
-
-        # 
-        ##
-        ### input check: unique UPAs, unique names (in ui?)
-        #### 
-        #####
-        ######
 
         def simple_return(msg):
             kbr = KBaseReport(self.callback_url)
@@ -125,6 +139,14 @@ class dRep:
             return [output]
 
 
+
+        # 
+        ##
+        ### input check: unique UPAs, unique names (in ui?)
+        #### 
+        #####
+        ######
+
         if len(set(params['genomes_refs'])) < len(params['genomes_refs']):
             return simple_return('Please do not input duplicate BinnedContigs')
             
@@ -132,7 +154,7 @@ class dRep:
 
         #
         ##
-        ### ds
+        ###  BinnedContigs class
         ####
         #####
         ######
@@ -141,12 +163,8 @@ class dRep:
         BinnedContigs.dfu = self.dfu
         BinnedContigs.mgu = self.mgu
         BinnedContigs.ws = self.ws
-
-
-
         
-        dprint('BinnedContigs', run=globals())
-        dprint('BinnedContigs.__dict__', run=globals())
+        dprint('BinnedContigs', 'BinnedContigs.__dict__', run=globals())
 
        
 
@@ -154,52 +172,37 @@ class dRep:
 
         # 
         ##
-        ### Load input BinnedContigs files to scratch
+        ### load BinnedContigs files (to scratch) and obj data
         ####
         #####
         ######
-       
         
-        pkl_loc = '/kb/module/test/data/BinnedContigs_SURF-B_3bins_8bins.pkl'
-        bins_dir_names = ['SURF-B_8bins', 'SURF-B_3bins']
-        '''
-        pkl_loc = '/kb/module/test/data/BinnedContigs_SURF-B_2binners.pkl'
-        bins_dir_names = ['SURF-B_45bins', 'SURF-B_40bins']
-        '''
 
-        # load from pickle and put bins dirs in shared_folder
-        if params.get('skip_dl') and os.path.isfile(pkl_loc):
-            dprint(f'Loading `BinnedContigs.loaded_instances` from {pkl_loc} and copying bins directories into {self.shared_folder}')
+        #
+        if params.get('skip_dl'):
 
-            with open(pkl_loc, 'rb') as f:
-                BinnedContigs.loaded_instances = pickle.load(f)
+            if params['genomes_refs'] == dRep_server_test.SURF_B_2binners_CheckM:
+                bins_dir_name_l = ['SURF-B.MEGAHIT.maxbin.CheckM', 'SURF-B.MEGAHIT.metabat.CheckM']
+            elif params['genomes_refs'] == dRep_server_test.SURF_B_2binners:
+                bins_dir_name_l = ['SURF-B.MEGAHIT.maxbin', 'SURF-B.MEGAHIT.metabat']
+            else:
+                assert False, f'skip_dl but did not prepare for genomes_refs {params["genomes_refs"]}'
 
-            for bins_dir_name in bins_dir_names:
-                shutil.copytree(os.path.join('/kb/module/test/data', bins_dir_name), os.path.join(self.shared_folder, bins_dir_name))
+            bins_dir_orig_l = [os.path.join(self.testData_dir, bins_dir_name) for bins_dir_name in bins_dir_name_l]
+            bins_dir_l = [os.path.join(self.shared_folder, bins_dir_name) for bins_dir_name in bins_dir_name_l]
 
-            for binnedContigs in BinnedContigs.loaded_instances: # do re-write?
-                binnedContigs.calc_stats()
+            # copy bins_dir's to shared_folder
+            for bins_dir_orig, bins_dir in zip(bins_dir_orig_l, bins_dir_l):
+                shutil.copytree(bins_dir_orig, bins_dir)
+
+            for upa, bins_dir in zip(params['genomes_refs'], bins_dir_l):
+                BinnedContigs(upa, get_bins_dir='local', bins_dir=bins_dir).calc_stats()
 
         # load from KBase 
-        # if local write to pickle
         else:
-            for binnedContigs_upa in params['genomes_refs']:
-                dprint('binnedContigs_upa', run=locals())
-                BinnedContigs(binnedContigs_upa, actions=['load', 'calc'])
 
-            if params.get('mode') == 'local' and not os.path.isfile(pkl_loc):
-                for binnedContigs, bins_dir in zip(BinnedContigs.loaded_instances, [os.path.join(self.shared_folder, bins_dir_name) for bins_dir_name in bins_dir_names]):
-                    binnedContigs.rename_dir_for_pickling(bins_dir)
-
-                with open(os.path.join(self.shared_folder, os.path.basename(pkl_loc)), 'wb') as f: # write to shared folder or it will disappear
-                    dprint('BinnedContigs.loaded_instances', run=globals())
-                    dprint(f'Writing `BinnedContigs.loaded_instances` as pickle to shared folder')
-                    pickle.dump(BinnedContigs.loaded_instances, f, protocol=pickle.HIGHEST_PROTOCOL)
-                    dprint(f'Done writing pickle to shared foler')
-
-                dprint(f'ls -lh /kb/module/test/data', run='cli')
-                dprint(f'ls -lh {self.shared_folder}', run='cli')
-                
+            for upa in params['genomes_refs']:
+                BinnedContigs(upa, get_bins_dir='download').calc_stats()
 
 
         #
@@ -213,7 +216,7 @@ class dRep:
         binsPooled_dir = os.path.join(self.shared_folder, 'binsPooled_' + self.suffix)
         os.mkdir(binsPooled_dir)
 
-        for binnedContigs in BinnedContigs.loaded_instances:
+        for binnedContigs in BinnedContigs.created_instances:
             binnedContigs.pool(binsPooled_dir)
         
         dprint("os.listdir(binsPooled_dir)", run={**locals(), **globals()})
@@ -221,29 +224,33 @@ class dRep:
 
         #
         ##
-        ### Run dRep dereplicate -> gen workDir
-        #### handle different ways narrative passes params
+        ### 
+        #### different ways tests/narrative pass params
         #####
         ######
        
 
         # flatten param groups, if any
 
-        param_groups = ['filtering', 'genome_comparison', 'clustering', 'scoring', 'taxonomy', 'warnings']
+        flag_grp_l = ['filtering', 'genome_comparison', 'clustering', 'scoring', 'taxonomy', 'warnings']
 
-        for flag_grp in param_groups:
+        for flag_grp in flag_grp_l:
             if params.get(flag_grp):
-                param_group_d = params[flag_grp]
-                for flag_indiv in param_group_d:
-                    params[flag_indiv] = param_group_d[flag_indiv]
+                param_grp_d = params[flag_grp]
+                for flag_indiv in param_grp_d:
+                    params[flag_indiv] = param_grp_d[flag_indiv]
                 params.pop(flag_grp)
 
         # extract non-default parameters
 
         dRep_params = ['--debug']
 
+        if params.get('machine') in ['pixi9000']:
+            dRep_params.extend(['--processors', '8'])
+            params['checkM_method'] = 'taxonomy_wf'
+
+
         dRep_param_defaults = {
-                'checkM_method': 'lineage_wf',
                 'length': 50000,
                 'completeness': 75,
                 'contamination': 25, 
@@ -268,7 +275,8 @@ class dRep:
                 'percent': 50,
                 'warn_dist': 0.25, 
                 'warn_sim': 0.98,
-                'warn_aln': 0.25
+                'warn_aln': 0.25,
+                'checkM_method': 'lineage_wf',
                 }
 
         params_bool = [flag for flag in dRep_param_defaults if dRep_param_defaults[flag] == 'False']
@@ -278,15 +286,26 @@ class dRep:
                 dRep_params.append('--' + flag)
                 if flag not in params_bool:
                     dRep_params.append(params[flag])
-        
+
+                    
+        dRep_params = [str(param) for param in dRep_params]
+
         dprint("' '.join(dRep_params)", run=locals())
 
 
-        # run dRep
+        #
+        ##
+        ### run dRep
+        ####
+        #####
 
         if params.get('skip_dRep'):
-            dRep_workDir = '/kb/module/work/tmp/dRep_workDir_SURF_B_2binners_checkm_txwf'
-            shutil.copytree('/kb/module/test/data/dRep_workDir_SURF_B_2binners_checkm_txwf', dRep_workDir)
+            dRep_workDir_name = 'dRep_workDir_SURF-B.MEGAHIT.2binners.CheckM_taxwf'
+            dRep_workDir = os.path.join(self.shared_folder, dRep_workDir_name)
+
+            shutil.copytree(os.path.join(self.testData_dir, dRep_workDir_name), dRep_workDir)
+
+            dRep_cmd = 'Skipped running dRep'
 
         else:
             dRep_workDir = os.path.join(self.shared_folder, 'dRep_workDir_' + self.suffix)
@@ -295,12 +314,15 @@ class dRep:
             dRep_cmd = ' '.join([dRep_cmd] + dRep_params)
 
 
-            dprint(f'Running dRep cmd: {dRep_cmd}')
-            subprocess.run(dRep_cmd, shell=True)
+            dprint('Running dRep cmd:', f'{dRep_cmd}')
+            retcode = subprocess.run(dRep_cmd, shell=True).returncode
+
+            if retcode != 0:
+                dprint(f"cat {os.path.join(self.dRep_workDir, 'log/cmd_logs/*.STDERR')}", run='cli') 
+                assert False, f'dRep dereplicate terminated with return code {retcode}' #TODO change to graceful exit? dRep retcodes?
 
 
         dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
-        dprint('os.listdir(binsPooled_dir)', run={**locals(), **globals()})
  
 
 
@@ -315,13 +337,14 @@ class dRep:
         bins_derep_dir = os.path.join(dRep_workDir, 'dereplicated_genomes')
         objects_created = []
 
-
         # for each original BinnedContigs
-        for binnedContigs in BinnedContigs.loaded_instances:
+        for binnedContigs in BinnedContigs.created_instances:
+            dprint(f'about to dereplicate {binnedContigs.name}')
+            dprint(f"ls /kb/module/work/tmp/SURF*", run='cli')
             binnedContigs.reduce_to_dereplicated(bins_derep_dir)
 
             if not binnedContigs.is_empty():
-                if params.get('skip_save'):
+                if params.get('skip_save_bc'):
                     BinnedContigs.saved_instances.append(binnedContigs)
                 else: 
                     objects_created.append(binnedContigs.save(binnedContigs.name + ".dRep", params['workspace_name']))
@@ -331,52 +354,53 @@ class dRep:
 
         #
         ##
-        ### HTML
+        ### HTML ... to shock
         ####
         #####
         ######
 
-
         html_dir = os.path.join(self.shared_folder, 'html_dir_' + self.suffix)
         shutil.copytree('/kb/module/ui/output', html_dir) # dir of html and accessories
 
-        OutputUtil.HTMLBuilder(BinnedContigs.saved_instances, dRep_params, dRep_workDir, html_dir)
+        OutputUtil.HTMLBuilder(BinnedContigs.saved_instances, dRep_cmd, dRep_params, dRep_workDir, html_dir)
 
-        if params.get('skip_save'):
-            return
+        if params.get('skip_save_all'):
+            return simple_return('skip_save_all=True')
 
-
-
-        htmlZip_shockId = self.dfu.file_to_shock(
-            {'file_path': html_dir, 
+        dfu_fileToShock_ret = self.dfu.file_to_shock({
+            'file_path': html_dir, 
             'make_handle': 0,
-            'pack': 'zip'})['shock_id']
+            'pack': 'zip'
+            })
 
-        htmlZip_report_dict = {'shock_id': htmlZip_shockId,
+        dprint('dfu_fileToShock_ret', run=locals())
+
+        htmlZip_shockId = dfu_fileToShock_ret['shock_id']
+
+        htmlZip_report_dict = {
+                'shock_id': htmlZip_shockId,
                 'name': 'dRep_dereplicate_report.html',
-                'description': 'dRep dereplicate analyses and results' } 
+                'description': 'dRep dereplicate analyses and results' 
+                } 
 
 
 
 
         #
         ##
-        ### return workDir
+        ### workDir to shock
         ####
         #####
         ######
-
         
-
-
-        dfuFileToShock_ret = self.dfu.file_to_shock({
+        dfu_fileToShock_ret = self.dfu.file_to_shock({
             'file_path': dRep_workDir,
             'make_handle': 0,
             'pack': 'zip',
             })
 
         workDirZip_shockInfo = {
-            'shock_id': dfuFileToShock_ret['shock_id'],
+            'shock_id': dfu_fileToShock_ret['shock_id'],
             'name': 'dRep_work_directory.zip',
             'description': 'Work directory used by dRep. Contains figures, (possibly) genome clustering warnings, logs, all intermediary files'
             }
@@ -390,29 +414,33 @@ class dRep:
         #####
         ######
 
-
-        report_params = {'message': '',
-                         'direct_html_link_index': 0,
-                         'html_links': [htmlZip_report_dict],
-                         'file_links': [workDirZip_shockInfo],
-                         'report_object_name': 'dRep_report_' + self.suffix,
-                         'workspace_name': params['workspace_name'],
-                         'objects_created': objects_created
-                         }
+        report_params = {
+                'message': '',
+                'direct_html_link_index': 0,
+                'html_links': [htmlZip_report_dict],
+                'file_links': [workDirZip_shockInfo],
+                'report_object_name': 'dRep_report_' + self.suffix,
+                'workspace_name': params['workspace_name'],
+                'objects_created': objects_created
+                }
 
         kbr = KBaseReport(self.callback_url)
         report_output = kbr.create_extended_report(report_params)
 
+        dprint('report_output', run=locals())
+
         output = {
             'report_name': report_output['name'],
             'report_ref': report_output['ref'],
+            'htmlZip_shockId': htmlZip_shockId, 
         }
 
 
-
-
-
-
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+####################################################################################################
         #END dereplicate
 
         # At some point might do deeper type checking...
