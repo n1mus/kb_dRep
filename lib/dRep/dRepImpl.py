@@ -248,7 +248,8 @@ class dRep:
         if params.get('machine') in ['pixi9000']:
             dRep_params.extend(['--processors', '8'])
             params['checkM_method'] = 'taxonomy_wf'
-
+	elif params.get('machine') in ['dev1']:
+            dRep_params.extend(['--processors', '16']) #TODO is this nec?	
 
         dRep_param_defaults = {
                 'length': 50000,
@@ -318,8 +319,8 @@ class dRep:
             retcode = subprocess.run(dRep_cmd, shell=True).returncode
 
             if retcode != 0:
-                dprint(f"cat {os.path.join(self.dRep_workDir, 'log/cmd_logs/*.STDERR')}", run='cli') 
-                assert False, f'dRep dereplicate terminated with return code {retcode}' #TODO change to graceful exit? dRep retcodes?
+                dprint(f"cat {os.path.join(dRep_workDir, 'log/cmd_logs/*.STDERR')}", run='cli') 
+                assert False, f'dRep dereplicate terminated with return code {retcode} with workDir {dRep_workDir}' #TODO change to graceful exit? dRep retcodes?
 
 
         dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')

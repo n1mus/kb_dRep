@@ -1,3 +1,4 @@
 test_local
+dRep_server_test.py
 .*.sw[a-z]
 *.py.bak*
