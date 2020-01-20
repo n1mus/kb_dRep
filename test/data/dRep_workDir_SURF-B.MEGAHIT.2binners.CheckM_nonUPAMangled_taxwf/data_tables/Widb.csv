@@ -1,9 +1,0 @@
-genome,score,completeness,contamination,strain_heterogeneity,size,N50,cluster,taxonomy,tax_confidence,cluster_members,closest_cluster_member,furthest_cluster_member,completeness_metric,contamination_metric
-Bin.009.fasta,103.04356723093531,100.0,0.0,0.0,2376760,1222178,1_1,NA,NA,2,100.00,100.00,perfect,none
-Bin.034.fasta,99.65935509826058,97.41,0.0,0.0,2319146,31529,2_0,NA,NA,1,NA,NA,near,none
-Bin.040.fasta,100.6597734903564,98.28,0.0,0.0,2305394,57484,3_0,NA,NA,1,NA,NA,near,none
-Bin.012.u.fasta,90.03800791954494,94.67,1.72,100.0,2619850,31334,4_1,NA,NA,2,100.00,100.00,near,low
-Bin.008.fasta,92.03748324079064,98.28,1.72,0.0,3907060,51876,5_1,NA,NA,2,100.00,100.00,near,low
-Bin.027.fasta,92.11146501635432,98.28,1.72,0.0,3803090,72934,6_0,NA,NA,1,NA,NA,near,low
-Bin.012.fasta,92.02386255371978,98.28,1.72,0.0,4051498,48722,7_0,NA,NA,1,NA,NA,near,low
-Bin.038.fasta,93.57253357440506,92.32,0.16,0.0,3428013,12737,8_0,NA,NA,1,NA,NA,near,low

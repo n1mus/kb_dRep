@@ -1,1 +1,0 @@
-/usr/local/bin/mash dist -p 6 /home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/MASH_files/ALL.msh /home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/MASH_files/ALL.msh > /home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/MASH_files/MASH_table.tsv

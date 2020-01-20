@@ -5,6 +5,7 @@ import drep
 import os
 import shutil
 import json
+import re
 
 from .PrintUtil import *
 
@@ -15,13 +16,13 @@ pd.set_option('display.max_colwidth', 80)
 
 
 
-TAGS = [tag + '_TAG' for tag in ['JSON', 'COLUMNS', 'FIGURES', 'WARNINGS', 'PARAMETERS']]
+TAGS = [tag + '_TAG' for tag in ['JSON', 'COLUMNS', 'FIGURES', 'WARNINGS', 'CMD']]
 
 class HTMLBuilder():
 
-    def __init__(self, binnedContigs, dRep_params, dRep_workDir, html_dir):
+    def __init__(self, binnedContigs, dRep_cmd, dRep_params, dRep_workDir, html_dir):
         self.binnedContigs = binnedContigs
-
+        self.dRep_cmd = dRep_cmd
         self.dRep_params = dRep_params
         self.dRep_workDir = dRep_workDir
         self.html_dir = html_dir
@@ -48,7 +49,7 @@ class HTMLBuilder():
 
 
     def _build_parameters(self):
-        self.replacements['PARAMETERS_TAG'] = self.dRep_params
+        self.replacements['CMD_TAG'] = self.dRep_cmd
 
 
     def _build_summary(self):
@@ -96,7 +97,11 @@ class HTMLBuilder():
             df_stats = pd.DataFrame.from_dict(binnedContigs.stats['bin_stats'], orient='index')
             df_stats_l.append(df_stats)
 
-        df_stats = pd.concat(df_stats_l)
+        try:
+            df_stats = pd.concat(df_stats_l)
+        except:
+            dprint("[binnedContigs.stats for binnedContigs in self.binnedContigs]", run=locals())
+            raise
         df_stats.index.name = 'File Name'
         df_stats.rename(columns={'length': 'Length'}, inplace=True)
 
@@ -121,11 +126,6 @@ class HTMLBuilder():
         smmr.reset_index(inplace=True)
         smmr = smmr[columns]
 
-        '''
-        dprint('bdb:', bdb)
-        dprint('chdb:', chdb)
-        dprint('wdb', wdb)'''
-
         dprint('smmr', run=locals())
         dprint('smmr.dtypes', run=locals())
         dprint(r'smmr.to_json(orient="values").replace("null", "\"-\"")', run=locals())
@@ -138,8 +138,10 @@ class HTMLBuilder():
     def _build_figures(self):
         shutil.copytree(os.path.join(self.dRep_workDir, 'figures'), self.figures_dir)
 
-        pdfs = [pdfName + '.pdf' for pdfName in ['Primary_clustering_dendrogram', 
-            'Secondary_clustering_dendrograms', 'Secondary_clustering_MDS', 'Clustering_scatterplots', 'Cluster_scoring', 'Winning_genomes']]
+        #pdfs = [pdfName + '.pdf' for pdfName in ['Primary_clustering_dendrogram', 
+        #    'Secondary_clustering_dendrograms', 'Secondary_clustering_MDS', 'Clustering_scatterplots', 'Cluster_scoring', 'Winning_genomes']]
+
+        pdfs = [file_path for file_path in os.listdir(os.path.join(self.dRep_workDir, 'figures')) if re.match(r'^.+\.pdf$', file_path)]
 
         def _pdfTag(pdf):
             return f'<embed src="figures/{pdf}" width="1000px" height="1000px">'

@@ -1,1 +1,0 @@
-prodigal -i /home/sumin/kbsdk-workspace/dRep/test/data/binned_contig_files_3bins/Bin.009.fasta -d /home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/prodigal/Bin.009.fasta.fna -a /home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/prodigal/Bin.009.fasta.faa -m -p meta
