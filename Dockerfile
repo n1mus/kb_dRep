@@ -31,7 +31,6 @@ RUN apt-get install --yes gcc=4:6.3.0-4 && \
 # dRep says v2.6.3 confirmed works, on its wiki
 RUN git clone https://github.com/hyattpd/Prodigal && \
     cd Prodigal/ && \
-    git checkout a78ed3f46f46dd51d6fca47a8b49e809342e45cd && \
     make install && \
     cd .. && \
     rm -rf Prodigal
@@ -83,8 +82,8 @@ ENV PATH="${PATH}:/usr/local/bin/ANIcalculator_v1"
 # Utilities for manual inspection of Docker container
 RUN apt-get install --yes vim tree
 
-
-ENV PYTHONUNBUFFERED=0
+# move up
+RUN pip install dill
 
 # -----------------------------------------
 

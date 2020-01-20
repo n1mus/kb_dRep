@@ -142,15 +142,15 @@
 	    "dropdown_options": {
 		    "options": [
 			 {
-			    "value": "True",
-			    "display": "True",
-			    "id": "True",
-			    "ui-name": "True"
-			 },{
 			    "value": "False",
 			    "display": "False",
 			    "id": "False",
 			    "ui-name": "False"
+			 },{
+			    "value": "True",
+			    "display": "True",
+			    "id": "True",
+			    "ui-name": "True"
 			 }
 		    ]
 	    }
@@ -176,17 +176,17 @@
 		    "options": [
 			 {
 			    "value": "ANImf",
-			    "display": "ANImf - (RECOMMENDED) Align whole genomes with nucmer; filter alignment; compare aligned regions",
+			    "display": "ANImf",
 			    "id": "ANImf",
 			    "ui-name": "ANImf - (RECOMMENDED) Align whole genomes with nucmer; filter alignment; compare aligned regions"
 			 },{
 			    "value": "ANIn",
-			    "display": "ANIn - Align whole genomes with nucmer; compare aligned regions",
+			    "display": "ANIn",
 			    "id": "ANIn",
 			    "ui-name": "ANIn - Align whole genomes with nucmer; compare aligned regions"
 			 },{
 			    "value": "gANI",
-			    "display": "gANI - Identify and align ORFs; compare aligned ORFS",
+			    "display": "gANI",
 			    "id": "gANI",
 			    "ui-name": "gANI - Identify and align ORFs; compare aligned ORFS"
 			 }
@@ -250,15 +250,15 @@
 	    "dropdown_options": {
 		    "options": [
 			 {
-			    "value": "True",
-			    "display": "True",
-			    "id": "True",
-			    "ui-name": "True"
-			 },{
 			    "value": "False",
 			    "display": "False",
 			    "id": "False",
 			    "ui-name": "False"
+			 },{
+			    "value": "True",
+			    "display": "True",
+			    "id": "True",
+			    "ui-name": "True"
 			 }
 		    ]
 	    }
@@ -273,15 +273,15 @@
 	    "dropdown_options": {
 		    "options": [
 			 {
-			    "value": "True",
-			    "display": "True",
-			    "id": "True",
-			    "ui-name": "True"
-			 },{
 			    "value": "False",
 			    "display": "False",
 			    "id": "False",
 			    "ui-name": "False"
+			 },{
+			    "value": "True",
+			    "display": "True",
+			    "id": "True",
+			    "ui-name": "True"
 			 }
 		    ]
 	    }
@@ -428,15 +428,15 @@
 	    "dropdown_options": {
 		    "options": [
 			 {
-			    "value": "True",
-			    "display": "True",
-			    "id": "True",
-			    "ui-name": "True"
-			 },{
 			    "value": "False",
 			    "display": "False",
 			    "id": "False",
 			    "ui-name": "False"
+			 },{
+			    "value": "True",
+			    "display": "True",
+			    "id": "True",
+			    "ui-name": "True"
 			 }
 		    ]
 	    }
@@ -517,7 +517,7 @@
             "optional": true,
             "advanced": true,
             "allow_multiple": false,
-            "default_values": [ "lineage_wf" ],
+            "default_values": [ "taxonomy_wf" ],
             "field_type": "dropdown",
 	    "dropdown_options": {
 		    "options": [
