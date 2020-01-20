@@ -1,3 +1,5 @@
 test_local
+sdk.cfg
 .*.sw[a-z]
 *.py.bak*
+test/data
