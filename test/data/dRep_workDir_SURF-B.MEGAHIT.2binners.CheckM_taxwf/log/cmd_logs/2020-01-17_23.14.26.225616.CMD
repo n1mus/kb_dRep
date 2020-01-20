@@ -1,0 +1,1 @@
+/usr/local/bin/mash sketch /kb/module/work/tmp/binsPooled_d7f80abb-1c52-43db-9fae-de726bb861a2/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta -s 1000 -o /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/MASH_files/sketches/chunk_0/34837-16-1__SURF-B.MEGAHIT.maxbin.CheckM__Bin.008.fasta

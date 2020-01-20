@@ -1,0 +1,8 @@
+[2019-12-19 10:36:20] INFO: CheckM v1.1.1
+[2019-12-19 10:36:20] INFO: checkm qa /home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/checkM/checkM_outdir/Bacteria.ms /home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/checkM/checkM_outdir/ -f /home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/checkM/checkM_outdir/Chdb.tsv -t 6 --tab_table -o 2
+[2019-12-19 10:36:20] INFO: [CheckM - qa] Tabulating genome statistics.
+[2019-12-19 10:36:20] INFO: Calculating AAI between multi-copy marker genes.
+[2019-12-19 10:36:20] INFO: Reading HMM info from file.
+[2019-12-19 10:36:20] INFO: Parsing HMM hits to marker genes:
+[2019-12-19 10:36:22] INFO: QA information written to: /home/sumin/kbsdk-workspace/dRep/test/data/res.dRep.txwf.uniq/data/checkM/checkM_outdir/Chdb.tsv
+[2019-12-19 10:36:22] INFO: { Current stage: 0:00:01.143 || Total: 0:00:01.143 }

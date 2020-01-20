@@ -1,0 +1,8 @@
+[2020-01-17 23:14:23] INFO: CheckM v1.1.1
+[2020-01-17 23:14:23] INFO: checkm qa /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/Bacteria.ms /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/ -f /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/Chdb.tsv -t 8 --tab_table -o 2
+[2020-01-17 23:14:23] INFO: [CheckM - qa] Tabulating genome statistics.
+[2020-01-17 23:14:23] INFO: Calculating AAI between multi-copy marker genes.
+[2020-01-17 23:14:23] INFO: Reading HMM info from file.
+[2020-01-17 23:14:23] INFO: Parsing HMM hits to marker genes:
+[2020-01-17 23:14:25] INFO: QA information written to: /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/Chdb.tsv
+[2020-01-17 23:14:25] INFO: { Current stage: 0:00:02.121 || Total: 0:00:02.121 }
