@@ -96,12 +96,29 @@ warnings = {
     'warn_aln': 0.22
     }
 
+centrifuge_yn = {
+    'run_tax': 'True',
+    'tax_method': 'percent'
+    }
+
+centrifuge = {
+    'run_tax': 'True',
+    'tax_method': 'max'
+    'percent': 55
+    }
+
 param_sets_use_2binners = []
 param_sets_use_2binners_CheckM = []
 param_sets_use_2binners_CheckM_drep = []
 
+<<<<<<< HEAD
 param_sets = [ignoreGenomeQuality, SkipMASH, SkipSecondary, filtering, numbers, options, ANIn_normal, gANI_total, go_ANI, tax_options, warnings]
 param_sets = [param_sets[8]]
+=======
+param_sets = [ignoreGenomeQuality, SkipMASH, SkipSecondary, filtering, numbers, options,
+   ANIn_normal, gANI_total, go_ANI, tax_options, warnings, centrifuge_yn, centrifuge]
+#param_sets = [param_sets[5]]
+>>>>>>> af085141736318838a1eba5ce3babb5166514ecd
 
 class dRepTest(unittest.TestCase):
 

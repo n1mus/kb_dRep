@@ -87,8 +87,8 @@ class dRep:
         self.dfu = DataFileUtil(self.callback_url)
 
 
-        dprint('os.environ:', os.environ)
-        dprint('config:', config)
+        dprint('os.environ', run=globals())
+        dprint('config', run=locals())
 
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
@@ -324,7 +324,7 @@ class dRep:
 
             if retcode != 0:
                 dprint(f"cat {os.path.join(dRep_workDir, 'log/cmd_logs/*.STDERR')}", run='cli') 
-                assert False, f'dRep dereplicate cmd {dRep_cmd} terminated with return code {retcode} with out {out} err {err} workDir {dRep_workDir}' #TODO change to graceful exit? dRep retcodes?
+                assert False, f'dRep dereplicate cmd [{dRep_cmd}] terminated with return code [{retcode}] with out [{out}] err [{err}] workDir [{dRep_workDir}]' #TODO change to graceful exit? dRep retcodes?
 
 
         dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
