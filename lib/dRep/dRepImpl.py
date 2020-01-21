@@ -322,6 +322,8 @@ class dRep:
             out = comp_proc.stdout.decode('utf-8')
             err = comp_proc.stderr.decode('utf-8')
 
+            dprint('retcode', 'out', 'err', run=locals())
+
             if retcode != 0:
                 dprint(f"cat {os.path.join(dRep_workDir, 'log/cmd_logs/*.STDERR')}", run='cli') 
                 assert False, f'dRep dereplicate cmd [{dRep_cmd}] terminated with return code [{retcode}] with out [{out}] err [{err}] workDir [{dRep_workDir}]' #TODO change to graceful exit? dRep retcodes?

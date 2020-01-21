@@ -17,108 +17,88 @@ from dRep.util.PrintUtil import *
 from installed_clients.WorkspaceClient import Workspace
 
 
-
-PARAMS_LOCAL = {
-    'machine': 'pixi9000', # {'pixi9000', 'dev1'}
-    'skip_dl' : True,
-#    'skip_dRep' : True,
-#    'skip_save_all': True,
-    'skip_save_bc': True,
-}
-
-
 SURF_B_3binners = ['34837/23/1', '34837/3/1', 34837/41/1] # maxbin, metabat, concoct
 SURF_B_2binners = ['34837/23/1', '34837/3/1'] # maxbin, metabat
 SURF_B_2binners_CheckM = ['34837/16/1', '34837/2/1', ] # maxbin, metabat
 SURF_B_2binners_CheckM_dRep = ['34837/17/13', '34837/18/13'] # maxbin, metabat
 
+param_sets = {
 
+    'ignoreGenomeQuality': {
+        'ignoreGenomeQuality': 'True'
+        },
 
-ignoreGenomeQuality = {
-    'ignoreGenomeQuality': 'True'
-    }
+    'SkipMASH':  {
+        'SkipMASH': 'True'
+        },
 
-SkipMASH =  {
-    'SkipMASH': 'True'
-    }
+    'SkipSecondary': {
+        'SkipSecondary': 'True'
+        },
 
-SkipSecondary = {
-    'SkipSecondary': 'True'
-    }
+    'filtering': {
+        'length': 2000000,
+        'completeness': 95,
+        'contamination': 5
+        },
 
-filtering = {
-    'length': 2000000,
-    'completeness': 95,
-    'contamination': 5
-    }
+    'numbers': {
+        'completeness_weight': 0.5,
+        'contamination_weight': 3.5,
+        'strain_heterogeneity_weight': 0.6,
+        'N50_weight': 0.111,
+        'size_weight': -0.3,
+        'MASH_sketch': 800,
+        'P_ani': 0.8,
+        'S_ani': 0.95,
+        'cov_thresh': 0.01,
+        },
 
-numbers = {
-    'completeness_weight': 0.5,
-    'contamination_weight': 3.5,
-    'strain_heterogeneity_weight': 0.6,
-    'N50_weight': 0.111,
-    'size_weight': -0.3,
-    'MASH_sketch': 800,
-    'P_ani': 0.8,
-    'S_ani': 0.95,
-    'cov_thresh': 0.01,
-    }
+    'options': {
+        'S_algorithm': 'ANIn',
+        'n_PRESET': 'tight',
+        'coverage_method': 'total',
+        'clusterAlg': 'ward',
+        },
 
-options = {
-    'S_algorithm': 'ANIn',
-    'n_PRESET': 'tight',
-    'coverage_method': 'total',
-    'clusterAlg': 'ward',
-    }
+    'ANIn_normal': { # normal may not apply to (default) ANImf
+        'S_algorithm': 'ANImf',
+        'n_PRESET': 'normal'
+        },
 
-ANIn_normal = { # normal may not apply to (default) ANImf
-    'S_algorithm': 'ANImf',
-    'n_PRESET': 'normal'
-    }
+    'gANI_total': { # total does not apply to gANI
+        'S_algorithm': 'gANI',
+        'coverage_method': 'total',
+        },
 
-gANI_total = { # total does not apply to gANI
-    'S_algorithm': 'gANI',
-    'coverage_method': 'total',
-    }
+    'tax_options': { # don't apply when run_tax=False
+        'tax_method': 'max',
+        'percent': '55',
+        },
 
-go_ANI = {
-    'S_algorithm': 'goANI'
-    }
+    'warnings': {
+        'warn_dist': 0.255,
+        'warn_sim': 1.0,
+        'warn_aln': 0.22
+        },
 
-tax_options = { # don't apply when run_tax=False
-    'tax_method': 'max',
-    'percent': '55',
-    }
+    'go_ANI': { # fails bc dRep bug?
+        'S_algorithm': 'goANI'
+        },
 
-warnings = {
-    'warn_dist': 0.255,
-    'warn_sim': 1.0,
-    'warn_aln': 0.22
-    }
+    'centrifuge_yn': {
+        'run_tax': 'True',
+        'tax_method': 'percent'
+        },
 
-centrifuge_yn = {
-    'run_tax': 'True',
-    'tax_method': 'percent'
-    }
+    'centrifuge': {
+        'run_tax': 'True',
+        'tax_method': 'max',
+        'percent': 55
+        },
+}
 
-centrifuge = {
-    'run_tax': 'True',
-    'tax_method': 'max'
-    'percent': 55
-    }
-
-param_sets_use_2binners = []
-param_sets_use_2binners_CheckM = []
-param_sets_use_2binners_CheckM_drep = []
-
-<<<<<<< HEAD
-param_sets = [ignoreGenomeQuality, SkipMASH, SkipSecondary, filtering, numbers, options, ANIn_normal, gANI_total, go_ANI, tax_options, warnings]
-param_sets = [param_sets[8]]
-=======
-param_sets = [ignoreGenomeQuality, SkipMASH, SkipSecondary, filtering, numbers, options,
-   ANIn_normal, gANI_total, go_ANI, tax_options, warnings, centrifuge_yn, centrifuge]
-#param_sets = [param_sets[5]]
->>>>>>> af085141736318838a1eba5ce3babb5166514ecd
+param_sets = {key: param_sets[key] for key in list(param_sets.keys())[-2:]}
 
 class dRepTest(unittest.TestCase):
 
@@ -222,18 +202,19 @@ class dRepTest(unittest.TestCase):
         if os.path.exists(workDir_default):
             shutil.rmtree(workDir_default)
 
+        # clear saved instances
         BinnedContigs.clear()
 
 ######################################
 
-def _test_param_set_gen(params_dRep):
+def _gen_test_param_set(params_dRep):
     def test_param_set(self):
         dprint('Running test with params_dRep:', params_dRep)
 
         params_local = {
             'machine': 'dev1', # {'pixi9000', 'dev1'}
             'skip_dl' : True,
-#            'skip_dRep' : True,
+            #'skip_dRep' : True,
             'skip_save_all': True, # BC, html, workDir, report
             'skip_save_bc': True,
         }
@@ -246,14 +227,12 @@ def _test_param_set_gen(params_dRep):
                 **params_dRep,
                 **params_local,
             })
-
         
     return test_param_set
 
-count = iter(range(len(param_sets)))
-for param_set in param_sets:
-    test_name = 'test_param_set_' + str(next(count))
-    setattr(dRepTest, test_name, _test_param_set_gen(param_set))
+for (param_set_name, param_set), count in zip(param_sets.items(), range(len(param_sets))):
+    test_name = 'test_param_set_' + str(count) + '_' + param_set_name
+    setattr(dRepTest, test_name, _gen_test_param_set(param_set))
 
 dprint('dRepTest.__dict__', run=globals())
 
