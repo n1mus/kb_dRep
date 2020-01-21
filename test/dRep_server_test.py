@@ -81,6 +81,10 @@ gANI_total = { # total does not apply to gANI
     'coverage_method': 'total',
     }
 
+go_ANI = {
+    'S_algorithm': 'goANI'
+    }
+
 tax_options = { # don't apply when run_tax=False
     'tax_method': 'max',
     'percent': '55',
@@ -96,8 +100,8 @@ param_sets_use_2binners = []
 param_sets_use_2binners_CheckM = []
 param_sets_use_2binners_CheckM_drep = []
 
-param_sets = [ignoreGenomeQuality, SkipMASH, SkipSecondary, filtering, numbers, options, ANIn_normal, gANI_total, tax_options, warnings]
-param_sets = param_sets[4:]
+param_sets = [ignoreGenomeQuality, SkipMASH, SkipSecondary, filtering, numbers, options, ANIn_normal, gANI_total, go_ANI, tax_options, warnings]
+#param_sets = [param_sets[5]]
 
 class dRepTest(unittest.TestCase):
 
@@ -113,11 +117,11 @@ class dRepTest(unittest.TestCase):
         Run once, after all dRepTest objs have been instantiated
         '''
         dprint('in dRepTest.setUpClass')
-        dprint('cls.__dict__', run=locals())
+        dprint('sys.path', 'cls.__dict__', run={**locals(), **globals()})
         token = os.environ.get('KB_AUTH_TOKEN', None)
         config_file = os.environ.get('KB_DEPLOYMENT_CONFIG', None)
         cls.cfg = {}
-        config = ConfigParser()
+        config = ConfigParser() # does not handle inline comments! or endofline spaces
         config.read(config_file)
         for nameval in config.items('dRep'):
             cls.cfg[nameval[0]] = nameval[1]
@@ -174,9 +178,6 @@ class dRepTest(unittest.TestCase):
         # self.getWsClient().save_objects({'workspace': self.getWsName(),
         #                                  'objects': []})
         #
-        # Run your method by
-        # ret = self.getImpl().your_method(self.getContext(), parameters...)
-        #
         # Check returned data with
         # self.assertEqual(ret[...], ...) or other unittest methods
         ret = self.serviceImpl.dereplicate(self.ctx, { **params_local,
@@ -213,7 +214,7 @@ def _test_param_set_gen(params_dRep):
         dprint('Running test with params_dRep:', params_dRep)
 
         params_local = {
-            'machine': 'pixi9000', # {'pixi9000', 'dev1'}
+            'machine': 'dev1', # {'pixi9000', 'dev1'}
             'skip_dl' : True,
 #            'skip_dRep' : True,
             'skip_save_all': True, # BC, html, workDir, report

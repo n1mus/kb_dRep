@@ -248,7 +248,7 @@ class dRep:
         if params.get('machine') in ['pixi9000']:
             dRep_params.extend(['--processors', '8'])
             params['checkM_method'] = 'taxonomy_wf'
-	elif params.get('machine') in ['dev1']:
+        elif params.get('machine') in ['dev1']:
             dRep_params.extend(['--processors', '16']) #TODO is this nec?	
 
         dRep_param_defaults = {
@@ -288,7 +288,7 @@ class dRep:
                 if flag not in params_bool:
                     dRep_params.append(params[flag])
 
-                    
+        dRep_params = ['-n_PRESET' if param == '--n_PRESET' else param for param in dRep_params] # one param needs single dash
         dRep_params = [str(param) for param in dRep_params]
 
         dprint("' '.join(dRep_params)", run=locals())
@@ -316,11 +316,15 @@ class dRep:
 
 
             dprint('Running dRep cmd:', f'{dRep_cmd}')
-            retcode = subprocess.run(dRep_cmd, shell=True).returncode
+            comp_proc =  subprocess.run(dRep_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+
+            retcode = comp_proc.returncode
+            out = comp_proc.stdout.decode('utf-8')
+            err = comp_proc.stderr.decode('utf-8')
 
             if retcode != 0:
                 dprint(f"cat {os.path.join(dRep_workDir, 'log/cmd_logs/*.STDERR')}", run='cli') 
-                assert False, f'dRep dereplicate terminated with return code {retcode} with workDir {dRep_workDir}' #TODO change to graceful exit? dRep retcodes?
+                assert False, f'dRep dereplicate cmd {dRep_cmd} terminated with return code {retcode} with out {out} err {err} workDir {dRep_workDir}' #TODO change to graceful exit? dRep retcodes?
 
 
         dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
