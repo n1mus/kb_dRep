@@ -17,7 +17,6 @@ import re
 import functools
 import pickle
 import warnings
-import dRep_server_test
 
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
@@ -180,6 +179,8 @@ class dRep:
 
         #
         if params.get('skip_dl'):
+
+            import dRep_server_test
 
             if params['genomes_refs'] == dRep_server_test.SURF_B_2binners_CheckM:
                 bins_dir_name_l = ['SURF-B.MEGAHIT.maxbin.CheckM', 'SURF-B.MEGAHIT.metabat.CheckM']
