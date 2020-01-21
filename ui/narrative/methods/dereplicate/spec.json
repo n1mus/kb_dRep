@@ -189,7 +189,13 @@
 			    "display": "gANI - Identify and align ORFs; compare aligned ORFS",
 			    "id": "gANI",
 			    "ui-name": "gANI - Identify and align ORFs; compare aligned ORFS"
+			 },{
+			    "value": "goANI",
+			    "display": "goANI",
+			    "id": "goANI",
+			    "ui-name": "goANI"
 			 }
+
 		    ]
 	    }
 
