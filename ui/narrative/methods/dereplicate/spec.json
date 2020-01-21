@@ -30,7 +30,7 @@
 		"n_PRESET"
 	    ],
 	    "optional": false,
-	    "advanced": false,
+	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
 	},{
@@ -44,7 +44,7 @@
 		"coverage_method",
 		"clusterAlg"
 	    ],
-	    "optional": false,
+	    "optional": true,
 	    "advanced": false,
 	    "allow_multiple": false,
 	    "with_border": true
@@ -57,8 +57,8 @@
 		"N50_weight",
 		"size_weight"
 	    ],
-	    "optional": false,
-	    "advanced": false,
+	    "optional": true,
+	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
 	},{
