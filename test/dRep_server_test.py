@@ -101,7 +101,7 @@ param_sets_use_2binners_CheckM = []
 param_sets_use_2binners_CheckM_drep = []
 
 param_sets = [ignoreGenomeQuality, SkipMASH, SkipSecondary, filtering, numbers, options, ANIn_normal, gANI_total, go_ANI, tax_options, warnings]
-#param_sets = [param_sets[5]]
+param_sets = [param_sets[8]]
 
 class dRepTest(unittest.TestCase):
 
