@@ -19,7 +19,7 @@
 		"ignoreGenomeQuality"
 	    ],
 	    "optional": false,
-	    "advanced": false,
+	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
 	},{
@@ -44,8 +44,8 @@
 		"coverage_method",
 		"clusterAlg"
 	    ],
-	    "optional": true,
-	    "advanced": false,
+	    "optional": false,
+	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
 	},{
@@ -57,7 +57,7 @@
 		"N50_weight",
 		"size_weight"
 	    ],
-	    "optional": true,
+	    "optional": false,
 	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
@@ -69,7 +69,7 @@
 		"percent"
 	    ],
 	    "optional": false,
-	    "advanced": false,
+	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
 	},{
@@ -79,8 +79,8 @@
 		"warn_sim",
 		"warn_aln"
 	    ],
-	    "optional": true,
-	    "advanced": false,
+	    "optional": false,
+	    "advanced": true,
 	    "allow_multiple": false,
 	    "with_border": true
 	}
