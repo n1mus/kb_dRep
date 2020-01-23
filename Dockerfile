@@ -86,6 +86,10 @@ RUN apt-get install --yes vim tree
 
 ENV PYTHONUNBUFFERED=0
 
+
+# move up
+RUN pip install pypdf2
+
 # -----------------------------------------
 
 COPY ./ /kb/module

@@ -6,6 +6,7 @@ import os
 import shutil
 import json
 import re
+from PyPDF2 import PdfFileReader
 
 from .PrintUtil import *
 
@@ -122,7 +123,6 @@ class HTMLBuilder():
 
         dprint('ignoreGenomeQuality', 'smmr[preproc + attr[3:] + res[1:]]', run=locals())
 
-
         smmr.reset_index(inplace=True)
         smmr = smmr[columns]
 
@@ -138,10 +138,16 @@ class HTMLBuilder():
     def _build_figures(self):
         shutil.copytree(os.path.join(self.dRep_workDir, 'figures'), self.figures_dir)
 
-        #pdfs = [pdfName + '.pdf' for pdfName in ['Primary_clustering_dendrogram', 
-        #    'Secondary_clustering_dendrograms', 'Secondary_clustering_MDS', 'Clustering_scatterplots', 'Cluster_scoring', 'Winning_genomes']]
+        pdf_paths = [os.path.join(self.figures_dir, file_name) for file_name in os.listdir(self.figures_dir) if re.match(r'^.+\.pdf$', file_name)]
 
-        pdfs = [file_name for file_name in os.listdir(os.path.join(self.dRep_workDir, 'figures')) if re.match(r'^.+\.pdf$', file_name)]
+        # filter malformed
+        for pdf_path in pdf_paths:
+            try:
+                PdfFileReader(pdf_path)
+            except:
+                pdf_paths.remove(pdf_path)
+
+        pdfs = [os.path.basename(pdf_path) for pdf_path in pdf_paths]
 
         def _pdfTag(pdf):
             return f'<embed src="figures/{pdf}" width="1000px" height="1000px">'
@@ -152,7 +158,6 @@ class HTMLBuilder():
             rep += self._encase_p(pdf) + self._encase_p(_pdfTag(pdf)) + '\n'
 
         self.replacements['FIGURES_TAG'] = rep
-
 
 
     def _build_warnings(self):
