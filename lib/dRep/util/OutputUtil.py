@@ -141,7 +141,7 @@ class HTMLBuilder():
         #pdfs = [pdfName + '.pdf' for pdfName in ['Primary_clustering_dendrogram', 
         #    'Secondary_clustering_dendrograms', 'Secondary_clustering_MDS', 'Clustering_scatterplots', 'Cluster_scoring', 'Winning_genomes']]
 
-        pdfs = [file_path for file_path in os.listdir(os.path.join(self.dRep_workDir, 'figures')) if re.match(r'^.+\.pdf$', file_path)]
+        pdfs = [file_name for file_name in os.listdir(os.path.join(self.dRep_workDir, 'figures')) if re.match(r'^.+\.pdf$', file_name)]
 
         def _pdfTag(pdf):
             return f'<embed src="figures/{pdf}" width="1000px" height="1000px">'

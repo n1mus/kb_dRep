@@ -312,7 +312,7 @@ class dRep:
         else:
             dRep_workDir = os.path.join(self.shared_folder, 'dRep_workDir_' + self.suffix)
 
-            dRep_cmd = f'dRep dereplicate {dRep_workDir} --genomes {binsPooled_dir}/*'
+            dRep_cmd = f'dRep dereplicate {dRep_workDir} --genomes {binsPooled_dir}/*.fasta'
             dRep_cmd = ' '.join([dRep_cmd] + dRep_params)
 
 

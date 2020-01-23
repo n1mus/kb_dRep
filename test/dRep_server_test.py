@@ -81,11 +81,11 @@ param_sets = {
         'warn_sim': 1.0,
         'warn_aln': 0.22
         },
-
+}
+'''
     'go_ANI': { # fails bc dRep bug?
         'S_algorithm': 'goANI'
         },
-
     'centrifuge_yn': {
         'run_tax': 'True',
         'tax_method': 'percent'
@@ -96,9 +96,10 @@ param_sets = {
         'tax_method': 'max',
         'percent': 55
         },
-}
+'''
 
-param_sets = {key: param_sets[key] for key in list(param_sets.keys())[-2:]}
+
+param_sets = {key: param_sets[key] for key in list(param_sets.keys())[:-2]}
 
 class dRepTest(unittest.TestCase):
 
