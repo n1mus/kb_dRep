@@ -250,7 +250,11 @@ class dRep:
             dRep_params.extend(['--processors', '8'])
             params['checkM_method'] = 'taxonomy_wf'
         elif params.get('machine') in ['dev1']:
-            dRep_params.extend(['--processors', '16']) #TODO is this nec?	
+            dRep_params.extend(['--processors', '16'])	
+        elif params.get('machine') == None:
+            dRep_params.extend(['--processors', '8'])
+        else:
+            assert False, 'Confused about what machine you\'re on'
 
         dRep_param_defaults = {
                 'length': 50000,
