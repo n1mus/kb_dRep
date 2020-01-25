@@ -1,1 +1,0 @@
-/usr/local/bin/mash paste /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/MASH_files/ALL.msh /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/MASH_files/sketches/chunk_0/chunk_all.msh

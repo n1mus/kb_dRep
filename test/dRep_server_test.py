@@ -7,6 +7,7 @@ from configparser import ConfigParser
 import functools
 import sys
 import subprocess
+import re
 
 from dRep.dRepImpl import dRep
 from dRep.dRepServer import MethodContext
@@ -37,7 +38,7 @@ param_sets = {
         },
 
     'filtering': {
-        'length': 2000000,
+        'length': 2500000,
         'completeness': 95,
         'contamination': 5
         },
@@ -82,7 +83,7 @@ param_sets = {
         'warn_aln': 0.22
         },
 }
-'''
+''' these will fail rn
     'go_ANI': { # fails bc dRep bug?
         'S_algorithm': 'goANI'
         },
@@ -148,6 +149,14 @@ class dRepTest(unittest.TestCase):
         cls.wsName = "test_ContigFilter_" + str(suffix)
         ret = cls.wsClient.create_workspace({'workspace': cls.wsName})  # noqa
 
+        # decompress tarballs
+        tarball_l = [f for f in os.listdir(cls.testData_dir) if re.match(f'^.+\.tar\.gz$', f)]
+        for tarball in tarball_l:
+            tar = tarfile.open(tarball)
+            tar.extractall()
+            tar.close()
+
+
 
     @classmethod
     def tearDownClass(cls):
@@ -195,10 +204,10 @@ class dRepTest(unittest.TestCase):
     def tearDown(self):
         dprint('in dRepTest.tearDown')
 
-        # clear any scratch/bins_dir
+        # clear cached scratch/bins_dir
         dprint(f"rm -rf {os.path.join(self.scratch, 'SURF-B.MEGAHIT.*')}", run='cli')
 
-        # clear default workDir
+        # clear cached scratch/default-workDir
         workDir_default = os.path.join(self.scratch, 'dRep_workDir_SURF-B.MEGAHIT.2binners.CheckM_taxwf')
         if os.path.exists(workDir_default):
             shutil.rmtree(workDir_default)
@@ -224,7 +233,7 @@ def _gen_test_param_set(params_dRep):
             self.ctx, 
             {
                 'workspace_name': self.wsName,
-                'genomes_refs': SURF_B_2binners_CheckM,
+                'genomes_refs': SURF_B_2binners,
                 **params_dRep,
                 **params_local,
             })
