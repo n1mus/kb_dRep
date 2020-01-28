@@ -64,7 +64,7 @@ class HTMLBuilder():
         names = ['BinnedContigs Name', 'Bin Name', 'File Name']
         preproc = ['Length Filtered']
         attr = ['Completeness', 'Contamination', 'Strain Heterogeneity', 'Length', 'N50', 'GC']
-        res = ['CheckM (Compl/Contam) Filtered', 'Primary/Secondary Cluster', 'Dereplicated']
+        res = ['CheckM (Compl/Contam) Filtered', 'Prim/Sec Cluster', 'Dereplicated']
 
         attr_chdb = ['Completeness', 'Contamination', 'Strain heterogeneity', 'Genome size (bp)', 'N50 (scaffolds)', 'GC'] # Chdb.csv header names corresponding to attr
 
@@ -106,19 +106,20 @@ class HTMLBuilder():
         df_stats.index.name = 'File Name'
         df_stats.rename(columns={'length': 'Length'}, inplace=True)
 
+        # populate basic stats
+        smmr[attr[3:]] = df_stats.loc[smmr.index, attr[3:]] # length/N50/GC (not from checkm)
+
         # populate
         if not ignoreGenomeQuality:
-            smmr[attr[:5]] = chdb.loc[smmr.index, attr_chdb[:5]] # all rel Chdb.csv columns except GC, which is wrong
-            smmr[attr[5]] = df_stats.loc[smmr.index, attr_chdb[5]] # fixed GC 
+            smmr[attr[:5]] = chdb.loc[smmr.index, attr_chdb[:5]] # all rel Chdb.csv columns (overwrite some length/N50) except GC, which is wrong
             smmr['Length Filtered'] = ~ smmr.index.isin(chdb.index)
             smmr.loc[~ smmr['Length Filtered'], 'CheckM (Compl/Contam) Filtered'] = ~ smmr.loc[~ smmr['Length Filtered']].index.isin(bdb.index) # checkm-filtered column
-            smmr.loc[cdb.index, 'Primary/Secondary Cluster'] = cdb['secondary_cluster']
-            smmr.loc[smmr['CheckM (Compl/Contam) Filtered'].eq(False) , 'Dereplicated'] = ~ smmr.index[smmr['CheckM (Compl/Contam) Filtered'].eq(False)].isin(wdb.index) # dereplicated col
+            smmr.loc[cdb.index, 'Prim/Sec Cluster'] = cdb['secondary_cluster']
+            smmr.loc[smmr['CheckM (Compl/Contam) Filtered'].eq(False), 'Dereplicated'] = ~ smmr.index[smmr['CheckM (Compl/Contam) Filtered'].eq(False)].isin(wdb.index) # dereplicated col
     
         else:
             smmr['Length Filtered'] = ~ smmr.index.isin(bdb.index)
-            smmr[attr[3:]] = df_stats.loc[smmr.index, attr[3:]] # avail stats (not from checkm)
-            smmr.loc[cdb.index, 'Primary/Secondary Cluster'] = cdb['secondary_cluster']
+            smmr.loc[cdb.index, 'Prim/Sec Cluster'] = cdb['secondary_cluster']
             smmr.loc[smmr['Length Filtered'].eq(False) , 'Dereplicated'] = ~ smmr.index[smmr['Length Filtered'].eq(False)].isin(wdb.index) # dereplicated col
 
         dprint('ignoreGenomeQuality', 'smmr[preproc + attr[3:] + res[1:]]', run=locals())

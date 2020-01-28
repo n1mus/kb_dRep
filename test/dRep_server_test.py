@@ -8,6 +8,7 @@ import functools
 import sys
 import subprocess
 import re
+import tarfile
 
 from dRep.dRepImpl import dRep
 from dRep.dRepServer import MethodContext
@@ -82,11 +83,7 @@ param_sets = {
         'warn_sim': 1.0,
         'warn_aln': 0.22
         },
-}
-''' these will fail rn
-    'go_ANI': { # fails bc dRep bug?
-        'S_algorithm': 'goANI'
-        },
+
     'centrifuge_yn': {
         'run_tax': 'True',
         'tax_method': 'percent'
@@ -96,6 +93,11 @@ param_sets = {
         'run_tax': 'True',
         'tax_method': 'max',
         'percent': 55
+        },
+}
+''' these will fail rn
+    'go_ANI': { # fails bc dRep bug?
+        'S_algorithm': 'goANI'
         },
 '''
 
@@ -150,11 +152,13 @@ class dRepTest(unittest.TestCase):
         ret = cls.wsClient.create_workspace({'workspace': cls.wsName})  # noqa
 
         # decompress tarballs
-        tarball_l = [f for f in os.listdir(cls.testData_dir) if re.match(f'^.+\.tar\.gz$', f)]
+        tarball_l = [os.path.join(cls.testData_dir, f) for f in os.listdir(cls.testData_dir) if re.match(r'^.+\.tar\.gz$', f)]
+        dprint('tarball_l', run=locals())
         for tarball in tarball_l:
             tar = tarfile.open(tarball)
-            tar.extractall()
+            tar.extractall(path=cls.testData_dir)
             tar.close()
+        dprint('ls /kb/module/test/data', run='cli')
 
 
 
@@ -166,9 +170,9 @@ class dRepTest(unittest.TestCase):
             print('Test workspace was deleted')
 
 
-    def _test_basic_dRep(self):
+    def test_basic_dRep(self):
         params_local = {
-            'machine': 'pixi9000', # {'pixi9000', 'dev1'}
+            'machine': 'dev1', # {'pixi9000', 'dev1'}
             'skip_dl' : True,
             'skip_save_all': True,
             }
@@ -242,7 +246,7 @@ def _gen_test_param_set(params_dRep):
 
 for (param_set_name, param_set), count in zip(param_sets.items(), range(len(param_sets))):
     test_name = 'test_param_set_' + str(count) + '_' + param_set_name
-    setattr(dRepTest, test_name, _gen_test_param_set(param_set))
+    #setattr(dRepTest, test_name, _gen_test_param_set(param_set))
 
 dprint('dRepTest.__dict__', run=globals())
 
