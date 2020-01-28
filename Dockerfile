@@ -15,7 +15,7 @@ RUN apt-get update
 RUN pip install --upgrade pip==19.3.1
 
 
-RUN pip install drep==2.3.2
+RUN pip install drep==2.4.1
 
 
 RUN curl --location https://github.com/marbl/Mash/releases/download/v2.2/mash-Linux64-v2.2.tar > mash.tar && \
