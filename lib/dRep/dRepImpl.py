@@ -293,7 +293,6 @@ class dRep:
                 if flag not in params_bool:
                     dRep_params.append(params[flag])
 
-        dRep_params = ['-n_PRESET' if param == '--n_PRESET' else param for param in dRep_params] # one param needs single dash
         dRep_params = [str(param) for param in dRep_params]
 
         dprint("' '.join(dRep_params)", run=locals())

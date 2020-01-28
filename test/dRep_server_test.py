@@ -27,7 +27,8 @@ SURF_B_2binners_CheckM_dRep = ['34837/17/13', '34837/18/13'] # maxbin, metabat
 param_sets = {
 
     'ignoreGenomeQuality': {
-        'ignoreGenomeQuality': 'True'
+        'ignoreGenomeQuality': 'True',
+        'completeness': 99,
         },
 
     'SkipMASH':  {
@@ -73,6 +74,10 @@ param_sets = {
         'coverage_method': 'total',
         },
 
+    'go_ANI': { 
+        'S_algorithm': 'goANI'
+        },
+
     'tax_options': { # don't apply when run_tax=False
         'tax_method': 'max',
         'percent': '55',
@@ -95,14 +100,8 @@ param_sets = {
         'percent': 55
         },
 }
-''' these will fail rn
-    'go_ANI': { # fails bc dRep bug?
-        'S_algorithm': 'goANI'
-        },
-'''
 
-
-param_sets = {key: param_sets[key] for key in list(param_sets.keys())[:-2]}
+#param_sets = {key: param_sets[key] for key in list(param_sets.keys())[:-2]}
 
 class dRepTest(unittest.TestCase):
 
