@@ -1,1 +1,0 @@
-/miniconda/bin/checkm taxonomy_wf domain Bacteria /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/prodigal/ /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir/ -f /kb/module/work/tmp/dRep_workDir_d7f80abb-1c52-43db-9fae-de726bb861a2/data/checkM/checkM_outdir//results.tsv --tab_table -t 8 -g -x faa
