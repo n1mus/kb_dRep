@@ -182,8 +182,10 @@ class dRep:
                 bins_dir_name_l = ['SURF-B.MEGAHIT.maxbin.CheckM', 'SURF-B.MEGAHIT.metabat.CheckM']
             elif params['genomes_refs'] == dRep_server_test.SURF_B_2binners:
                 bins_dir_name_l = ['SURF-B.MEGAHIT.maxbin', 'SURF-B.MEGAHIT.metabat']
-            elif params['genomes_refs'] == 'E.faecalis_E.coli':
-                bins_dir_name_l = ['E.faecalis_E.coli']
+            elif params['genomes_refs'] == dRep_server_test.capybaraGut_MaxBin2:
+                bins_dir_name_l = ['capybaraGut.MaxBin2']
+            elif params['genomes_refs'] == dRep_server_test.capybaraGut_MetaBAT2:
+                bins_dir_name_l = ['capybaraGut.MetaBat2']
             else:
                 assert False, f'skip_dl but did not prepare for genomes_refs {params["genomes_refs"]}'
 
