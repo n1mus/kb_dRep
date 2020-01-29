@@ -46,7 +46,6 @@ class BinnedContigs:
         if get_bins_dir == 'download': 
             self.load_bins_dir()
         elif get_bins_dir == 'local': 
-            self.get_obj_data()
             self.bins_dir = kwargs['bins_dir']
         else:
             assert False, 'must specify get_bins_dir mode'
