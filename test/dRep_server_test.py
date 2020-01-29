@@ -19,24 +19,42 @@ from dRep.util.PrintUtil import *
 from installed_clients.WorkspaceClient import Workspace
 
 
-SURF_B_3binners = ['34837/23/1', '34837/3/1', 34837/41/1] # maxbin, metabat, concoct
 SURF_B_2binners = ['34837/23/1', '34837/3/1'] # maxbin, metabat
 SURF_B_2binners_CheckM = ['34837/16/1', '34837/2/1', ] # maxbin, metabat
 SURF_B_2binners_CheckM_dRep = ['34837/17/13', '34837/18/13'] # maxbin, metabat
+capybaraGut_MetaBAT2 = ['37096/5/1']
+capybaraGut_MaxBin2 = ['37096/11/1']
+capybaraGut_2binners = capybaraGut_MetaBAT2 + capybaraGut_MaxBin2
+
+genomes_refs = capybaraGut_MaxBin2
 
 param_sets = {
 
-    'ignoreGenomeQuality': {
-        'ignoreGenomeQuality': 'True',
-        'completeness': 99,
+    'numbers': {
+        'completeness_weight': 0.5,
+        'contamination_weight': 3.5,
+        'strain_heterogeneity_weight': 0.6,
+        'N50_weight': 0.111,
+        'size_weight': -0.3,
+
+        'MASH_sketch': 800,
+        'P_ani': 0.8,
+        'S_ani': 0.95,
+        'cov_thresh': 0.01,
+
+        'percent': 70,
+
+        'warn_dist': 0.255,
+        'warn_sim': 1.0,
+        'warn_aln': 0.22
         },
 
-    'SkipMASH':  {
-        'SkipMASH': 'True'
-        },
-
-    'SkipSecondary': {
-        'SkipSecondary': 'True'
+    'passive_options': {
+        'S_algorithm': 'ANIn',
+        'n_PRESET': 'tight',
+        'coverage_method': 'total',
+        'clusterAlg': 'ward',
+        'tax_method': 'max'
         },
 
     'filtering': {
@@ -45,60 +63,64 @@ param_sets = {
         'contamination': 5
         },
 
-    'numbers': {
-        'completeness_weight': 0.5,
-        'contamination_weight': 3.5,
-        'strain_heterogeneity_weight': 0.6,
-        'N50_weight': 0.111,
-        'size_weight': -0.3,
-        'MASH_sketch': 800,
-        'P_ani': 0.8,
-        'S_ani': 0.95,
-        'cov_thresh': 0.01,
+
+    'ignoreGenomeQuality': {
+        'ignoreGenomeQuality': 'True',
+        'completeness': 99,
+        },
+ 
+    'go_ANI': { 
+        'S_algorithm': 'goANI'
         },
 
-    'options': {
-        'S_algorithm': 'ANIn',
-        'n_PRESET': 'tight',
-        'coverage_method': 'total',
-        'clusterAlg': 'ward',
-        },
 
-    'ANIn_normal': { # normal may not apply to (default) ANImf
+   'ANImf_tight': { # normal may not apply to (default) ANImf
         'S_algorithm': 'ANImf',
-        'n_PRESET': 'normal'
+        'n_PRESET': 'tight'
         },
+
+   'ANIn_tight': {
+       'S_algorithm': 'ANIn',
+       'n_PRESET': 'tight'
+       },
 
     'gANI_total': { # total does not apply to gANI
         'S_algorithm': 'gANI',
         'coverage_method': 'total',
         },
 
-    'go_ANI': { 
-        'S_algorithm': 'goANI'
+    'SkipMASH':  {
+        'SkipMASH': 'True',
+        'MASH_sketch': 900
         },
 
-    'tax_options': { # don't apply when run_tax=False
-        'tax_method': 'max',
-        'percent': '55',
+
+    'SkipSecondary': {
+        'SkipSecondary': 'True'
         },
 
-    'warnings': {
-        'warn_dist': 0.255,
-        'warn_sim': 1.0,
-        'warn_aln': 0.22
+    'SkipClustering': { # ?
+        'SkipMASH': 'True',
+        'SkipSecondary': 'True',
         },
 
-    'centrifuge_yn': {
+    'SkipAll': { # ?
+        'ignoreGenomeQuality': 'True',
+        'SkipMASH': 'True',
+        'SkipSecondary': 'True',
+        }, 
+
+    'tax_options': { # percent doen't apply when tax_method=max
         'run_tax': 'True',
-        'tax_method': 'percent'
+        'tax_method': 'max',
+        'percent': 55,
         },
 
     'centrifuge': {
         'run_tax': 'True',
-        'tax_method': 'max',
         'percent': 55
         },
+
 }
 
 #param_sets = {key: param_sets[key] for key in list(param_sets.keys())[:-2]}
@@ -168,7 +190,7 @@ class dRepTest(unittest.TestCase):
             cls.wsClient.delete_workspace({'workspace': cls.wsName})
             print('Test workspace was deleted')
 
-
+    # TODO if this throws, kill test suite
     def test_basic_dRep(self):
         params_local = {
             'machine': 'dev1', # {'pixi9000', 'dev1'}
@@ -178,7 +200,7 @@ class dRepTest(unittest.TestCase):
 
         ret = self.serviceImpl.dereplicate(self.ctx, {
             'workspace_name': self.wsName,
-            'genomes_refs': SURF_B_2binners_CheckM,
+            'genomes_refs': genomes_refs,
             **params_local
             })
 
@@ -236,7 +258,7 @@ def _gen_test_param_set(params_dRep):
             self.ctx, 
             {
                 'workspace_name': self.wsName,
-                'genomes_refs': SURF_B_2binners,
+                'genomes_refs': genomes_refs,
                 **params_dRep,
                 **params_local,
             })

@@ -114,14 +114,10 @@ class dRep:
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 
         dprint('ctx', run=locals())
         dprint('params', run=locals())
-
-        # TODO why is this a string sometimes
-        if isinstance(params["genomes_refs"], str):
-            assert False
-            params['genomes_refs'] = [tok for tok in re.split(r'[\'\"]', params['genomes_refs']) if '/' in tok]
 
         def simple_return(msg):
             kbr = KBaseReport(self.callback_url)
@@ -146,7 +142,7 @@ class dRep:
         #####
         ######
 
-        if len(set(params['genomes_refs'])) < len(params['genomes_refs']):
+        if isinstance(params['genomes_refs'], list) and len(set(params['genomes_refs'])) < len(params['genomes_refs']):
             return simple_return('Please do not input duplicate BinnedContigs')
             
 
@@ -186,6 +182,8 @@ class dRep:
                 bins_dir_name_l = ['SURF-B.MEGAHIT.maxbin.CheckM', 'SURF-B.MEGAHIT.metabat.CheckM']
             elif params['genomes_refs'] == dRep_server_test.SURF_B_2binners:
                 bins_dir_name_l = ['SURF-B.MEGAHIT.maxbin', 'SURF-B.MEGAHIT.metabat']
+            elif params['genomes_refs'] == 'E.faecalis_E.coli':
+                bins_dir_name_l = ['E.faecalis_E.coli']
             else:
                 assert False, f'skip_dl but did not prepare for genomes_refs {params["genomes_refs"]}'
 
