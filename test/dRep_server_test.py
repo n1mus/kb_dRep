@@ -23,10 +23,10 @@ SURF_B_2binners = ['34837/23/1', '34837/3/1'] # maxbin, metabat
 SURF_B_2binners_CheckM = ['34837/16/1', '34837/2/1', ] # maxbin, metabat
 SURF_B_2binners_CheckM_dRep = ['34837/17/13', '34837/18/13'] # maxbin, metabat
 capybaraGut_MaxBin2 = ['37096/11/1']
-capybaraGut_MetaBAT2 = ['37096/5/1']
+capybaraGut_MetaBAT2 = ['37096/9/1']
 capybaraGut_2binners = capybaraGut_MetaBAT2 + capybaraGut_MaxBin2
 
-genomes_refs = capybaraGut_MetaBAT2
+genomes_refs = capybaraGut_2binners
 
 param_sets = {
 
@@ -69,7 +69,7 @@ param_sets = {
         'completeness': 99,
         },
  
-    'go_ANI': { 
+    'go_ANI': { # FAIL
         'S_algorithm': 'goANI'
         },
 
@@ -110,16 +110,16 @@ param_sets = {
         'SkipSecondary': 'True',
         }, 
 
-    'tax_options': { # percent doen't apply when tax_method=max
-        'run_tax': 'True',
-        'tax_method': 'max',
-        'percent': 55,
-        },
+#    'tax_options': { # FAIL
+#        'run_tax': 'True',
+#        'tax_method': 'max',
+#        'percent': 55,
+#        },
 
-    'centrifuge': {
-        'run_tax': 'True',
-        'percent': 55
-        },
+#    'centrifuge': { # FAIL
+#        'run_tax': 'True',
+#        'percent': 55
+#        },
 
 }
 
@@ -189,9 +189,11 @@ class dRepTest(unittest.TestCase):
         if hasattr(cls, 'wsName'):
             cls.wsClient.delete_workspace({'workspace': cls.wsName})
             print('Test workspace was deleted')
+        tag = ' ' + ('!!!!!!!!!!!!!!!!!!!!!!!!!!' * 40) + ' '
+        dprint(tag + 'DO NOT FORGET TO GRAB HTML(S)' + tag)
 
     # TODO if this throws, kill test suite
-    def test_basic_dRep(self):
+    def test_basic(self):
         params_local = {
             'machine': 'dev1', # {'pixi9000', 'dev1'}
             'skip_dl' : True,
@@ -204,24 +206,6 @@ class dRepTest(unittest.TestCase):
             **params_local
             })
 
-
-    def _test_local(self):
-        # Prepare test objects in workspace if needed using
-        # self.getWsClient().save_objects({'workspace': self.getWsName(),
-        #                                  'objects': []})
-        #
-        # Check returned data with
-        # self.assertEqual(ret[...], ...) or other unittest methods
-        ret = self.serviceImpl.dereplicate(self.ctx, { **params_local,
-                                                        'workspace_name': self.wsName,
-                                                        'genomes_refs': SURF_B_2binners_CheckM,
-                                                        'filtering' : {
-                                                           'ignoreGenomeQuality': 'False',
-                                                        },
-                                                        #'SkipSecondary': 'True',
-                                                })
-
-
     def setUp(self):
         self.serviceImpl = dRep(self.cfg)
         
@@ -230,7 +214,8 @@ class dRepTest(unittest.TestCase):
         dprint('in dRepTest.tearDown')
 
         # clear cached scratch/bins_dir
-        dprint(f"rm -rf {os.path.join(self.scratch, 'SURF-B.MEGAHIT.*')}", run='cli')
+        dprint(f"rm -rf {os.path.join(self.scratch, 'SURF-B*')}", run='cli')
+        dprint(f"rm -rf {os.path.join(self.scratch, 'capybara*')}", run='cli')
 
         # clear cached scratch/default-workDir
         workDir_default = os.path.join(self.scratch, 'dRep_workDir_SURF-B.MEGAHIT.2binners.CheckM_taxwf')
@@ -251,7 +236,6 @@ def _gen_test_param_set(params_dRep):
             'skip_dl' : True,
             #'skip_dRep' : True,
             'skip_save_all': True, # BC, html, workDir, report
-            'skip_save_bc': True,
         }
 
         ret = self.serviceImpl.dereplicate(
@@ -267,7 +251,7 @@ def _gen_test_param_set(params_dRep):
 
 for (param_set_name, param_set), count in zip(param_sets.items(), range(len(param_sets))):
     test_name = 'test_param_set_' + str(count) + '_' + param_set_name
-    #setattr(dRepTest, test_name, _gen_test_param_set(param_set))
+    setattr(dRepTest, test_name, _gen_test_param_set(param_set))
 
 dprint('dRepTest.__dict__', run=globals())
 

@@ -185,7 +185,9 @@ class dRep:
             elif params['genomes_refs'] == dRep_server_test.capybaraGut_MaxBin2:
                 bins_dir_name_l = ['capybaraGut.MaxBin2']
             elif params['genomes_refs'] == dRep_server_test.capybaraGut_MetaBAT2:
-                bins_dir_name_l = ['capybaraGut.MetaBat2']
+                bins_dir_name_l = ['capybaraGut.MetaBAT2']
+            elif params['genomes_refs'] == dRep_server_test.capybaraGut_2binners:
+                bins_dir_name_l = ['capybaraGut.MaxBin2', 'capybaraGut.MetaBAT2']
             else:
                 assert False, f'skip_dl but did not prepare for genomes_refs {params["genomes_refs"]}'
 
@@ -355,7 +357,7 @@ class dRep:
             binnedContigs.reduce_to_dereplicated(bins_derep_dir)
 
             if not binnedContigs.is_empty():
-                if params.get('skip_save_bc'):
+                if params.get('skip_save_bc') or params.get('skip_save_all'):
                     BinnedContigs.saved_instances.append(binnedContigs)
                 else: 
                     objects_created.append(binnedContigs.save(binnedContigs.name + ".dRep", params['workspace_name']))
