@@ -62,16 +62,16 @@ class HTMLBuilder():
         ### Initialize dataframe with names and NaNs
         
         names = ['BinnedContigs Name', 'Bin Name', 'File Name']
+        attr = ['Length', 'N50', 'GC', 'Completeness', 'Contamination', 'Strain Heterogeneity']
         preproc = ['Length Filtered']
-        attr = ['Completeness', 'Contamination', 'Strain Heterogeneity', 'Length', 'N50', 'GC']
-        res = ['CheckM (Compl/Contam) Filtered', 'Prim/Sec Cluster', 'Dereplicated']
+        res = ['CheckM Filtered', 'Prim/Sec Cluster', 'Dereplicated']
 
-        attr_chdb = ['Completeness', 'Contamination', 'Strain heterogeneity', 'Genome size (bp)', 'N50 (scaffolds)', 'GC'] # Chdb.csv header names corresponding to attr
+        attr_chdb = ['Genome size (bp)', 'N50 (scaffolds)', 'GC', 'Completeness', 'Contamination', 'Strain heterogeneity'] # Chdb.csv header names corresponding to attr
 
         if not ignoreGenomeQuality:
-            columns = names + preproc + attr + res
+            columns = names + attr[:3] + preproc + attr[3:] + res
         else:
-            columns = names + preproc + attr[3:] + res[1:]
+            columns = names + attr[:3] + preproc + res[1:]
         
         smmr = pd.DataFrame(columns=columns)
 
@@ -98,31 +98,32 @@ class HTMLBuilder():
             df_stats = pd.DataFrame.from_dict(binnedContigs.stats['bin_stats'], orient='index')
             df_stats_l.append(df_stats)
 
-        try:
-            df_stats = pd.concat(df_stats_l)
-        except:
-            dprint("[binnedContigs.stats for binnedContigs in self.binnedContigs]", run=locals())
-            raise
+        df_stats = pd.concat(df_stats_l)
         df_stats.index.name = 'File Name'
         df_stats.rename(columns={'length': 'Length'}, inplace=True)
 
         # populate basic stats
-        smmr[attr[3:]] = df_stats.loc[smmr.index, attr[3:]] # length/N50/GC (not from checkm)
+        smmr[attr[:3]] = df_stats.loc[smmr.index, attr[:3]] # length/N50/GC (not from checkm)
+
+        # sanity check part i ...
+        if not ignoreGenomeQuality:
+            smmr_selfCalc = smmr.loc[chdb.index, attr[:3]] # just the checkm parts
 
         # populate
         if not ignoreGenomeQuality:
-            smmr[attr[:5]] = chdb.loc[smmr.index, attr_chdb[:5]] # all rel Chdb.csv columns (overwrite some length/N50) except GC, which is wrong
+            smmr.loc[chdb.index, attr[:2] + attr[3:]] = chdb.loc[chdb.index, attr_chdb[:2] + attr_chdb[3:]].values # all rel Chdb.csv columns (overwrite some length/N50) except GC, which is wrong
+            # sanity check part ii ...
+            smmr_checkmCalc = smmr.loc[chdb.index, attr[:3]]; assert (smmr_selfCalc == smmr_checkmCalc).all().all()
             smmr['Length Filtered'] = ~ smmr.index.isin(chdb.index)
-            smmr.loc[~ smmr['Length Filtered'], 'CheckM (Compl/Contam) Filtered'] = ~ smmr.loc[~ smmr['Length Filtered']].index.isin(bdb.index) # checkm-filtered column
+            smmr.loc[~ smmr['Length Filtered'], 'CheckM Filtered'] = ~ smmr.loc[~ smmr['Length Filtered']].index.isin(bdb.index) # checkm-filtered column
             smmr.loc[cdb.index, 'Prim/Sec Cluster'] = cdb['secondary_cluster']
-            smmr.loc[smmr['CheckM (Compl/Contam) Filtered'].eq(False), 'Dereplicated'] = ~ smmr.index[smmr['CheckM (Compl/Contam) Filtered'].eq(False)].isin(wdb.index) # dereplicated col
+            smmr.loc[smmr['CheckM Filtered'].eq(False), 'Dereplicated'] = ~ smmr.index[smmr['CheckM Filtered'].eq(False)].isin(wdb.index) # dereplicated col
     
         else:
             smmr['Length Filtered'] = ~ smmr.index.isin(bdb.index)
             smmr.loc[cdb.index, 'Prim/Sec Cluster'] = cdb['secondary_cluster']
             smmr.loc[smmr['Length Filtered'].eq(False) , 'Dereplicated'] = ~ smmr.index[smmr['Length Filtered'].eq(False)].isin(wdb.index) # dereplicated col
 
-        dprint('ignoreGenomeQuality', 'smmr[preproc + attr[3:] + res[1:]]', run=locals())
 
         smmr.reset_index(inplace=True)
         smmr = smmr[columns]

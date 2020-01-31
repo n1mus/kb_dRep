@@ -123,7 +123,12 @@ param_sets = {
 
 }
 
+param_sets = {'filtering': param_sets['filtering']}
 #param_sets = {key: param_sets[key] for key in list(param_sets.keys())[:-2]}
+
+machine = 'pixi9000' # {'pixi9000', 'dev1'}
+
+
 
 class dRepTest(unittest.TestCase):
 
@@ -193,9 +198,9 @@ class dRepTest(unittest.TestCase):
         dprint(tag + 'DO NOT FORGET TO GRAB HTML(S)' + tag)
 
     # TODO if this throws, kill test suite
-    def test_basic(self):
+    def _test_basic(self):
         params_local = {
-            'machine': 'dev1', # {'pixi9000', 'dev1'}
+            'machine': machine, # {'pixi9000', 'dev1'}
             'skip_dl' : True,
             'skip_save_all': True,
             }
@@ -232,9 +237,9 @@ def _gen_test_param_set(params_dRep):
         dprint('Running test with params_dRep:', params_dRep)
 
         params_local = {
-            'machine': 'dev1', # {'pixi9000', 'dev1'}
+            'machine': machine, # {'pixi9000', 'dev1'}
             'skip_dl' : True,
-            #'skip_dRep' : True,
+            'skip_dRep' : True,
             'skip_save_all': True, # BC, html, workDir, report
         }
 

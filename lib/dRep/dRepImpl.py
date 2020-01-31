@@ -307,7 +307,7 @@ class dRep:
         #####
 
         if params.get('skip_dRep'):
-            dRep_workDir_name = 'dRep_workDir_SURF-B.MEGAHIT.2binners.CheckM_taxwf'
+            dRep_workDir_name = 'dRep_workDir_capybaraGut.2binners.filtering'
             dRep_workDir = os.path.join(self.shared_folder, dRep_workDir_name)
 
             shutil.copytree(os.path.join(self.testData_dir, dRep_workDir_name), dRep_workDir)
