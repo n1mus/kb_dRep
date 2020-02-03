@@ -36,10 +36,10 @@ class HTMLBuilder():
 
 
     def _build(self):
+        self._build_command()
         self._build_summary()
         self._build_figures()
         self._build_warnings()
-        self._build_parameters()
         
         for line in fileinput.input(self.html_path, inplace=True):
             line_stripped = line.strip()
@@ -49,7 +49,7 @@ class HTMLBuilder():
                 print(line, end='')
 
 
-    def _build_parameters(self):
+    def _build_command(self):
         self.replacements['CMD_TAG'] = self.dRep_cmd
 
 

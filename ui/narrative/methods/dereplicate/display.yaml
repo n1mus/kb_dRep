@@ -192,15 +192,15 @@ description : |
     <div class="section" id="genome-comparison">
     <h2>Genome comparison<a class="headerlink" href="#genome-comparison" title="Permalink to this headline">¶</a></h2>
     <p>dRep can rapidly and accurately compare a list of genomes in a pair-wise manner. This allows identification of groups of organisms that share similar DNA content in terms of Average Nucleotide Identity (ANI).</p>
-    <p>dRep performs this in two steps- first with a rapid primary algorithm (Mash), and second with a more sensitive algorithm (ANIm). We can’t just use Mash because, while incredibly fast, it is not robust to genome incompletenss (see <a class="reference internal" href="choosing_parameters.html"><span class="doc">Choosing parameters</span></a>) and only provides an “estimate” of ANI. ANIm is robust to genome incompleteness and is more accurate, but too slow to perform pair-wise comparisons of longer genome lists.</p>
+    <p>dRep performs this in two steps- first with a rapid primary algorithm (Mash), and second with a more sensitive algorithm (ANIm). We can’t just use Mash because, while incredibly fast, it is not robust to genome incompletenss (see <a class="reference internal" href="https://drep.readthedocs.io/en/latest/choosing_parameters.html"><span class="doc">Choosing parameters</span></a>) and only provides an “estimate” of ANI. ANIm is robust to genome incompleteness and is more accurate, but too slow to perform pair-wise comparisons of longer genome lists.</p>
     <p>dRep first compares all genomes using Mash, and then only runs the secondary algorithm (ANIm or gANI) on sets of genomes that have at least 90% Mash ANI. This results in a great decrease in the number of (slow) secondary comparisons that need to be run while maintaining the sensitivity of ANIm.</p>
-    <img alt="_images/FigureD.png" src="_images/FigureD.png" />
+    <img alt="img/FigureD.png" src="img/FigureD.png" />
     </div>
     <div class="section" id="genome-de-replication">
     <h2>Genome de-replication<a class="headerlink" href="#genome-de-replication" title="Permalink to this headline">¶</a></h2>
-    <p>De-replication is the process of identifying sets of genomes that are the “same” in a list of genomes, and removing all but the “best” genome from each redundant set. How similar genomes need to be to be considered “same”, how to determine which genome is “best”, and other important decisions are discussed in <a class="reference internal" href="choosing_parameters.html"><span class="doc">Choosing parameters</span></a></p>
+    <p>De-replication is the process of identifying sets of genomes that are the “same” in a list of genomes, and removing all but the “best” genome from each redundant set. How similar genomes need to be to be considered “same”, how to determine which genome is “best”, and other important decisions are discussed in <a class="reference internal" href="https://drep.readthedocs.io/en/latest/choosing_parameters.html"><span class="doc">Choosing parameters</span></a></p>
     <p>A common use for genome de-replication is the case of individual assembly of metagenomic data. If metagenomic samples are collected in a series, a common way to assemble the short reads is with a “co-assembly”. That is, combining the reads from all samples and assembling them together. The problem with this is assembling similar strains together can severely fragment assemblies, precluding recovery of a good genome bin. An alternative option is to assemble each sample separately, and then “de-replicate” the bins from each assembly to make a final genome set.</p>
-    <img alt="_images/Figure0.jpg" src="_images/Figure0.jpg" />
+    <img alt="img/Figure0.jpg" src="img/Figure0.jpg" />
     <p>The steps to this process are:</p>
     <ul class="simple">
     <li>Assemble each sample separately using your favorite assembler. You can also perform a co-assembly to catch low-abundance microbes</li>
@@ -218,7 +218,7 @@ description : |
     <div class="admonition seealso">
     <p class="first admonition-title">See also</p>
     <dl class="last docutils">
-    <dt><a class="reference internal" href="module_descriptions.html"><span class="doc">Module Descriptions</span></a></dt>
+    <dt><a class="reference internal" href="https://drep.readthedocs.io/en/latest/module_descriptions.html"><span class="doc">Module Descriptions</span></a></dt>
     <dd>For more general descriptions of routine parameters</dd>
     </dl>
     </div>
@@ -264,12 +264,12 @@ description : |
     <h2>What is the minimum genome completeness allowed in analysis?<a class="headerlink" href="#what-is-the-minimum-genome-completeness-allowed-in-analysis" title="Permalink to this headline">¶</a></h2>
     <p>This decision is much more complicated than the previous. Essentially, there exists a trade-off between computational efficiency and the minimum genome completeness.</p>
     <div class="figure align-center" id="id3">
-    <a class="reference internal image-reference" href="_images/FigureB.png"><img alt="_images/FigureB.png" src="_images/FigureB.png" style="width: 400px;" /></a>
+    <a class="reference internal image-reference" href="img/FigureB.png"><img alt="img/FigureB.png" src="img/FigureB.png" style="width: 400px;" /></a>
     <p class="caption"><span class="caption-text"><strong>Figure A</strong>: Five genomes are subset to fractions ranging from 10% - 100%, and fractions from the same genome are compared. The x-axis is the minimum genome completeness allowed. The looser this value is, the wider the range of aligned fractions.</span></p>
     </div>
     <p>As shown in the above Figure A, the lower the limit of genome completeness, the lower possible aligned fraction of two genomes. This makes sense- if you randomly take 20% of a genome, and than do the same thing again, when you compare these two random 20% subsets you would not expect very much of them to align. This “aligned fraction” really becomes a problem when you consider it’s effect on Mash:</p>
     <div class="figure align-center" id="id4">
-    <a class="reference internal image-reference" href="_images/subsettingv0.png"><img alt="_images/subsettingv0.png" src="_images/subsettingv0.png" style="width: 400px;" /></a>
+    <a class="reference internal image-reference" href="img/subsettingv0.png"><img alt="img/subsettingv0.png" src="img/subsettingv0.png" style="width: 400px;" /></a>
     <p class="caption"><span class="caption-text"><strong>Figure B</strong>: An identical <em>E. coli</em> genome is subset to fractions ranging from 10% - 100% and fractions are compared. When lower amounts of the genome align (due to incompleteness), Mash ANI is severely impacted</span></p>
     </div>
     <p>As shown in the above Figure B, the lower the aligned fraction, the lower the reported Mash ANI <strong>for identical genomes</strong>.</p>
@@ -283,11 +283,11 @@ description : |
     <p>You don’t want to set the primary cluster threshold super low, however, as this would result in more genomes being included in each primary cluster, and thus more secondary comparisons (which are slow), and thus a higher run-time.</p>
     <p>Putting this altogether gives us a figure with the lowest reported ANI of identical genomes being subset to different fractions. This figure only takes into account 5 different genomes, but gives a rough idea of the limits.</p>
     <div class="figure align-center">
-    <a class="reference internal image-reference" href="_images/minANI.png"><img alt="_images/minANI.png" src="_images/minANI.png" style="width: 400px;" /></a>
+    <a class="reference internal image-reference" href="img/minANI.png"><img alt="img/minANI.png" src="img/minANI.png" style="width: 400px;" /></a>
     </div>
     <p>A final piece to consider is that when running dRep for real, the user doesn’t actually know how incomplete their genomes are. They have to rely on metrics like single copy gene inventories to tell them. This is the reason phage and plasmids are not currently supported by dRep- there is no way of knowing how complete they are, and thus no way of filtering out the bins that are too incomplete. In general though, checkM is pretty good at accessing genome completeness:</p>
     <div class="figure align-center">
-    <a class="reference internal image-reference" href="_images/checkM.png"><img alt="_images/checkM.png" src="_images/checkM.png" style="width: 400px;" /></a>
+    <a class="reference internal image-reference" href="img/checkM.png"><img alt="img/checkM.png" src="img/checkM.png" style="width: 400px;" /></a>
     </div>
     <div class="admonition note">
     <p class="first admonition-title">Note</p>
@@ -295,10 +295,10 @@ description : |
     <ul class="last simple">
     <li>Going below 50% completeness is not recommended. The resulting genomes will be very crappy anyways, and even the secondary algorithms break-down at this point.</li>
     <li>Lowering the secondary ANI should result in a consummate lowering in MASH ANI. This is because you want Mash to group non-similar <em>and</em> incomplete genomes.</li>
-    <li>To make sure clusters are not being split unnecessarily, you can run the warnings at the end. See <a class="reference internal" href="module_descriptions.html"><span class="doc">Module Descriptions</span></a> for info</li>
+    <li>To make sure clusters are not being split unnecessarily, you can run the warnings at the end. See <a class="reference internal" href="https://drep.readthedocs.io/en/latest/module_descriptions.html"><span class="doc">Module Descriptions</span></a> for info</li>
     </ul>
     </div>
     </div>
     <div class="section" id="the-rest">
     <h2>The Rest<a class="headerlink" href="#the-rest" title="Permalink to this headline">¶</a></h2>
-    <p>The most important and confusing parameters are described above. For information on the other parameters, see <a class="reference internal" href="module_descriptions.html"><span class="doc">Module Descriptions</span></a></p>
+    <p>The most important and confusing parameters are described above. For information on the other parameters, see <a class="reference internal" href="https://drep.readthedocs.io/en/latest/module_descriptions.html"><span class="doc">Module Descriptions</span></a></p>
