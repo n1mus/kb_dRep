@@ -29,7 +29,7 @@ parameters :
        ui-name : |
            Binned contigs
        short-hint : |
-           Genomes or binned contigs to be clustered and dereplicated
+           Genomes or binned contigs to be dereplicated
     length :
         ui-name : |
            length

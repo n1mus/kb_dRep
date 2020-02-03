@@ -162,7 +162,7 @@ class HTMLBuilder():
             try:
                 PdfFileReader(pdf_path)
             except:
-                pdf_paths.remove(pdf_path)
+                pdfs.remove(pdf)
 
 
         def _pdfTag(pdf):
