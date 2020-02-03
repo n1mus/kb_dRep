@@ -57,6 +57,7 @@ class HTMLBuilder():
         '''Build data frame from dRep output'''
         
         ignoreGenomeQuality = '--ignoreGenomeQuality' in self.dRep_params
+        
 
         ###
         ### Initialize dataframe with names and NaNs
@@ -128,10 +129,10 @@ class HTMLBuilder():
         smmr.reset_index(inplace=True)
         smmr = smmr[columns]
 
-        dprint('smmr', run=locals())
-        dprint('smmr.dtypes', run=locals())
-        dprint(r'smmr.to_json(orient="values").replace("null", "\"-\"")', run=locals())
-        dprint("json.dumps([{'title': column} for column in columns])", run={**locals(), **globals()})
+        #dprint('smmr', run=locals())
+        #dprint('smmr.dtypes', run=locals())
+        #dprint(r'smmr.to_json(orient="values").replace("null", "\"-\"")', run=locals())
+        #dprint("json.dumps([{'title': column} for column in columns])", run={**locals(), **globals()})
 
         self.replacements['JSON_TAG'] = smmr.to_json(orient='values').replace('null', '"-"')
         self.replacements['COLUMNS_TAG'] = json.dumps([{'title': column} for column in columns])
@@ -140,16 +141,29 @@ class HTMLBuilder():
     def _build_figures(self):
         shutil.copytree(os.path.join(self.dRep_workDir, 'figures'), self.figures_dir)
 
-        pdf_paths = [os.path.join(self.figures_dir, file_name) for file_name in os.listdir(self.figures_dir) if re.match(r'^.+\.pdf$', file_name)]
+        pdfs = ['Primary_clustering_dendrogram',
+                'Secondary_clustering_dendrograms',
+                'Clustering_scatterplots',
+                'Cluster_scoring',
+                'Winning_genomes',
+                ]
+
+        pdfs = [pdf + '.pdf' for pdf in pdfs]
+
+        pdfs = [pdf for pdf in pdfs if pdf in os.listdir(self.figures_dir)]
+
+        if len(pdfs) == 0:
+            self.replacements['FIGURES_TAG'] = "<i>No figures were generated</i>"
 
         # filter malformed
-        for pdf_path in pdf_paths:
+        # TODO filter empty pdfs
+        for pdf in pdfs:
+            pdf_path = os.path.join(self.figures_dir, pdf)
             try:
                 PdfFileReader(pdf_path)
             except:
                 pdf_paths.remove(pdf_path)
 
-        pdfs = [os.path.basename(pdf_path) for pdf_path in pdf_paths]
 
         def _pdfTag(pdf):
             return f'<embed src="figures/{pdf}" width="1000px" height="1000px">'
@@ -168,7 +182,7 @@ class HTMLBuilder():
             warnings = f.read()
 
         if warnings.strip() == '':
-            warnings = 'No warnings about almost divergent secondary clusters or remaining genome similarity'
+            warnings = '<i>No warnings about almost divergent secondary clusters or remaining genome similarity</i>'
 
         self.replacements['WARNINGS_TAG'] = warnings
 

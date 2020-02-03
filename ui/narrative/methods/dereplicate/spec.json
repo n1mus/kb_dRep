@@ -62,17 +62,6 @@
 	    "allow_multiple": false,
 	    "with_border": true
 	},{
-	    "id": "taxonomy",
-	    "parameters": [
-		"run_tax",
-		"tax_method",
-		"percent"
-	    ],
-	    "optional": false,
-	    "advanced": true,
-	    "allow_multiple": false,
-	    "with_border": true
-	},{
 	    "id": "warnings",
 	    "parameters": [
 		"warn_dist",
@@ -425,64 +414,6 @@
 		    "validate_as": "float"
 		}
         },{
-            "id": "run_tax",
-            "optional": true,
-            "advanced": true,
-            "allow_multiple": false,
-            "default_values": [ "False" ],
-            "field_type": "dropdown",
-	    "dropdown_options": {
-		    "options": [
-			 {
-			    "value": "True",
-			    "display": "True",
-			    "id": "True",
-			    "ui-name": "True"
-			 },{
-			    "value": "False",
-			    "display": "False",
-			    "id": "False",
-			    "ui-name": "False"
-			 }
-		    ]
-	    }
-
-        },{
-            "id": "tax_method",
-            "optional": true,
-            "advanced": true,
-            "allow_multiple": false,
-            "default_values": [ "percent" ],
-            "field_type": "dropdown",
-	    "dropdown_options": {
-		    "options": [
-			 {
-			    "value": "percent",
-			    "display": "percent",
-			    "id": "percent",
-			    "ui-name": "percent - The most descriptive taxonomic level with at least `percent` (following parameter) hits"
-			 },{
-			    "value": "max",
-			    "display": "max",
-			    "id": "max",
-			    "ui-name": "max - The centrifuge taxonomic level with the most overall hits"
-			 }
-		    ]
-	    }
-
-        },{
-            "id": "percent",
-            "optional": true,
-            "advanced": true,
-            "allow_multiple": false,
-            "default_values": [ "50" ],
-            "field_type": "text",
-            "text_options": {
-		    "validate_as": "float",
-		    "min_float": "0",
-		    "max_float": "100"
-		}
-        },{
             "id": "warn_dist",
             "optional": true,
             "advanced": true,
@@ -568,9 +499,6 @@
                 },{
                     "input_parameter": "scoring",
                     "target_property": "scoring"
-                },{
-                    "input_parameter": "taxonomy",
-                    "target_property": "taxonomy"
                 },{
                     "input_parameter": "warnings",
                     "target_property": "warnings"

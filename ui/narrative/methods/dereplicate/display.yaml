@@ -126,21 +126,6 @@ parameters :
                    size_weight
            short-hint: |
                    Weight of log(genome size) in genome scoring formula
-    run_tax:
-           ui-name: |
-                   run_tax
-           short-hint: |
-                   Generate taxonomy information (Tdb)
-    tax_method:
-           ui-name: |
-                   tax_method
-           short-hint: |
-                   Method of determining taxonomy
-    percent:
-           ui-name: |
-                   percent
-           short-hint: |
-                   Minimum percent for percent method (option of tax_method parameter)
     warn_dist:
        ui-name: |
            warn_dist
@@ -189,11 +174,6 @@ parameter-groups:
             <p>Based off of the formula:</p>
             <p>A*Completeness - B*Contamination + C*(Contamination * (strain_heterogeneity/100)) + D*log(N50) + E*log(size)</p>
             <p>A = completeness_weight; B = contamination_weight; C = strain_heterogeneity_weight; D = N50_weight; E = size_weight</p>
-    taxonomy:
-        ui-name: |
-            TAXONOMY
-        short-hint: |
-
     warnings:
         ui-name: |
             WARNINGS

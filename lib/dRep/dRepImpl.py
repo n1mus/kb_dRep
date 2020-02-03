@@ -119,11 +119,29 @@ class dRep:
         dprint('ctx', run=locals())
         dprint('params', run=locals())
 
-        def simple_return(msg):
+
+        def workDir_to_shock(dRep_workDir):
+            dfu_fileToShock_ret = self.dfu.file_to_shock({
+                'file_path': dRep_workDir,
+                'make_handle': 0,
+                'pack': 'zip',
+                })
+
+            workDirZip_shockInfo = {
+                'shock_id': dfu_fileToShock_ret['shock_id'],
+                'name': 'dRep_work_directory.zip',
+                'description': 'Work directory used by dRep. Contains intermediary files, logs, results'
+                }
+
+            return workDirZip_shockInfo
+
+
+        def simple_return(msg, **kwargs):
             kbr = KBaseReport(self.callback_url)
             report_params = {
                     'message': msg,
                     'workspace_name': params['workspace_name'],
+                    **kwargs
                     }
             report_info = kbr.create_extended_report(report_params)
             output = {
@@ -191,12 +209,7 @@ class dRep:
             else:
                 assert False, f'skip_dl but did not prepare for genomes_refs {params["genomes_refs"]}'
 
-            bins_dir_orig_l = [os.path.join(self.testData_dir, bins_dir_name) for bins_dir_name in bins_dir_name_l]
             bins_dir_l = [os.path.join(self.shared_folder, bins_dir_name) for bins_dir_name in bins_dir_name_l]
-
-            # copy bins_dir's to shared_folder
-            for bins_dir_orig, bins_dir in zip(bins_dir_orig_l, bins_dir_l):
-                shutil.copytree(bins_dir_orig, bins_dir)
 
             for upa, bins_dir in zip(params['genomes_refs'], bins_dir_l):
                 BinnedContigs(upa, get_bins_dir='local', bins_dir=bins_dir).calc_stats()
@@ -235,7 +248,7 @@ class dRep:
 
         # flatten param groups, if any
 
-        flag_grp_l = ['filtering', 'genome_comparison', 'clustering', 'scoring', 'taxonomy', 'warnings']
+        flag_grp_l = ['filtering', 'genome_comparison', 'clustering', 'scoring', 'warnings']
 
         for flag_grp in flag_grp_l:
             if params.get(flag_grp):
@@ -244,9 +257,13 @@ class dRep:
                     params[flag_indiv] = param_grp_d[flag_indiv]
                 params.pop(flag_grp)
 
-        # extract non-default parameters
+
+        #
 
         dRep_params = ['--debug']
+
+
+        #
 
         if params.get('machine') in ['pixi9000']:
             dRep_params.extend(['--processors', '8'])
@@ -257,6 +274,9 @@ class dRep:
             dRep_params.extend(['--processors', '8'])
         else:
             assert False, 'Confused about what machine you\'re on'
+
+
+        # extract non-default parameters
 
         dRep_param_defaults = {
                 'length': 50000,
@@ -278,9 +298,6 @@ class dRep:
                 'strain_heterogeneity_weight': 1, 
                 'N50_weight': 0.5,
                 'size_weight': 0,
-                'run_tax': "False",
-                'tax_method': 'percent',
-                'percent': 50,
                 'warn_dist': 0.25, 
                 'warn_sim': 0.98,
                 'warn_aln': 0.25,
@@ -297,7 +314,6 @@ class dRep:
 
         dRep_params = [str(param) for param in dRep_params]
 
-        dprint("' '.join(dRep_params)", run=locals())
 
 
         #
@@ -307,12 +323,14 @@ class dRep:
         #####
 
         if params.get('skip_dRep'):
-            dRep_workDir_name = 'dRep_workDir_capybaraGut.2binners.filtering'
-            dRep_workDir = os.path.join(self.shared_folder, dRep_workDir_name)
+            if 'dRep_workDir_name' not in params:
+                raise Exception('Must supply workDir if skipping dRep!')
 
-            shutil.copytree(os.path.join(self.testData_dir, dRep_workDir_name), dRep_workDir)
+            dRep_workDir = os.path.join(self.shared_folder, params.get('dRep_workDir_name'))
 
-            dRep_cmd = 'Skipped running dRep'
+            dRep_cmd = (f"Skipped running dRep ... "
+                        "but current input params are: "
+                        "{' '.join(dRep_params)} and workDir is {dRep_workDir_name}")
 
         else:
             dRep_workDir = os.path.join(self.shared_folder, 'dRep_workDir_' + self.suffix)
@@ -331,12 +349,27 @@ class dRep:
             dprint('retcode', 'out', 'err', run=locals())
 
             if retcode != 0:
-                dprint(f"cat {os.path.join(dRep_workDir, 'log/cmd_logs/*.STDERR')}", run='cli') 
-                assert False, f'dRep dereplicate cmd [{dRep_cmd}] terminated with return code [{retcode}] with out [{out}] err [{err}] workDir [{dRep_workDir}]' #TODO change to graceful exit? dRep retcodes?
+
+                # check: if Bdb.csv is empty -> nothing passed length/qual filtering
+                with open(os.path.join(dRep_workDir, 'data_tables/Bdb.csv')) as f:
+                    num_lines = sum(1 for line in f)
+
+                if num_lines == 1:
+                    msg = 'Sorry, dRep terminated because no bins passed filtering'
+
+                else:
+                    msg = ("Sorry, commmand:\n"
+                            "`{dRep_cmd}`\n"
+                            "terminated abnormally with return code: {retcode} with standard output:\n"
+                            "[{out}]\n"
+                            "and standard error:\n"
+                            "[{err}]\n"
+                            "and work directory: [{dRep_workDir}]")
+
+                dprint(msg)
+                simple_return(msg, file_links = [workDir_to_shock(dRep_workDir)])
 
 
-        dprint('cat /miniconda/lib/python3.6/site-packages/checkm/DATA_CONFIG', run='cli')
- 
 
 
 
@@ -353,7 +386,6 @@ class dRep:
         # for each original BinnedContigs
         for binnedContigs in BinnedContigs.created_instances:
             dprint(f'about to dereplicate {binnedContigs.name}')
-            dprint(f"ls /kb/module/work/tmp/SURF*", run='cli')
             binnedContigs.reduce_to_dereplicated(bins_derep_dir)
 
             if not binnedContigs.is_empty():
@@ -405,18 +437,8 @@ class dRep:
         ####
         #####
         ######
-        
-        dfu_fileToShock_ret = self.dfu.file_to_shock({
-            'file_path': dRep_workDir,
-            'make_handle': 0,
-            'pack': 'zip',
-            })
 
-        workDirZip_shockInfo = {
-            'shock_id': dfu_fileToShock_ret['shock_id'],
-            'name': 'dRep_work_directory.zip',
-            'description': 'Work directory used by dRep. Contains figures, (possibly) genome clustering warnings, logs, all intermediary files'
-            }
+        workDirZip_shockInfo = workDir_to_shock(dRep_workDir)
 
 
 
@@ -428,7 +450,7 @@ class dRep:
         ######
 
         report_params = {
-                'message': '',
+                'message': 'dRep dereplicate ran successfully',
                 'direct_html_link_index': 0,
                 'html_links': [htmlZip_report_dict],
                 'file_links': [workDirZip_shockInfo],

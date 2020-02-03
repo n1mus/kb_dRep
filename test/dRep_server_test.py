@@ -26,7 +26,7 @@ capybaraGut_MaxBin2 = ['37096/11/1']
 capybaraGut_MetaBAT2 = ['37096/9/1']
 capybaraGut_2binners = capybaraGut_MetaBAT2 + capybaraGut_MaxBin2
 
-genomes_refs = capybaraGut_2binners
+genomes_refs = SURF_B_2binners_CheckM
 
 param_sets = {
 
@@ -109,25 +109,18 @@ param_sets = {
         'SkipMASH': 'True',
         'SkipSecondary': 'True',
         }, 
-
-#    'tax_options': { # FAIL
-#        'run_tax': 'True',
-#        'tax_method': 'max',
-#        'percent': 55,
-#        },
-
-#    'centrifuge': { # FAIL
-#        'run_tax': 'True',
-#        'percent': 55
-#        },
-
 }
 
-param_sets = {'filtering': param_sets['filtering']}
+#param_sets = {'filtering': param_sets['filtering']}
 #param_sets = {key: param_sets[key] for key in list(param_sets.keys())[:-2]}
 
-machine = 'pixi9000' # {'pixi9000', 'dev1'}
-
+params_local = {
+    'machine': 'pixi9000', # {'pixi9000', 'dev1'}
+    'skip_dl' : True,
+    'skip_dRep': True,
+    'dRep_workDir_name': "dRep_workDir_SURF-B.MEGAHIT.2binners.CheckM_taxwf",
+    'skip_save_all': True,
+}
 
 
 class dRepTest(unittest.TestCase):
@@ -187,7 +180,6 @@ class dRepTest(unittest.TestCase):
         dprint('ls /kb/module/test/data', run='cli')
 
 
-
     @classmethod
     def tearDownClass(cls):
         dprint('in dRepTest.tearDownClass')
@@ -196,24 +188,13 @@ class dRepTest(unittest.TestCase):
             print('Test workspace was deleted')
         tag = ' ' + ('!!!!!!!!!!!!!!!!!!!!!!!!!!' * 40) + ' '
         dprint(tag + 'DO NOT FORGET TO GRAB HTML(S)' + tag)
-
-    # TODO if this throws, kill test suite
-    def _test_basic(self):
-        params_local = {
-            'machine': machine, # {'pixi9000', 'dev1'}
-            'skip_dl' : True,
-            'skip_save_all': True,
-            }
-
-        ret = self.serviceImpl.dereplicate(self.ctx, {
-            'workspace_name': self.wsName,
-            'genomes_refs': genomes_refs,
-            **params_local
-            })
+        
 
     def setUp(self):
         self.serviceImpl = dRep(self.cfg)
-        
+
+        dprint(f"cp -r {self.testData_dir}/* {self.scratch}", run='cli')
+
 
     def tearDown(self):
         dprint('in dRepTest.tearDown')
@@ -222,26 +203,25 @@ class dRepTest(unittest.TestCase):
         dprint(f"rm -rf {os.path.join(self.scratch, 'SURF-B*')}", run='cli')
         dprint(f"rm -rf {os.path.join(self.scratch, 'capybara*')}", run='cli')
 
-        # clear cached scratch/default-workDir
-        workDir_default = os.path.join(self.scratch, 'dRep_workDir_SURF-B.MEGAHIT.2binners.CheckM_taxwf')
-        if os.path.exists(workDir_default):
-            shutil.rmtree(workDir_default)
-
         # clear saved instances
         BinnedContigs.clear()
 
-######################################
+
+
+    # TODO if this throws, kill test suite
+    def test_basic(self):
+        ret = self.serviceImpl.dereplicate(self.ctx, {
+            'workspace_name': self.wsName,
+            'genomes_refs': genomes_refs,
+            **params_local
+            }
+            )
+
+############################################################################################
 
 def _gen_test_param_set(params_dRep):
     def test_param_set(self):
         dprint('Running test with params_dRep:', params_dRep)
-
-        params_local = {
-            'machine': machine, # {'pixi9000', 'dev1'}
-            'skip_dl' : True,
-            'skip_dRep' : True,
-            'skip_save_all': True, # BC, html, workDir, report
-        }
 
         ret = self.serviceImpl.dereplicate(
             self.ctx, 
@@ -256,7 +236,7 @@ def _gen_test_param_set(params_dRep):
 
 for (param_set_name, param_set), count in zip(param_sets.items(), range(len(param_sets))):
     test_name = 'test_param_set_' + str(count) + '_' + param_set_name
-    setattr(dRepTest, test_name, _gen_test_param_set(param_set))
+    #setattr(dRepTest, test_name, _gen_test_param_set(param_set))
 
 dprint('dRepTest.__dict__', run=globals())
 
