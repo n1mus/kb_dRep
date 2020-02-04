@@ -219,7 +219,18 @@ class dRep:
         else:
 
             for upa in params['genomes_refs']:
-                BinnedContigs(upa, get_bins_dir='download').calc_stats()
+                bc = BinnedContigs(upa, get_bins_dir='download')
+                
+                if bc.is_empty():
+                    # never mention this bc again
+                    params['genomes_refs'].remove(upa)
+                    BinnedContigs.created_instance.remove(bc)
+
+                bc.calc_stats()
+
+            if len(params['genomes_refs']) == 0:
+                msg = 'Sorry, please input at least one non-empty BinnedContigs'
+                raise Exception(msg)
 
 
         #
