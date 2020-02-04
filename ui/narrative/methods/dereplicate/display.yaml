@@ -309,20 +309,15 @@ publications:
     -
 
         display-text: |
-            Github
-        link: https://github.com/n1mus/dRep/tree/master/ui/narrative/methods/dereplicate/img
-
+            <a href="https://github.com/n1mus/dRep/tree/master/ui/narrative/methods/dereplicate/img">Github</a>
     -
 
         display-text: |
-            Documentation
-        link: https://drep.readthedocs.io/en/latest/index.html
-
+            <a href="https://drep.readthedocs.io/en/latest/index.html">Read the Docs</a>
     -
 
         display-text: |
-            Olm, M., Brown, C., Brooks, B. <i>et al</i>. dRep: a tool for fast and accurate genomic comparisons that enables improved genome recovery from metagenomes through de-replication. <i>ISME J</i> <b>11</b>, 2864–2868 (2017). https://doi.org/10.1038/ismej.2017.126
-        link: https://www.nature.com/articles/ismej2017126
+            <a href="https://www.nature.com/articles/ismej2017126">Olm, M., Brown, C., Brooks, B. <i>et al</i>. dRep: a tool for fast and accurate genomic comparisons that enables improved genome recovery from metagenomes through de-replication. <i>ISME J</i> <b>11</b>, 2864–2868 (2017). https://doi.org/10.1038/ismej.2017.126</a>
 
     -
 
