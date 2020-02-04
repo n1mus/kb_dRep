@@ -367,7 +367,7 @@ class dRep:
                             "and work directory: [{dRep_workDir}]")
 
                 dprint(msg)
-                simple_return(msg, file_links = [workDir_to_shock(dRep_workDir)])
+                return simple_return(msg, file_links = [workDir_to_shock(dRep_workDir)])
 
 
 

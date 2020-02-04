@@ -19,7 +19,7 @@ suggestions:
            []
 
        next:
-           [app3, app4]
+           []
 
 #
 # Configure the display and description of parameters
