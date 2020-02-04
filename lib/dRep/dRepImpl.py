@@ -161,8 +161,9 @@ class dRep:
         ######
 
         if isinstance(params['genomes_refs'], list) and len(set(params['genomes_refs'])) < len(params['genomes_refs']):
-            return simple_return('Please do not input duplicate BinnedContigs')
-            
+            msg = 'Please do not input duplicate BinnedContigs'
+            #return simple_return(msg)
+            raise Exception(msg)
 
 
         #
@@ -363,8 +364,7 @@ class dRep:
                             "terminated abnormally with return code: {retcode} with standard output:\n"
                             "[{out}]\n"
                             "and standard error:\n"
-                            "[{err}]\n"
-                            "and work directory: [{dRep_workDir}]")
+                            "[{err}]\n")
 
                 dprint('msg', run=locals())
                 #return simple_return(msg, file_links = [workDir_to_shock(dRep_workDir)])
