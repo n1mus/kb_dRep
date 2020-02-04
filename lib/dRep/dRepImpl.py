@@ -356,7 +356,6 @@ class dRep:
 
                 if num_lines == 1:
                     msg = 'Sorry, dRep terminated because no bins passed length/CheckM filtering'
-                    #return simple_return(msg, file_links = [workDir_to_shock(dRep_workDir)])
 
                 else:
                     msg = ("Sorry, commmand:\n"
@@ -368,6 +367,7 @@ class dRep:
                             "and work directory: [{dRep_workDir}]")
 
                 dprint('msg', run=locals())
+                #return simple_return(msg, file_links = [workDir_to_shock(dRep_workDir)])
                 raise Exception(msg)
 
 
