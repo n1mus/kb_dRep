@@ -215,7 +215,7 @@ class dRepTest(unittest.TestCase):
             'genomes_refs': genomes_refs,
             **params_local
             }
-            )
+        )
 
 ############################################################################################
 

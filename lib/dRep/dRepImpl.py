@@ -116,7 +116,6 @@ class dRep:
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
 
-        dprint('ctx', run=locals())
         dprint('params', run=locals())
 
 
@@ -230,7 +229,7 @@ class dRep:
 
             if len(params['genomes_refs']) == 0:
                 msg = 'Sorry, please input at least one non-empty BinnedContigs'
-                raise Exception(msg)
+                raise ValueError(msg)
 
 
         #
@@ -352,7 +351,7 @@ class dRep:
 
 
             dprint('Running dRep cmd:', f'{dRep_cmd}')
-            comp_proc =  subprocess.run(dRep_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            comp_proc = subprocess.run(dRep_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
             retcode = comp_proc.returncode
             out = comp_proc.stdout.decode('utf-8')
@@ -367,7 +366,7 @@ class dRep:
                     num_lines = sum(1 for line in f)
 
                 if num_lines == 1:
-                    msg = 'Sorry, dRep terminated because no bins passed length/CheckM filtering'
+                    msg = 'Sorry, dRep terminated because no bins passed length and CheckM filtering'
 
                 else:
                     msg = ("Sorry, commmand:\n"

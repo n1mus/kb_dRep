@@ -2,7 +2,7 @@ module-name:
     dRep
 
 module-description:
-    A KBase module
+    Dereplicate genomes
 
 service-language:
     python

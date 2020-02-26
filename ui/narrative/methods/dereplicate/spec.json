@@ -3,7 +3,7 @@
     "authors": [
         "suminw"
     ],
-    "contact": "sumin.w.wang@gmail.com",
+    "contact": "help@kbase.us",
     "categories": ["active"],
     "widgets": {
         "input": null,
@@ -14,10 +14,10 @@
 	    "id": "filtering",
 	    "parameters": [
 	        "length",
-		"completeness",
-		"contamination",
-		"ignoreGenomeQuality"
-	    ],
+            "completeness",
+            "contamination",
+            "ignoreGenomeQuality"
+            ],
 	    "optional": false,
 	    "advanced": true,
 	    "allow_multiple": false,
@@ -25,10 +25,10 @@
 	},{
 	    "id": "genome_comparison",
 	    "parameters": [
-		"MASH_sketch",
-		"S_algorithm",
-		"n_PRESET"
-	    ],
+            "MASH_sketch",
+            "S_algorithm",
+            "n_PRESET"
+            ],
 	    "optional": false,
 	    "advanced": true,
 	    "allow_multiple": false,
@@ -36,14 +36,14 @@
 	},{
 	    "id": "clustering",
 	    "parameters": [
-		"P_ani",
-		"S_ani",
-		"SkipMash",
-		"SkipSecondary",
-		"cov_thresh",
-		"coverage_method",
-		"clusterAlg"
-	    ],
+            "P_ani",
+            "S_ani",
+            "SkipMash",
+            "SkipSecondary",
+            "cov_thresh",
+            "coverage_method",
+            "clusterAlg"
+            ],
 	    "optional": false,
 	    "advanced": true,
 	    "allow_multiple": false,
@@ -51,12 +51,12 @@
 	},{
 	    "id": "scoring",
 	    "parameters": [
-		"completeness_weight",
-		"contamination_weight",
-		"strain_heterogeneity_weight",
-		"N50_weight",
-		"size_weight"
-	    ],
+            "completeness_weight",
+            "contamination_weight",
+            "strain_heterogeneity_weight",
+            "N50_weight",
+            "size_weight"
+            ],
 	    "optional": false,
 	    "advanced": true,
 	    "allow_multiple": false,
@@ -64,10 +64,10 @@
 	},{
 	    "id": "warnings",
 	    "parameters": [
-		"warn_dist",
-		"warn_sim",
-		"warn_aln"
-	    ],
+            "warn_dist",
+            "warn_sim",
+            "warn_aln"
+            ],
 	    "optional": false,
 	    "advanced": true,
 	    "allow_multiple": false,
@@ -504,8 +504,8 @@
                     "target_property": "warnings"
                 },{
                     "input_parameter": "genomes_refs",
-		    "target_type_transform": "list<ref>",
-                    "target_property": "genomes_refs"
+                    "target_property": "genomes_refs",
+		    "target_type_transform": "list<ref>"
                 },{
                     "input_parameter": "checkM_method",
                     "target_property": "checkM_method"
