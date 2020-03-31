@@ -1,10 +1,10 @@
 #
 # define display information
 #
-name: dRep dereplicate
+name: Dereplicate genomes using dRep
 
 tooltip: |
-    Dereplicate genomes
+    Dereplicate genomes based on ANI
 
 screenshots: []
 
@@ -40,7 +40,7 @@ parameters :
            completeness
         short-hint : |
            Minimum genome completeness
-    contamination : 
+    contamination :
         ui-name : |
            contamination
         short-hint : |
@@ -62,7 +62,7 @@ parameters :
             S_algorithm
         short-hint: |
             Algorithm for secondary clustering comparisons
-    n_PRESET : 
+    n_PRESET :
         ui-name : |
             n_PRESET
         short-hint: |
@@ -147,7 +147,7 @@ parameters :
               checkM_method
          short-hint : |
               checkM method
-        
+
 parameter-groups:
     filtering:
         ui-name: |
@@ -181,8 +181,6 @@ parameter-groups:
         short-hint: |
 
 
-    
- 
 description : |
 
     <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
@@ -207,7 +205,7 @@ description : |
     <li>Bin each assembly (and co-assembly) separately using your favorite binner</li>
     <li>Pull the bins from all assemblies together and run dRep on them</li>
     <li>Perform downstream analysis on the de-replicated genome list</li>
-    </ul> 
+    </ul>
 
 
     <h1>Choosing parameters<a class="headerlink" href="#choosing-parameters" title="Permalink to this headline">¶</a></h1>
@@ -304,7 +302,7 @@ description : |
     <p>The most important and confusing parameters are described above. For information on the other parameters, see <a class="reference internal" href="https://drep.readthedocs.io/en/latest/module_descriptions.html"><span class="doc">Module Descriptions</span></a></p>
 
 
-publications: 
+publications:
 
     -
 
