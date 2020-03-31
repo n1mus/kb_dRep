@@ -223,9 +223,10 @@ class dRep:
                 if bc.is_empty():
                     # never mention this bc again
                     params['genomes_refs'].remove(upa)
-                    BinnedContigs.created_instance.remove(bc)
-
-                bc.calc_stats()
+                    BinnedContigs.created_instances.remove(bc)
+                
+                else:
+                    bc.calc_stats()
 
             if len(params['genomes_refs']) == 0:
                 msg = 'Sorry, please input at least one non-empty BinnedContigs'

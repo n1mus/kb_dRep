@@ -139,14 +139,18 @@ class HTMLBuilder():
 
 
     def _build_figures(self):
+        '''
+        Fill self.replacements['FIGURES_TAG'] with html tags for pdfs
+        '''
         shutil.copytree(os.path.join(self.dRep_workDir, 'figures'), self.figures_dir)
 
-        pdfs = ['Primary_clustering_dendrogram',
-                'Secondary_clustering_dendrograms',
-                'Clustering_scatterplots',
-                'Cluster_scoring',
-                'Winning_genomes',
-                ]
+        pdfs = [
+            'Primary_clustering_dendrogram',
+            'Secondary_clustering_dendrograms',
+            'Clustering_scatterplots',
+            'Cluster_scoring',
+            'Winning_genomes',
+            ]
 
         pdfs = [pdf + '.pdf' for pdf in pdfs]
 
