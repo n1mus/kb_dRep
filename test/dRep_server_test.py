@@ -9,14 +9,18 @@ import sys
 import subprocess
 import re
 import tarfile
-
-from dRep.dRepImpl import dRep
-from dRep.dRepServer import MethodContext
-from dRep.authclient import KBaseAuth as _KBaseAuth
-from dRep.util.KBaseObjUtil import *
-from dRep.util.PrintUtil import *
+import logging
+import json
 
 from installed_clients.WorkspaceClient import Workspace
+
+from dRep.dRepServer import MethodContext
+from dRep.authclient import KBaseAuth as _KBaseAuth
+
+from dRep.dRepImpl import dRep
+from dRep.util.kbase_obj import BinnedContigs
+from dRep.util.dprint import dprint
+from dRep.util.config import _globals
 
 
 SURF_B_2binners = ['34837/23/1', '34837/3/1'] # maxbin, metabat
@@ -25,8 +29,35 @@ SURF_B_2binners_CheckM_dRep = ['34837/17/13', '34837/18/13'] # maxbin, metabat
 capybaraGut_MaxBin2 = ['37096/11/1']
 capybaraGut_MetaBAT2 = ['37096/9/1']
 capybaraGut_2binners = capybaraGut_MetaBAT2 + capybaraGut_MaxBin2
+small_arctic_metabat = ['34837/46/1']
 
-genomes_refs = SURF_B_2binners_CheckM
+
+file_combos = {
+    'SURF_B_2binners': {
+        'genomes_refs': ['34837/23/1', '34837/3/1'], # maxbin, metabat
+        'bins_dir_name_l': ['SURF-B.MEGAHIT.maxbin', 'SURF-B.MEGAHIT.metabat']
+        },
+    'SURF_B_2binners_CheckM': {
+        'genomes_refs': ['34837/16/1', '34837/2/1'], # maxbin, metabat
+        'bins_dir_name_l': ['SURF-B.MEGAHIT.maxbin.CheckM', 'SURF-B.MEGAHIT.metabat.CheckM'],
+        'dRep_workDir_name': 'dRep_workDir_SURF-B.MEGAHIT.2binners.CheckM_taxwf'
+        },
+    'SURF_B_2binners_CheckM_dRep': {
+        'genomes_refs': ['34837/17/13', '34837/18/13'] # maxbin, metabat
+        },
+    'capybaraGut_MaxBin2': {
+        'genomes_refs': ['37096/11/1'],
+        'bins_dir_name_l': ['capybaraGut.MaxBin2']
+        },
+    'capybaraGut_MetaBAT2': {
+        'genomes_refs': ['37096/9/1'],
+        'bins_dir_name_l': ['capybaraGut.MetaBAT2']
+        },
+    'capybaraGut_2binners': {
+        'genomes_refs': ['37096/11/1', '37096/9/1'],
+        'bins_dir_name_l': ['capybaraGut.MaxBin2', 'capybaraGut.MetaBAT2']
+        },
+    }
 
 param_sets = {
 
@@ -111,33 +142,41 @@ param_sets = {
         }, 
 }
 
-#param_sets = {'filtering': param_sets['filtering']}
+param_sets = {'filtering': param_sets['filtering']}
 #param_sets = {key: param_sets[key] for key in list(param_sets.keys())[:-2]}
 
+
 params_local = {
-    'machine': 'pixi9000', # {'pixi9000', 'dev1'}
+#---------------- machine specific----------------------    
+    'processors': 8,
+    'checkM_method': 'taxonomy_wf', # default uses 40GB memory, this uses 16GB (?)
+#----------------- skip --------------------------------    
     'skip_dl' : True,
-    'skip_dRep': True,
-    'dRep_workDir_name': "dRep_workDir_SURF-B.MEGAHIT.2binners.CheckM_taxwf",
-    'skip_save_all': True,
+    #'skip_dRep': True,
+    'skip_save_bc': True,
+    'skip_save_shock': True,
+#----------------- test data for skips -----------------    
+    **file_combos['SURF_B_2binners_CheckM']
 }
 
 
 class dRepTest(unittest.TestCase):
 
-    def __init__(self, methodName='runTest'):
-        
-        super(dRepTest, self).__init__(methodName)
-        dprint('methodName', run=locals())
 
+    # TODO if this throws, kill test suite
+    def _test(self):
+        ret = self.serviceImpl.dereplicate(self.ctx, {
+            'workspace_name': self.wsName,
+            'genomes_refs': SURF_B_2binners_CheckM,
+            **params_local
+            }
+        )
 
     @classmethod
     def setUpClass(cls):
         '''
         Run once, after all dRepTest objs have been instantiated
         '''
-        dprint('in dRepTest.setUpClass')
-        dprint('sys.path', 'cls.__dict__', run={**locals(), **globals()})
         token = os.environ.get('KB_AUTH_TOKEN', None)
         config_file = os.environ.get('KB_DEPLOYMENT_CONFIG', None)
         cls.cfg = {}
@@ -162,7 +201,7 @@ class dRepTest(unittest.TestCase):
                         'authenticated': 1})
         cls.wsURL = cls.cfg['workspace-url']
         cls.wsClient = Workspace(cls.wsURL)
-        #cls.serviceImpl = dRep(cls.cfg)
+        cls.serviceImpl = dRep(cls.cfg)
         cls.scratch = cls.cfg['scratch']
         cls.testData_dir = '/kb/module/test/data'
         cls.callback_url = os.environ['SDK_CALLBACK_URL']
@@ -182,7 +221,6 @@ class dRepTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        dprint('in dRepTest.tearDownClass')
         if hasattr(cls, 'wsName'):
             cls.wsClient.delete_workspace({'workspace': cls.wsName})
             print('Test workspace was deleted')
@@ -191,43 +229,58 @@ class dRepTest(unittest.TestCase):
         
 
     def setUp(self):
-        self.serviceImpl = dRep(self.cfg)
-
         dprint(f"cp -r {self.testData_dir}/* {self.scratch}", run='cli')
 
 
     def tearDown(self):
-        dprint('in dRepTest.tearDown')
-
-        # clear cached scratch/bins_dir
+        # clear test bins and work dirs
         dprint(f"rm -rf {os.path.join(self.scratch, 'SURF-B*')}", run='cli')
         dprint(f"rm -rf {os.path.join(self.scratch, 'capybara*')}", run='cli')
 
-        # clear saved instances
+        #
         BinnedContigs.clear()
 
 
+####################### faulty input ###############################################################
 
-    # TODO if this throws, kill test suite
-    def test_basic(self):
-        ret = self.serviceImpl.dereplicate(self.ctx, {
+    def _test_dup_BinnedContigs(self):
+        self.serviceImpl.dereplicate(self.ctx, {
             'workspace_name': self.wsName,
-            'genomes_refs': genomes_refs,
-            **params_local
+            **file_combos['SURF_B_2binners_CheckM'],
+            'skip_dl' : True,
+            'skip_dRep': True,
+            'skip_save_bc': True,
+            'skip_save_shock': True,
+            'genomes_refs': SURF_B_2binners_CheckM * 2
             }
         )
 
-############################################################################################
+        self.assertTrue('Removing duplicate input BinnedContigs' in _globals.warnings) # TODO warning/error library to reduce hardcoding?
+
+   
+    def _test_nothing_passes_filtering(self):
+        with self.assertRaises(Exception) as cm:
+            self.serviceImple.dereplicate(self.ctx, {
+                'workspace_name': self.wsName,
+                'genomes_refs': small_arctic_metabat,
+                'checkM_method': 'taxonomy_wf',
+                }
+             )
+ 
+            self.assertTrue(
+                'no bins passed length and CheckM filtering' in str(cm.exception))
+
+
+############################ param combo tests #####################################################
 
 def _gen_test_param_set(params_dRep):
     def test_param_set(self):
-        dprint('Running test with params_dRep:', params_dRep)
+        logging.info('Running test with params_dRep:', json.dumps(params_dRep, indent=3))
 
         ret = self.serviceImpl.dereplicate(
             self.ctx, 
             {
                 'workspace_name': self.wsName,
-                'genomes_refs': genomes_refs,
                 **params_dRep,
                 **params_local,
             })
@@ -236,9 +289,8 @@ def _gen_test_param_set(params_dRep):
 
 for (param_set_name, param_set), count in zip(param_sets.items(), range(len(param_sets))):
     test_name = 'test_param_set_' + str(count) + '_' + param_set_name
-    #setattr(dRepTest, test_name, _gen_test_param_set(param_set))
+    setattr(dRepTest, test_name, _gen_test_param_set(param_set))
 
-dprint('dRepTest.__dict__', run=globals())
 
 
 
