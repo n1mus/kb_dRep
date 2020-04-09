@@ -9,7 +9,6 @@ import pprint
 import uuid
 import re
 import functools
-import warnings
 
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
@@ -20,8 +19,6 @@ from .util import report
 from .util.dprint import dprint
 from .util.kbase_obj import BinnedContigs
 from .util.config import _globals, reset
-
-warnings.filterwarnings("ignore")
 
 #END_HEADER
 
@@ -411,7 +408,7 @@ class dRep:
                 'direct_html_link_index': 0,
                 'html_links': [htmlZip_shockInfo],
                 'file_links': [workDirZip_shockInfo],
-                'report_object_name': 'dRep_report_' + uuid.uuid4(),
+                'report_object_name': 'dRep_report_' + str(uuid.uuid4()),
                 'workspace_name': params['workspace_name'],
                 'objects_created': objects_created
                 }

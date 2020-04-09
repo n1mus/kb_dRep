@@ -95,6 +95,9 @@ RUN checkm data setRoot /data/CHECKM_DATA
 
 ENV PYTHONUNBUFFERED=True
 
+# for sklearn
+ENV PYTHONWARNINGS=ignore
+
 RUN pip install pypdf2 DotMap
 
 

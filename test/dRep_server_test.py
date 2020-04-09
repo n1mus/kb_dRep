@@ -19,7 +19,7 @@ from dRep.authclient import KBaseAuth as _KBaseAuth
 
 from dRep.dRepImpl import dRep
 from dRep.util.kbase_obj import BinnedContigs
-from dRep.util.dprint import dprint
+from dRep.util.dprint import dprint, where_am_i
 from dRep.util.config import _globals
 
 
@@ -142,7 +142,7 @@ param_sets = {
         }, 
 }
 
-param_sets = {'filtering': param_sets['filtering']}
+#param_sets = {'filtering': param_sets['filtering']}
 #param_sets = {key: param_sets[key] for key in list(param_sets.keys())[:-2]}
 
 
@@ -173,6 +173,7 @@ class dRepTest(unittest.TestCase):
         )
 
     @classmethod
+    @where_am_i
     def setUpClass(cls):
         '''
         Run once, after all dRepTest objs have been instantiated
@@ -217,19 +218,26 @@ class dRepTest(unittest.TestCase):
             tar.extractall(path=cls.testData_dir)
             tar.close()
         dprint('ls /kb/module/test/data', run='cli')
+        cls.listTests()
 
 
     @classmethod
+    @where_am_i
     def tearDownClass(cls):
         if hasattr(cls, 'wsName'):
             cls.wsClient.delete_workspace({'workspace': cls.wsName})
             print('Test workspace was deleted')
         tag = ' ' + ('!!!!!!!!!!!!!!!!!!!!!!!!!!' * 40) + ' '
         dprint(tag + 'DO NOT FORGET TO GRAB HTML(S)' + tag)
-        
+        cls.listTests()
+       
+    @classmethod
+    def listTests(cls):
+        dprint("[name for name, func in cls.__dict__.items() if name.startswith('test') and callable(func)]", run=locals())
 
     def setUp(self):
         dprint(f"cp -r {self.testData_dir}/* {self.scratch}", run='cli')
+        self.listTests()
 
 
     def tearDown(self):
@@ -239,11 +247,27 @@ class dRepTest(unittest.TestCase):
 
         #
         BinnedContigs.clear()
+        self.listTests()
+
+###################### full network test ###########################################################
+
+    def test_network(self):
+        '''
+        Often the dl and ul are skipped
+        This exercises that code
+        '''
+        self.serviceImpl.dereplicate(self.ctx, {
+            'workspace_name': self.wsName,
+            'genomes_refs': SURF_B_2binners_CheckM,
+            'processors': 8,
+            'ignoreGenomeQuality': 'True',
+            }
+        )
 
 
-####################### faulty input ###############################################################
+####################### faulty input tests #########################################################
 
-    def _test_dup_BinnedContigs(self):
+    def test_dup_BinnedContigs(self):
         self.serviceImpl.dereplicate(self.ctx, {
             'workspace_name': self.wsName,
             **file_combos['SURF_B_2binners_CheckM'],
@@ -251,14 +275,14 @@ class dRepTest(unittest.TestCase):
             'skip_dRep': True,
             'skip_save_bc': True,
             'skip_save_shock': True,
-            'genomes_refs': SURF_B_2binners_CheckM * 2
+            'genomes_refs': SURF_B_2binners_CheckM * 2 # order matters when `skip_dl`
             }
         )
 
         self.assertTrue('Removing duplicate input BinnedContigs' in _globals.warnings) # TODO warning/error library to reduce hardcoding?
 
    
-    def _test_nothing_passes_filtering(self):
+    def test_nothing_passes_filtering(self):
         with self.assertRaises(Exception) as cm:
             self.serviceImple.dereplicate(self.ctx, {
                 'workspace_name': self.wsName,
@@ -275,8 +299,6 @@ class dRepTest(unittest.TestCase):
 
 def _gen_test_param_set(params_dRep):
     def test_param_set(self):
-        logging.info('Running test with params_dRep:', json.dumps(params_dRep, indent=3))
-
         ret = self.serviceImpl.dereplicate(
             self.ctx, 
             {
@@ -284,21 +306,31 @@ def _gen_test_param_set(params_dRep):
                 **params_dRep,
                 **params_local,
             })
-        
     return test_param_set
 
 for (param_set_name, param_set), count in zip(param_sets.items(), range(len(param_sets))):
     test_name = 'test_param_set_' + str(count) + '_' + param_set_name
-    setattr(dRepTest, test_name, _gen_test_param_set(param_set))
+    #setattr(dRepTest, test_name, _gen_test_param_set(param_set))
 
 
 
+########################### decorate test* funcs ###################################################
+"""
+for key, value in dRepTest.__dict__.items():
+    if type(key) == str and key.startswith('test') and callable(value):
+        dprint('key', 'value', run=locals())
+        setattr(dRepTest, key, where_am_i(value))
+"""
 
 
+############################ select what to run ####################################################
+run_tests = ['test_network']
 
-
-
-
+for key, value in dRepTest.__dict__.copy().items():
+    if type(key) == str and key.startswith('test') and callable(value):
+        dprint('key', 'value', run=locals())
+        if key not in run_tests:
+            delattr(dRepTest, key)
 
 
 
