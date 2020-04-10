@@ -56,7 +56,6 @@ class dRep:
         
         self._globals = { # shared by all API-method runs
             'shared_folder': config['scratch'], 
-            'testData_dir': '/kb/module/test/data',
             'ws': Workspace(workspace_url),
             'dfu': DataFileUtil(callback_url),
             'mgu': MetagenomeUtils(callback_url),
