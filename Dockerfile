@@ -98,7 +98,7 @@ ENV PYTHONUNBUFFERED=True
 # for sklearn
 ENV PYTHONWARNINGS=ignore
 
-RUN pip install pypdf2 DotMap
+RUN pip install pypdf2 dotmap
 
 
 # -----------------------------------------
