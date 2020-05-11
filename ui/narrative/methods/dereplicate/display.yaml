@@ -183,7 +183,11 @@ parameter-groups:
 
 description : |
 
-    <p>dRep is a genome dereplication pipeline useful for, for example, reducing to representative genomes for downstream analysis, or for individual assembly workflows. dRep can first run CheckM to filter out low quality genomes, then run pairwise MASH for primary clustering, then calculate intra-cluster pairwise ANI for secondary clustering, then dereplicate secondary clusters based on a parameterized genome score.</p>
+    <p>dRep is a pipeline used to identify representative sets of genomes from a large input set of genomes. Genome binning performed on a metagenome sample often produces multiple numbers of highly similar genomes that are a range of quality. dRep functions to: 1) remove overly similar genomes, and 2) for all input genomes, select the highest quality genome representative. dRep employs CheckM to identify and filter out low-quality genomes, MASH for primary genome clustering, and pairwise ANI for secondary clustering and subsequent filtering.</p>
+
+    <p>dRep uses the CheckM tool internally, and as such, dRep is designed for use on Archaea and Bacteria. If depreplication of viruses/bacteriophages or eukaryotes is desired then the ignoreGenomeQuality flag must be used.</p>
+
+    <p>Importantly, the dRep pipeline discards redundant (i.e. highly similar) genomes, which may not be ideal in all situations. It is recommended that users evaluate the suitability and use of dRep in the context of their research questions.</p>
 
     <p>See <a href="https://drep.readthedocs.io/en/latest/index.html">Read the Docs</a> on how to use advanced parameters.</p>
 
@@ -201,4 +205,3 @@ publications:
     -
         display-text: |
             <a href="https://doi.org/10.1101/108142">bioRxiv</a>
-
