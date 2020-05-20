@@ -1,9 +1,5 @@
-# dRep release notes
+# kb_dRep release notes
 =========================================
-
-1.0.0
------
-* Module published in KBase app catalog
 
 0.0.0
 -----

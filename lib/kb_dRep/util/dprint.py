@@ -1,26 +1,37 @@
 import functools
-import pprint, json
+import json
 import subprocess
 import sys
 import os
 import time
-import logging
 import inspect
-import time as _time
+import time as time_
 
-from .config import _globals
+from .config import globals_
 
 
 subproc_run = functools.partial(
-        subprocess.run, stdout=sys.stdout, stderr=sys.stderr, shell=True, executable='/bin/bash')
+    subprocess.run, stdout=sys.stdout, stderr=sys.stderr, shell=True, executable='/bin/bash')
 
-TAG_WIDTH = 100
+TAG_WIDTH = 80
 MAX_LINES = 70
 
 
 def dprint(*args, run=False, where=True, time=False, max_lines=MAX_LINES, subproc_run_kwargs={}, print_kwargs={}):
+    """
+    For debug printing
+    Also executes shell/python commands, printing the command and the outcome
 
-    if not _globals.debug:
+    Input:
+        args - strings, which can be evaluated with Bash or as python
+        run - `shell` or `cli` if the `args` are for Bash, or a namespace dictionary if `args` are 
+            python code
+        where - include information (file, function, line) about the calling stack frame
+        time - include how long it took to process each of `args`
+        max_lines - limit how many lines to print (this will be json format)
+    """
+
+    if not globals_.debug:
         return
 
     print = functools.partial(__builtins__['print'], **print_kwargs)
@@ -37,12 +48,12 @@ def dprint(*args, run=False, where=True, time=False, max_lines=MAX_LINES, subpro
     print('#' * TAG_WIDTH)
 
     if where:
-        last_frame = inspect.stack()
-        print("(file `%s`)\n(func `%s`) " % (os.path.basename(last_frame[1][1]), last_frame[1][3]))
+        last_frame = inspect.stack()[1]
+        print("(file `%s`)\n(func `%s`)\n(line `%d`)" % (os.path.basename(last_frame[1]), last_frame[3], last_frame[2]))
     
     for arg in args:
         if time:
-            t0 = _time.time()
+            t0 = time_.time()
         if run:
             print('>> ' + arg)
             if run in ['cli', 'shell']:
@@ -55,7 +66,7 @@ def dprint(*args, run=False, where=True, time=False, max_lines=MAX_LINES, subpro
         else:
             print_format(arg)
         if time:
-            t = _time.time() - t0
+            t = time_.time() - t0
             print('[%fs]' % t)
     
     print('-' * TAG_WIDTH)

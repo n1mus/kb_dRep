@@ -17,7 +17,7 @@ from jsonrpcbase import JSONRPCService, InvalidParamsError, KeywordError, \
 from jsonrpcbase import ServerError as JSONServerError
 
 from biokbase import log
-from dRep.authclient import KBaseAuth as _KBaseAuth
+from kb_dRep.authclient import KBaseAuth as _KBaseAuth
 
 try:
     from ConfigParser import ConfigParser
@@ -45,14 +45,14 @@ def get_config():
     retconfig = {}
     config = ConfigParser()
     config.read(get_config_file())
-    for nameval in config.items(get_service_name() or 'dRep'):
+    for nameval in config.items(get_service_name() or 'kb_dRep'):
         retconfig[nameval[0]] = nameval[1]
     return retconfig
 
 config = get_config()
 
-from dRep.dRepImpl import dRep  # noqa @IgnorePep8
-impl_dRep = dRep(config)
+from kb_dRep.kb_dRepImpl import kb_dRep  # noqa @IgnorePep8
+impl_kb_dRep = kb_dRep(config)
 
 
 class JSONObjectEncoder(json.JSONEncoder):
@@ -327,7 +327,7 @@ class Application(object):
                                    context['method'], context['call_id'])
 
     def __init__(self):
-        submod = get_service_name() or 'dRep'
+        submod = get_service_name() or 'kb_dRep'
         self.userlog = log.log(
             submod, ip_address=True, authuser=True, module=True, method=True,
             call_id=True, changecallback=self.logcallback,
@@ -338,12 +338,12 @@ class Application(object):
         self.serverlog.set_log_level(6)
         self.rpc_service = JSONRPCServiceCustom()
         self.method_authentication = dict()
-        self.rpc_service.add(impl_dRep.dereplicate,
-                             name='dRep.dereplicate',
+        self.rpc_service.add(impl_kb_dRep.run_dereplicate,
+                             name='kb_dRep.run_dereplicate',
                              types=[dict])
-        self.method_authentication['dRep.dereplicate'] = 'required'  # noqa
-        self.rpc_service.add(impl_dRep.status,
-                             name='dRep.status',
+        self.method_authentication['kb_dRep.run_dereplicate'] = 'required'  # noqa
+        self.rpc_service.add(impl_kb_dRep.status,
+                             name='kb_dRep.status',
                              types=[dict])
         authurl = config.get(AUTH) if config else None
         self.auth_client = _KBaseAuth(authurl)
@@ -398,7 +398,7 @@ class Application(object):
                             err = JSONServerError()
                             err.data = (
                                 'Authentication required for ' +
-                                'dRep ' +
+                                'kb_dRep ' +
                                 'but no authentication header was passed')
                             raise err
                         elif token is None and auth_req == 'optional':

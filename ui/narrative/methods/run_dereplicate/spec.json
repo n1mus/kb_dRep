@@ -478,8 +478,8 @@
     "behavior": {
         "service-mapping": {
             "url": "",
-            "name": "dRep",
-            "method": "dereplicate",
+            "name": "kb_dRep",
+            "method": "run_dereplicate",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
@@ -518,11 +518,7 @@
                 },{
                     "service_method_output_path": [0,"report_ref"],
                     "target_property": "report_ref"
-                },{
-                    "service_method_output_path": [0, "binned_contig_obj_ref"],
-                    "target_property": "binned_contig_obj_ref"
                 }
-
             ]
         }
     },

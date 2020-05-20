@@ -1,7 +1,7 @@
-SERVICE = drep
-SERVICE_CAPS = dRep
-SPEC_FILE = dRep.spec
-URL = https://kbase.us/services/drep
+SERVICE = kb_drep
+SERVICE_CAPS = kb_dRep
+SPEC_FILE = kb_dRep.spec
+URL = https://kbase.us/services/kb_drep
 DIR = $(shell pwd)
 LIB_DIR = lib
 SCRIPTS_DIR = scripts

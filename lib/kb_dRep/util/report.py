@@ -1,15 +1,13 @@
-import fileinput
 import pandas as pd
 import numpy as np
-import drep
 import os
 import shutil
 import json
-import re
+import uuid
 from PyPDF2 import PdfFileReader
 
 from .dprint import dprint
-from .config import _globals
+from .config import globals_
 
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
@@ -22,31 +20,47 @@ TAGS = [tag + '_TAG' for tag in ['JSON', 'COLUMNS', 'FIGURES', 'WARNINGS', 'CMD'
 
 class HTMLBuilder():
 
-    def __init__(self, binnedContigs_l, dRep_cmd, dRep_workDir, html_dir):
+    def __init__(self, binnedContigs_l: list, dRep_cmd: str, dRep_workDir: str):
+        '''
+        Input:
+            binnedContigs_l: list of BinnedContigs objects (made from input)
+            dRep_cmd:
+            dRep_workDir:
+        '''
         self.binnedContigs_l = binnedContigs_l
         self.dRep_cmd = dRep_cmd
         self.dRep_workDir = dRep_workDir
-        self.html_dir = html_dir
-        self.html_path = os.path.join(html_dir, 'dRep_dereplicate_report.html')
-        self.figures_dir = os.path.join(html_dir, 'figures')
-       
+
+        self.html_dir = os.path.join(globals_.shared_folder, 'html_dir_' + str(uuid.uuid4())) # put in shared_folder
+                                                                                # with obvious name
+                                                                                # easier to grab htmls after unit tests
+        os.mkdir(self.html_dir)
+
         self.replacements = dict()
 
-        self._build()
 
-
-    def _build(self):
+    def build(self):
         self._build_command()
         self._build_summary()
         self._build_figures()
         self._build_warnings()
+
+
+    def write(self):
+
+        REPORT_TEMPLATE = '/kb/module/ui/output/report.html'
+        report_html = os.path.join(self.html_dir, 'report.html')
         
-        for line in fileinput.input(self.html_path, inplace=True):
-            line_stripped = line.strip()
-            if line_stripped in TAGS and line_stripped in self.replacements:
-                print(self.replacements[line_stripped])
-            else:
-                print(line, end='')
+        with open(REPORT_TEMPLATE, 'r') as fp_src:
+            with open(report_html, 'w') as fp_dst:
+                for line in fp_src:
+                    line_stripped = line.strip()
+                    if line_stripped in TAGS and line_stripped in self.replacements:
+                        fp_dst.write(self.replacements[line_stripped])
+                    else:
+                        fp_dst.write(line)
+
+        return self.html_dir, report_html
 
 
     def _build_command(self):
@@ -54,7 +68,10 @@ class HTMLBuilder():
 
 
     def _build_summary(self):
-        '''Build data frame from dRep output'''
+        '''
+        Build data frame from dRep output and stats calculated for each bin
+
+        '''
         
         ignoreGenomeQuality = '--ignoreGenomeQuality' in self.dRep_cmd
         
@@ -107,14 +124,15 @@ class HTMLBuilder():
         smmr[attr[:3]] = df_stats.loc[smmr.index, attr[:3]] # length/N50/GC (not from checkm)
 
         # sanity check part i ...
-        if not ignoreGenomeQuality:
+        if globals_.debug and not ignoreGenomeQuality:
             smmr_selfCalc = smmr.loc[chdb.index, attr[:3]] # just the checkm parts
 
         # populate
         if not ignoreGenomeQuality:
             smmr.loc[chdb.index, attr[:2] + attr[3:]] = chdb.loc[chdb.index, attr_chdb[:2] + attr_chdb[3:]].values # all rel Chdb.csv columns (overwrite some length/N50) except GC, which is wrong
             # sanity check part ii ...
-            smmr_checkmCalc = smmr.loc[chdb.index, attr[:3]]; assert (smmr_selfCalc == smmr_checkmCalc).all().all()
+            if globals_.debug:
+                smmr_checkmCalc = smmr.loc[chdb.index, attr[:3]]; assert (smmr_selfCalc == smmr_checkmCalc).all().all()
             smmr['Length Filtered'] = ~ smmr.index.isin(chdb.index)
             smmr.loc[~ smmr['Length Filtered'], 'CheckM Filtered'] = ~ smmr.loc[~ smmr['Length Filtered']].index.isin(bdb.index) # checkm-filtered column
             smmr.loc[cdb.index, 'Prim/Sec Cluster'] = cdb['secondary_cluster']
@@ -142,19 +160,19 @@ class HTMLBuilder():
         '''
         Fill self.replacements['FIGURES_TAG'] with html tags for pdfs
         '''
-        shutil.copytree(os.path.join(self.dRep_workDir, 'figures'), self.figures_dir)
+        figures_dir = os.path.join(self.html_dir, 'figures')
+        shutil.copytree(os.path.join(self.dRep_workDir, 'figures'), figures_dir)
 
         pdfs = [
-            'Primary_clustering_dendrogram',
-            'Secondary_clustering_dendrograms',
-            'Clustering_scatterplots',
-            'Cluster_scoring',
-            'Winning_genomes',
+            'Primary_clustering_dendrogram.pdf',
+            'Secondary_clustering_dendrograms.pdf',
+            'Clustering_scatterplots.pdf',
+            'Cluster_scoring.pdf',
+            'Winning_genomes.pdf',
             ]
 
-        pdfs = [pdf + '.pdf' for pdf in pdfs]
 
-        pdfs = [pdf for pdf in pdfs if pdf in os.listdir(self.figures_dir)]
+        pdfs = [pdf for pdf in pdfs if pdf in os.listdir(figures_dir)]
 
         if len(pdfs) == 0:
             self.replacements['FIGURES_TAG'] = "<i>No figures were generated</i>"
@@ -162,7 +180,7 @@ class HTMLBuilder():
         # filter malformed
         # TODO filter empty pdfs
         for pdf in pdfs:
-            pdf_path = os.path.join(self.figures_dir, pdf)
+            pdf_path = os.path.join(figures_dir, pdf)
             try:
                 PdfFileReader(pdf_path)
             except:
@@ -183,12 +201,17 @@ class HTMLBuilder():
     def _build_warnings(self):
 
         with open(os.path.join(self.dRep_workDir, 'log/warnings.txt')) as f:
-            warnings = f.read()
+            warnings_l = f.read().strip().split()
 
-        if warnings.strip() == '':
-            warnings = '<i>No warnings about almost divergent secondary clusters or remaining genome similarity</i>'
+        if len(warnings_l) == 0:
+            warnings_s = '<i>No clustering warnings</i>'
+        else:
+            warnings_s = ''
+            for warning in warnings_l:
+                warnings_s += self._encase_p(warning) + '\n'
 
-        self.replacements['WARNINGS_TAG'] = warnings
+
+        self.replacements['WARNINGS_TAG'] = warnings_s
 
 
 

@@ -1,18 +1,15 @@
 import os
-import time
-import glob
 import re
-import subprocess
 import shutil
 import pandas as pd
 from Bio import SeqIO, SeqUtils
 from functools import reduce
 import logging
 
-import drep
+import drep # the bioinformatics tool being wrapped
 
 from .dprint import dprint
-from .config import _globals
+from .config import globals_
 
 
 class BinnedContigs:
@@ -25,9 +22,8 @@ class BinnedContigs:
     * bins_dir
     * name
     * assembly_upa
+    * obj
     * original_bin_name_list
-
-    Other instance variables
     * stats
 
     '''
@@ -36,30 +32,29 @@ class BinnedContigs:
     saved_instances = [] # saved to KBase
     
       
-    def __init__(self, upa, get_bins_dir=None, **kwargs):
+    def __init__(self, upa, get_bins_dir='load', **kwargs):
        
-        self.created_instances.append(self)
         self.upa = upa
 
-
-        if get_bins_dir == 'download': 
-            self._load_bins_dir()
-        elif get_bins_dir == 'local': 
+        if get_bins_dir == 'local': 
             self.bins_dir = kwargs['bins_dir']
+        elif get_bins_dir == 'load':
+            self._load_bins_dir()
         else:
-            raise Exception('must specify `get_bins_dir`')
+            raise Exception()
 
         self._get_obj()
         self.original_bin_name_list = self.get_curr_bin_name_list()
+        self.calc_stats()
+
+        self.created_instances.append(self)
 
 
     def _load_bins_dir(self):
         ''''''
         logging.info(f'Downloading files for BinnedContigs with upa: {self.upa}')
 
-        dprint('_globals', run=globals())
-
-        mguObjData = _globals.mgu.binned_contigs_to_file({
+        mguObjData = globals_.mgu.binned_contigs_to_file({
             'input_ref': self.upa, 
             'save_to_shock': 0
             }) # returns dict with just bin_file_directory
@@ -70,7 +65,7 @@ class BinnedContigs:
 
 
     def _get_obj(self):
-        obj = _globals.ws.get_objects2({
+        obj = globals_.ws.get_objects2({
             'objects': [{
                 'ref': self.upa
                 }]
@@ -78,15 +73,17 @@ class BinnedContigs:
 
         self.name = obj['data'][0]['info'][1]
         self.assembly_upa = obj['data'][0]['data']['assembly_ref']
+        self.obj = obj['data'][0]['data'] # TODO check size of this
 
    
     def get_curr_bin_name_list(self):
         bin_name_list = []
         dprint('self.bins_dir', 'os.listdir(self.bins_dir)', run={**globals(), **locals()})
-        for bin_name in next(os.walk(self.bins_dir))[2]:
+        for bin_name in os.listdir(self.bins_dir):
             if not re.search(r'.*\.fasta$', bin_name):
-                msg = f'Found non .fasta bin name {bin_name} in dir {self.bins_dir} for BinnedContigs obj {self.name} with UPA {self.upa}'
-                log.warning(msg)
+                msg = (
+f'Found non .fasta bin name {bin_name} in dir {self.bins_dir} for BinnedContigs obj {self.name} with UPA {self.upa}')
+                logging.warning(msg)
             bin_name_list.append(bin_name)
         return bin_name_list
 
@@ -104,31 +101,31 @@ class BinnedContigs:
         if self.is_empty():
             msg ='Not saving empty dereplicated BinnedContigs %s' % self.name 
             logging.warning(msg)
-            _globals.warnings.append(msg)
+            globals_.warnings.append(msg)
             return
 
         self.write_reduced_bin_summary()
 
-        objData = _globals.mgu.file_to_binned_contigs({
+        ret = globals_.mgu.file_to_binned_contigs({
             'file_directory': self.bins_dir,
             'assembly_ref': self.assembly_upa,
-            'binned_contig_name': self.name + '.dRep',
-            'workspace_name': _globals.workspace_name
+            'binned_contig_name': self.name + '.dRep', # TODO length check
+            'workspace_name': globals_.workspace_name
             })
 
-        dprint('objData:', objData, f'for BinnedContigs {self.name}')
+        dprint('ret:', ret, f'for BinnedContigs {self.name}')
 
         self.saved_instances.append(self)
 
         return {
-            'ref': objData['binned_contig_obj_ref'],
+            'ref': ret['binned_contig_obj_ref'],
             'description': 'Dereplicated genomes for ' + self.name
         }
 
 
     def pool_into(self, binsPooled_dir):
-        '''for all bins, modify to unique name and copy into dir_binsPooled''' 
-        for bin_name in self.get_curr_bin_name_list():
+        '''For all bins, copy into `dir_binsPooled` with new unique name''' 
+        for bin_name in self.original_bin_name_list:
             bin_name_new = self.transform_bin_name(bin_name)         
 
             bin_path = os.path.join(self.bins_dir, bin_name)
@@ -139,13 +136,24 @@ class BinnedContigs:
     
     def transform_bin_name(self, bin_name):
         '''
-        Transform bin name to something unique so bins from all BinnedContigs can be pooled
+        Transform bin name to something unique so bins from all BinnedContigs can be pooled.
+
+        BinnedContigs UPA is prepended to prevent hypothetical adversary from creating non-unique 
+        names e.g.,
+            'BC__1' and 'bin1' --> 'BC__1__bin1'
+            'BC' and '1__bin1' --> 'BC__1__bin1'
         '''
         return self.upa.replace('/', '-') + '__' + self.name + '__' + bin_name
 
 
     def reduce_to_dereplicated(self, bins_derep_dir):
-        '''remove bins not in bins_derep_dir'''
+        '''
+        Remove bins in self.bins_dir that are not in bins_derep_dir
+
+        Input:
+            bins_derep_dir - folder that is dRep_workDir/dereplicated_genomes that contains 
+                results of dRep's dereplication
+        '''
         bins_derep_name_list = os.listdir(bins_derep_dir)
         for bin_name in self.get_curr_bin_name_list():
             if self.transform_bin_name(bin_name) not in bins_derep_name_list:
@@ -154,6 +162,8 @@ class BinnedContigs:
        
     def calc_stats(self, use_transformed_name=True):
         '''
+        These stats are useful for the report
+
         Calc length, N50, GC, in ds like:
         { 
             'bin_stats': {
@@ -172,10 +182,11 @@ class BinnedContigs:
             'length': 55000,
             'GC': 0.48
         }   
+
         Call before dereplication to get stats for all original bins
         '''
-        self.stats = {'bin_stats': {}}
-        bin_stats = self.stats['bin_stats']
+        bin_stats = {}
+        self.stats = {'bin_stats': bin_stats}
 
         bin_name_list = self.get_curr_bin_name_list()
         for bin_name in bin_name_list:
@@ -187,7 +198,7 @@ class BinnedContigs:
                 lens += [len(seq)]
                 GCs += [SeqUtils.GC(seq.seq)]
             
-            d['GC'] = reduce(lambda x,y: x+y, map(lambda x,y: x*y, lens, GCs), 0) / sum(lens)
+            d['GC'] = reduce(lambda x,y: x+y, map(lambda x,y: x*y, lens, GCs), 0) / sum(lens) # TODO refactor out and unit test
             d['length'] = sum(lens)
             d['N50'] = drep.d_filter.calc_n50(bin_path)
 
@@ -199,19 +210,23 @@ class BinnedContigs:
         self.stats['length'] = sum(lens)
         self.stats['GC'] = reduce(lambda x,y: x+y, map(lambda x,y: x*y, lens, GCs), 0) / sum(lens)
 
-        if use_transformed_name:
+        # use the transformed unique bin names as keys
+        if use_transformed_name: 
             for bin_name in bin_name_list:
                 self.stats['bin_stats'][self.transform_bin_name(bin_name)] = self.stats['bin_stats'].pop(bin_name)
 
         return self.stats 
 
 
-    def write_reduced_bin_summary(self):
+    # TODO some BinnedContigs (output of kb-metabat) have 0s. populate with own data? would have length/GC. would sometimes have completeness
+    # except - MaxBin2.summary - should it be necessary in first place?
+    # also - completeness filler/wrong in some programs
+    def write_reduced_bin_summary(self): 
         '''
-        Assuming that self was loaded and has had its bins in bins_dir reduced,
-        build summary of reduced bins from original BinnedContigs' information
+        Assuming that self was loaded and has had its bins in bins_dir reduced to dereplicated
+        genomes, build summary of reduced bins from original BinnedContigs' information
         
-        *.summary file could be one of below format:
+        MaxBin2.summary file could be one of below format:
 
         Bin name                  Abundance  Completeness    Genome size     GC content
         maxbin_output.001.fasta   0.00       97.2%           2690533         52.9
@@ -219,11 +234,7 @@ class BinnedContigs:
         Bin name                  Completeness    Genome size     GC content
         maxbin_output.001.fasta   97.2%           2690533         52.9
         '''
-        stats_dict_list = _globals.ws.get_objects2({
-            'objects': [{
-                'ref': self.upa
-                }]
-            })['data'][0]['data']['bins']
+        stats_dict_list = self.obj['bins']
 
         columns = ['Bin name', 'Completeness', 'Genome size', 'GC content']
         smmr = pd.DataFrame(columns=columns)

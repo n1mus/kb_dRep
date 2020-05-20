@@ -1,5 +1,5 @@
 module-name:
-    dRep
+    kb_dRep
 
 module-description:
     Dereplicate genomes using ANI
@@ -14,5 +14,5 @@ data-version:
     0.0.3
 
 owners:
-    [suminw]
+    [swwang]
 
