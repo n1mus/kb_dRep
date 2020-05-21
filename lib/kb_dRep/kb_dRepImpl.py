@@ -117,6 +117,7 @@ class kb_dRep:
             **self.globals,
             'workspace_name': params['workspace_name'],
             'workspace_id': params['workspace_id'],
+            'params': params,
             'run_dir': os.path.join(self.globals['shared_folder'], str(uuid.uuid4())), # folder dedicated to this API-method run
             'warnings': [],
             })
@@ -228,6 +229,8 @@ class kb_dRep:
                     params[paramIndivKey] = params[paramGrpKey][paramIndivKey]
                 params.pop(paramGrpKey)
 
+        dprint('"flattened"', 'params', run=locals())
+
 
         # these params are flags only (just '--param', no arg)
         params_bool = ['ignoreGenomeQuality', 'SkipMash', 'SkipSecondary']
@@ -331,9 +334,15 @@ class kb_dRep:
             logging.info(f'Dereplicating {bc.name}')
             bc.reduce_to_dereplicated(bins_derep_dir)
 
-            if not bc.is_empty():
+            if bc.is_empty():
+                msg = message.emptyResBC % (bc.name, bc.upa)
+                logging.warning(msg)
+                globals_.warnings.append(msg)
+
+            else:
+
                 if globals_.debug and params.get('skip_save_bc'):
-                    BinnedContigs.saved_instances.append(bc)
+                    pass
                 else: 
                     objects_created.append(bc.save())
             
@@ -346,7 +355,7 @@ class kb_dRep:
         ####
         #####
 
-        hb = report.HTMLBuilder(BinnedContigs.saved_instances, dRep_cmd_str, dRep_workDir)
+        hb = report.HTMLBuilder(BinnedContigs.created_instances, dRep_cmd_str, dRep_workDir)
         hb.build()
         html_dir, html_flpth = hb.write()
 
@@ -390,6 +399,9 @@ class kb_dRep:
                 return [output]
 
         report_output = globals_.kbr.create_extended_report(report_params)
+
+        if globals_.debug and params.get('return_testing'):
+            return [output]
 
         output = {
             'report_name': report_output['name'],

@@ -6,7 +6,7 @@ nothingPassedFiltering = 'Sorry, dRep terminated with return code `%d` because n
 
 nonZeroReturn = "Sorry, commmand: `%s` terminated abnormally with return code: `%d`"
 
-
+emptyResBC = 'BinnedContigs with name `%s` and upa `%s` is empty after dereplication pipeline. Not saving'
 
 
 

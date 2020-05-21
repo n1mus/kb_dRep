@@ -29,7 +29,6 @@ class BinnedContigs:
     '''
 
     created_instances = [] # loaded from KBase
-    saved_instances = [] # saved to KBase
     
       
     def __init__(self, upa, get_bins_dir='load', **kwargs):
@@ -78,7 +77,6 @@ class BinnedContigs:
    
     def get_curr_bin_name_list(self):
         bin_name_list = []
-        dprint('self.bins_dir', 'os.listdir(self.bins_dir)', run={**globals(), **locals()})
         for bin_name in os.listdir(self.bins_dir):
             if not re.search(r'.*\.fasta$', bin_name):
                 msg = (
@@ -114,8 +112,6 @@ f'Found non .fasta bin name {bin_name} in dir {self.bins_dir} for BinnedContigs 
             })
 
         dprint('ret:', ret, f'for BinnedContigs {self.name}')
-
-        self.saved_instances.append(self)
 
         return {
             'ref': ret['binned_contig_obj_ref'],
@@ -257,4 +253,3 @@ f'Found non .fasta bin name {bin_name} in dir {self.bins_dir} for BinnedContigs 
     @classmethod
     def clear(cls):
         cls.created_instances = []
-        cls.saved_instances = []

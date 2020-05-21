@@ -69,8 +69,8 @@ class HTMLBuilder():
 
     def _build_summary(self):
         '''
-        Build data frame from dRep output and stats calculated for each bin
-
+        Build data frame from dRep output and `stats` calculated for each bin in each BinnedContigs
+        Reads from dRep_workDir/data_tables/*db.csv
         '''
         
         ignoreGenomeQuality = '--ignoreGenomeQuality' in self.dRep_cmd
@@ -84,16 +84,17 @@ class HTMLBuilder():
         preproc = ['Length Filtered']
         res = ['CheckM Filtered', 'Prim/Sec Cluster', 'Dereplicated']
 
-        attr_chdb = ['Genome size (bp)', 'N50 (scaffolds)', 'GC', 'Completeness', 'Contamination', 'Strain heterogeneity'] # Chdb.csv header names corresponding to attr
+        attr_chdb = ['Genome size (bp)', 'N50 (scaffolds)', 'GC', 'Completeness', 'Contamination', 'Strain heterogeneity'] # Chdb.csv header names corresponding to `attr`
 
         if not ignoreGenomeQuality:
-            columns = names + attr[:3] + preproc + attr[3:] + res
+            columns = names + attr[:3] + preproc + attr[3:] + res # final `smmr` col names
         else:
-            columns = names + attr[:3] + preproc + res[1:]
+            columns = names + attr[:3] + preproc + res[1:] # final `smmr` col names (less info since CheckM not run)
         
         smmr = pd.DataFrame(columns=columns)
-
+        
         for binnedContigs in self.binnedContigs_l:
+            dprint('binnedContigs.name', 'binnedContigs.original_bin_name_list', run=locals())
             for bin_name in binnedContigs.original_bin_name_list:
 
                 smmr.loc[len(smmr)] = [binnedContigs.name, bin_name, binnedContigs.transform_bin_name(bin_name)] + [np.nan] * (len(columns) - len(names))
@@ -101,9 +102,9 @@ class HTMLBuilder():
         ###
         ### Insert genome attribute info
 
-        smmr = smmr.set_index('File Name')
+        smmr = smmr.set_index('File Name') # unique identifier of bins, for `smmr` and dRep_workDir/data_tables/*db.csv
 
-        # read drep's data tables with the transformed bin/genome/file name as index
+        # read dRep's data tables with the transformed bin/genome/file name as index
         bdb = pd.read_csv(os.path.join(self.dRep_workDir, 'data_tables/Bdb.csv'), index_col='genome') # has all genomes that passed length then completeness/contamination filter
         cdb = pd.read_csv(os.path.join(self.dRep_workDir, 'data_tables/Cdb.csv'), index_col='genome') # ''
         wdb = pd.read_csv(os.path.join(self.dRep_workDir, 'data_tables/Wdb.csv'), index_col='genome') # has all genomes that passed length filter then completeness/contamination filter then dereplication
