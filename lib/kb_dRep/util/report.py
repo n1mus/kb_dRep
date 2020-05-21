@@ -180,8 +180,7 @@ class HTMLBuilder():
         if len(pdfs) == 0:
             self.replacements['FIGURES_TAG'] = "<i>No figures were generated</i>"
 
-        # filter malformed
-        # TODO filter empty pdfs
+        # try to filter malformed/empty pdfs TODO
         for pdf in pdfs:
             pdf_path = os.path.join(figures_dir, pdf)
             try:
@@ -204,7 +203,8 @@ class HTMLBuilder():
     def _build_warnings(self):
 
         with open(os.path.join(self.dRep_workDir, 'log/warnings.txt')) as f:
-            warnings_l = f.read().strip().split('\n').remove('')
+            warnings_l = f.read().strip().split('\n')
+            warnings_l.remove('')
 
         if len(warnings_l) == 0:
             warnings_s = '<i>No dRep clustering warnings</i>'

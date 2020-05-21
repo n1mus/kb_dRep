@@ -1,6 +1,6 @@
 from dotmap import DotMap
 
-DEBUG = True # toggle for debugging prints/conditionals
+DEBUG = False # toggle for debugging prints/conditionals
 
 dRep_param_defaults = {
     'length': 50000,

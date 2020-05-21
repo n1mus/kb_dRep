@@ -23,8 +23,14 @@ from kb_dRep.util.error import *
 from kb_dRep.util import message
 
 
-# DO NOT EDIT
-# THESE ARE USED BY TESTS
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!! DO NOT EDIT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!! THESE ARE USED BY TESTS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 SURF_B_2binners = ['34837/23/1', '34837/3/1'] # maxbin, metabat
 SURF_B_MaxBin2_CheckM = ['34837/16/1']
@@ -64,7 +70,14 @@ file_combos = {
         },
     }
 
-param_sets = {
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+param_sets = { # TODO define these in another file?
+                # TODO random param generator
 
     'numbers': {
         'completeness_weight': 0.5,
@@ -145,42 +158,66 @@ param_sets = {
 #param_sets = {key: param_sets[key] for key in list(param_sets.keys())[:-2]}
 
 
+####################################################################################################
+####################################################################################################
+################################## README ##########################################################
+####################################################################################################
+####################################################################################################
 """
 A good way to run these tests:
 ---------------------------------
     
-`params_local` controls (1) cpu/memory needs, (2) skipping long/difficult code and returning
-testing information, and (3) the test data needed to needed to skip those code.
+`params_local` controls (1) cpu/memory needs, (2) skipping long/difficult code in debug mode, 
+and (3) the upas and corresponding test data needed to needed to skip those code.
+it feeds into a lot of the tests, so usually this needs to be valid.
 
-* Specific tests: use the last code block in this file to filter to any specific tests you want to 
-run.
+** Specific tests: use the last code block in this file to filter to any specific tests
+you want to run.
 
-* Preparing for long tests: run all tests with all the skipping and returning testing information
-in (3) of `params_local` enabled to run all tests at bare-bones level. This will run unit tests,
-error/warning tests, skipped code test, and parameter-set tests with minimum/tractable
-time/memory/CPU.
+** Preparing for long tests: run all tests with `config.DEBUG = True` and all the skipping
+in (2) of `params_local` enabled to run all tests at bare-bones level. This will run unit tests,
+error/warning tests, full test with mini data/run, and pared down parameter-set tests with minimum/tractable
+time/memory/CPU/network, clearing some bugs there.
+... You may then want to run `test_mini` with `config.DEBUG = False` too,
+just to run a pipeline without debug mode.
 
-* Long tests: set `config.DEBUG = False`, and maybe pass in `capybaraGut_2binners` or
-`SURF_B_2binners` for `genomes_refs` for longer more interesting runs on a variety of parameter combinations.
-This should be run on a cluster with plenty of cores and
-memory available for 12h or so. Grab the htmls and make sure they behave as expected
+** Long tests: set `config.DEBUG = False`, and pass in `capybaraGut_2binners` or
+`SURF_B_2binners` for `file_combos` and `genomes_refs` 
+for longer more interesting runs on a variety of parameter combinations.
+Make sure no integration tests are being filtered out in the last code block by, e.g., commenting out `delattr(...)`
+This should be run on a cluster with plenty of cores (set `'processors': 20` or so in `params_local`)
+and memory (so you can comment out the `'checkM_method': 'taxonomy_wf'` in `params_local`) 
+available for 12h or so. 
+Grab the htmls and view with `firefox html_dir_*/report.html &`
+to make sure they behave as expected
 
-* Narrative testing: use a short run to make sure parameters are flattened correctly, report 
+** Narrative testing: use a short run to make sure parameters are flattened correctly, report 
 displayed correctly
 
 """
+####################################################################################################
+####################################################################################################
+####################################################################################################
 
 params_local = {
-#---------------- (1) machine specific----------------------    
-    #'processors': 8, # Narrative uses 8
-    #'checkM_method': 'taxonomy_wf', # default `lineage_wf` uses 40GB memory, `taxonomy_wf` uses <16GB
-#----------------- (2) skip --------------------------------    
+#---------------------------------------------------------------------------------------------------
+#---------------- (1) machine specific--------------------------------------------------------------    
+#---------------------------------------------------------------------------------------------------
+    'processors': 8, # Narrative uses 8, the more the better
+    'checkM_method': 'taxonomy_wf', # default `lineage_wf` uses 40GB memory, `taxonomy_wf` uses <16GB
+#---------------------------------------------------------------------------------------------------
+#--------------------------- (2) skip --------------------------------------------------------------    
+#-------------------------- debug toggled ----------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
     'skip_dl' : True, # skip steps related to `mgu.binned_contigs_to_file`
     'skip_run': True, # skip running dRep
     'skip_save_bc': True, # skip steps related to `mgu.file_to_binned_contigs`
     'skip_kbReport': True, # skip `kbr.create_extended_report`
-#----------------- (3)test data for skips -----------------    
-    **file_combos['SURF_B_2binners_CheckM'], # can be upas, bins directories, work directories
+#---------------------------------------------------------------------------------------------------
+#----------- (3) upas and test data for skips------------------------------------------------------    
+#---------------- partially debug toggled ----------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+    **file_combos['SURF_B_2binners_CheckM'], # upas and bins directories, may be work directories
 }
 
 
@@ -323,10 +360,10 @@ class kb_dRepTest(unittest.TestCase):
 
 ###################### full network test ###########################################################
 
-    def test_skipped_parts(self):
+    def test_mini(self):
         '''
         Often the dl, run, ul, etc. are skipped
-        This exercises that code
+        This exercises that code with everything else pared down
         '''
         self.serviceImpl.run_dereplicate(self.ctx, {
             **self.params_ws,
@@ -435,13 +472,13 @@ e.g., filter to tests in `run_tests`
 
 Comment out parts like `delattr` to deactivate
 '''
-run_tests = ['test_dup_BinnedContigs' ]
+run_tests = ['test_mini' ]
 
 for key, value in kb_dRepTest.__dict__.copy().items():
     if key.startswith('test') and callable(value):
         if key not in run_tests:
         #if not key.startswith('test_param_set_'):
-            #delattr(kb_dRepTest, key)
+            delattr(kb_dRepTest, key)
             pass
 
 
