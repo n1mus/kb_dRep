@@ -80,6 +80,7 @@ module kb_dRep {
         params_scoring scoring;
         params_warnings warnings;
         string checkM_method;
+        int processors;
         string workspace_name;
         int workspace_id;
     } params_dereplicate;

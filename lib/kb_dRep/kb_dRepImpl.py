@@ -117,7 +117,6 @@ class kb_dRep:
             **self.globals,
             'workspace_name': params['workspace_name'],
             'workspace_id': params['workspace_id'],
-            'params': params,
             'run_dir': os.path.join(self.globals['shared_folder'], str(uuid.uuid4())), # folder dedicated to this API-method run
             'warnings': [],
             })
@@ -145,8 +144,8 @@ class kb_dRep:
             msg = message.removeDupBC % str(params['genomes_refs'])
             logging.warning(msg)
             globals_.warnings.append(msg) 
-            params['genomes_refs'] = list(set(params['genomes_refs']))
-
+            params['genomes_refs'] = sorted(list(set(params['genomes_refs']))) # set ordering not deterministic
+                                                                               # sort for testing purposes
        
 
 
@@ -281,7 +280,7 @@ class kb_dRep:
 
         else:
             dRep_workDir = os.path.join(globals_.run_dir, 'dRep_workDir')
-            log_flpth = os.path.join(globals_.shared_folder, 'log.txt') # TODO capture/return logs?
+            log_flpth = os.path.join(globals_.shared_folder, 'log.txt') # TODO capture/return logs
 
             dRep_cmd = ([
                 'dRep',
@@ -317,7 +316,7 @@ class kb_dRep:
                     raise NonZeroReturnException(message.nonZeroReturn % (dRep_cmd_str, retcode))
 
 
-
+        globals_.dRep_cmd = dRep_cmd
 
 
         #
@@ -389,19 +388,10 @@ class kb_dRep:
                 'objects_created': objects_created
                 }
 
-        if globals_.debug:
-            output = {
-                **report_params,
-                'dRep_cmd': dRep_cmd,
-            }
-
-            if params.get('skip_kbReport'):
-                return [output]
+        if globals_.debug and params.get('skip_kbReport'):
+            return
 
         report_output = globals_.kbr.create_extended_report(report_params)
-
-        if globals_.debug and params.get('return_testing'):
-            return [output]
 
         output = {
             'report_name': report_output['name'],

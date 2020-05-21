@@ -47,11 +47,6 @@ file_combos = {
         'bins_dir_name_l': ['SURF-B.MEGAHIT.maxbin.CheckM', 'SURF-B.MEGAHIT.metabat.CheckM'],
         'dRep_workDir_name': 'dRep_workDir_SURF-B.MEGAHIT.2binners.CheckM_taxwf',
         },
-    'SURF_B_2binners_CheckM_rev': {
-        'genomes_refs': ['34837/16/1', '34837/2/1'][::-1], # metabat, maxbin
-        'bins_dir_name_l': ['SURF-B.MEGAHIT.maxbin.CheckM', 'SURF-B.MEGAHIT.metabat.CheckM'][::-1],
-        'dRep_workDir_name': 'dRep_workDir_SURF-B.MEGAHIT.2binners.CheckM_taxwf',
-        },
     'SURF_B_2binners_CheckM_dRep': {
         'genomes_refs': ['34837/17/13', '34837/18/13'] # maxbin, metabat
         },
@@ -165,11 +160,10 @@ in (3) of `params_local` enabled to run all tests at bare-bones level. This will
 error/warning tests, skipped code test, and parameter-set tests with minimum/tractable
 time/memory/CPU.
 
-* Long tests: use the last code block to only allow tests that start with `test_param_set_`, and
-disable any debugging parameters from `params_local`, and maybe pass in `capybaraGut_2binners` or
-`SURF_B_2binners` for `genomes_refs`. This should be run on a cluster with plenty of cores and
-memory available for 12h or so. Grab the htmls and make sure they behave as expected. This will run
-full tests on a variety of parameter combinations
+* Long tests: set `config.DEBUG = False`, and maybe pass in `capybaraGut_2binners` or
+`SURF_B_2binners` for `genomes_refs` for longer more interesting runs on a variety of parameter combinations.
+This should be run on a cluster with plenty of cores and
+memory available for 12h or so. Grab the htmls and make sure they behave as expected
 
 * Narrative testing: use a short run to make sure parameters are flattened correctly, report 
 displayed correctly
@@ -185,7 +179,6 @@ params_local = {
     'skip_run': True, # skip running dRep
     'skip_save_bc': True, # skip steps related to `mgu.file_to_binned_contigs`
     'skip_kbReport': True, # skip `kbr.create_extended_report`
-    'return_testing': True, # return run info instead of report info
 #----------------- (3)test data for skips -----------------    
     **file_combos['SURF_B_2binners_CheckM'], # can be upas, bins directories, work directories
 }
@@ -324,6 +317,10 @@ class kb_dRepTest(unittest.TestCase):
         pass
 
 
+    def test_summary_table(self):
+        pass
+
+
 ###################### full network test ###########################################################
 
     def test_skipped_parts(self):
@@ -354,15 +351,14 @@ class kb_dRepTest(unittest.TestCase):
             'skip_run': True,
             'skip_save_bc': True,
             'skip_kbReport': True,
-            'return_testing': True,
             #-----------------------------------------------
-            **file_combos['SURF_B_2binners_CheckM_rev'], # order of test data has to match
+            **file_combos['SURF_B_2binners_CheckM'], # reminder: order of test data has to match
             #-----------------------------------------------
             'genomes_refs': genomes_refs
             }
         )
 
-        self.assertTrue(message.removeDupBC % str(genomes_refs) in ret[0]['warnings'])
+        self.assertTrue(message.removeDupBC % str(genomes_refs) in globals_.warnings)
 
    
     def test_nothing_passes_filtering(self):
@@ -390,13 +386,12 @@ class kb_dRepTest(unittest.TestCase):
             'skip_dl': True,
             'skip_save_bc': True,
             'skip_kbReport': True,
-            'return_testing': True, 
             #-----------------------------------------------
             **file_combos['SURF_B_2binners_CheckM'],
         })
 
         msg = message.emptyResBC % ('SURF-B.MEGAHIT.metabat.CheckM', SURF_B_MetaBAT2_CheckM[0]) # this one completely emptied
-        assert msg in ret[0]['warnings'], '\n'.join([msg] + ret[0]['warnings'])
+        assert msg in globals_.warnings, '\n'.join([msg] + globals_.warnings)
 
     
 
@@ -421,7 +416,7 @@ def _gen_test_param_set(params_dRep):
 
         ###
         ### some parameter validation
-        dRep_cmd = ret[0]['dRep_cmd'] # list of dRep cmd
+        dRep_cmd = globals_.dRep_cmd # list of dRep cmd
         if 'checkM_method' in params_local: # this is a proper dRep cmd that is also used for local testing
             params_dRep['checkM_method'] = params_local['checkM_method']
         self._test_params(params_dRep, dRep_cmd)
