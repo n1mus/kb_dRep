@@ -169,15 +169,15 @@ A good way to run these tests:
     
 `params_local` controls (1) cpu/memory needs, (2) skipping long/difficult code in debug mode, 
 and (3) the upas and corresponding test data needed to needed to skip those code.
-it feeds into a lot of the tests, so usually this needs to be valid, meaning,
-at least a `**file_combos[...]`, which will provide `genomes_refs` and test data for skipping
+it feeds into `test_param_set_*` and `test`, so usually needs to be valid,
+(needs at least a `genomes_refs`, possibly viable `**file_combos[*]` if `'skip_*': True`)
 
 ** Specific tests: use the last code block in this file to filter to any specific tests
 you want to run.
 
 ** Preparing for long tests: run all tests with `config.DEBUG = True` 
 and all the skipping (`'skip_*': True`)
-in (2) of `params_local` enabled to run all tests at bare-bones level. This will run unit tests,
+in (2) of `params_local` enabled in order to run all tests at bare-bones level. This will run unit tests,
 error/warning tests, full test with mini data/run, and pared down parameter-set tests with minimum/tractable
 time/memory/CPU/network, clearing some bugs there.
 ... You may then want to run `test_mini_full` with `config.DEBUG = False` too,
@@ -185,11 +185,12 @@ just to run a pipeline without debug mode.
 
 ** Long tests: set `config.DEBUG = False`, and pass in `capybaraGut_2binners` or
 `SURF_B_2binners` for `file_combos` and `genomes_refs` 
-for longer more interesting runs on a variety of parameter combinations.
+for interesting runs on larger datasets on a variety of parameter combinations.
 This should be run on a cluster with plenty of cores (set `'processors': 20` or so in `params_local`)
 and memory (so you can comment out the `'checkM_method': 'taxonomy_wf'` in `params_local`) 
 available for 12h or so. 
 Make sure no integration tests are being filtered out in the last code block by, e.g., commenting out `delattr(...)`
+You can log tests, e.g., `kb-sdk test |& tee log.txt`.
 When done, grab the htmls and view with `firefox html_dir_*/report.html &`
 to make sure they behave as expected
 

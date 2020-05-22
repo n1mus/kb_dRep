@@ -204,7 +204,8 @@ class HTMLBuilder():
 
         with open(os.path.join(self.dRep_workDir, 'log/warnings.txt')) as f:
             warnings_l = f.read().strip().split('\n')
-            warnings_l.remove('')
+            if '' in warnings_l: # splitting with delimiter can create empty strings
+                warnings_l = [tok for tok in warnings_l if tok != '']
 
         if len(warnings_l) == 0:
             warnings_s = '<i>No dRep clustering warnings</i>'
