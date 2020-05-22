@@ -169,26 +169,28 @@ A good way to run these tests:
     
 `params_local` controls (1) cpu/memory needs, (2) skipping long/difficult code in debug mode, 
 and (3) the upas and corresponding test data needed to needed to skip those code.
-it feeds into a lot of the tests, so usually this needs to be valid.
+it feeds into a lot of the tests, so usually this needs to be valid, meaning,
+at least a `**file_combos[...]`, which will provide `genomes_refs` and test data for skipping
 
 ** Specific tests: use the last code block in this file to filter to any specific tests
 you want to run.
 
-** Preparing for long tests: run all tests with `config.DEBUG = True` and all the skipping
+** Preparing for long tests: run all tests with `config.DEBUG = True` 
+and all the skipping (`'skip_*': True`)
 in (2) of `params_local` enabled to run all tests at bare-bones level. This will run unit tests,
 error/warning tests, full test with mini data/run, and pared down parameter-set tests with minimum/tractable
 time/memory/CPU/network, clearing some bugs there.
-... You may then want to run `test_mini` with `config.DEBUG = False` too,
+... You may then want to run `test_mini_full` with `config.DEBUG = False` too,
 just to run a pipeline without debug mode.
 
 ** Long tests: set `config.DEBUG = False`, and pass in `capybaraGut_2binners` or
 `SURF_B_2binners` for `file_combos` and `genomes_refs` 
 for longer more interesting runs on a variety of parameter combinations.
-Make sure no integration tests are being filtered out in the last code block by, e.g., commenting out `delattr(...)`
 This should be run on a cluster with plenty of cores (set `'processors': 20` or so in `params_local`)
 and memory (so you can comment out the `'checkM_method': 'taxonomy_wf'` in `params_local`) 
 available for 12h or so. 
-Grab the htmls and view with `firefox html_dir_*/report.html &`
+Make sure no integration tests are being filtered out in the last code block by, e.g., commenting out `delattr(...)`
+When done, grab the htmls and view with `firefox html_dir_*/report.html &`
 to make sure they behave as expected
 
 ** Narrative testing: use a short run to make sure parameters are flattened correctly, report 
@@ -342,8 +344,6 @@ class kb_dRepTest(unittest.TestCase):
 
 ####################### unit testing ###############################################################
 
-   # TODO  
-
     def test_length(self):
         pass
 
@@ -353,14 +353,16 @@ class kb_dRepTest(unittest.TestCase):
     def test_N50(self):
         pass
 
-
     def test_summary_table(self):
         pass
 
+    def test_input_param_struct(self): # flattened2struct, struct2flattened? lib/kb_dRep/util/params.py? TODO
+        pass
 
-###################### full network test ###########################################################
 
-    def test_mini(self):
+###################### full test, mini data/run ####################################################
+
+    def test_mini_full(self):
         '''
         Often the dl, run, ul, etc. are skipped
         This exercises that code with everything else pared down
@@ -472,7 +474,7 @@ e.g., filter to tests in `run_tests`
 
 Comment out parts like `delattr` to deactivate
 '''
-run_tests = ['test_mini' ]
+run_tests = ['test_mini_full' ]
 
 for key, value in kb_dRepTest.__dict__.copy().items():
     if key.startswith('test') and callable(value):
