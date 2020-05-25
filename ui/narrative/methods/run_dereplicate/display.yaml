@@ -1,10 +1,10 @@
 #
 # define display information
 #
-name: Dereplicate genomes using dRep
+name: Dereplicate genomes with dRep
 
 tooltip: |
-    Dereplicate genomes based on ANI
+    Dereplicate genomes based on ANI and quality
 
 screenshots: []
 

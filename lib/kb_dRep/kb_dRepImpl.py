@@ -108,7 +108,7 @@ class kb_dRep:
         #BEGIN run_dereplicate
 
         dprint('params', run=locals())
-
+        dprint('ls -a /data/CHECKM_DATA', run='cli')
 
         # set up globals ds `globals_` for this API-method run
 
