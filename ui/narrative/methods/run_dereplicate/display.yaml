@@ -202,3 +202,36 @@ publications:
         display-text: |
             <a href="https://doi.org/10.1101/108142">bioRxiv</a>
 
+    -
+        display-text: |
+            Hyatt D. et al.  (2010) Prodigal: prokaryotic gene recognition and translation initiation site identification. BMC Bioinformatics, 11, 119.
+
+    -
+        display-text: |
+            Eddy S.R. (2011) Accelerated profile HMM searches. PLoS Comput. Biol., 7, e1002195.
+            
+    -
+        display-text: |
+            Matsen F. et al.  (2010) pplacer: linear time maximum-likelihood and Bayesian phylogenetic placement of sequences onto a fixed reference tree. BMC Bioinformatics, 11, 538.
+
+    -
+        display-text: |
+            Ondov, B.D., Treangen, T.J., Melsted, P. et al. Mash: fast genome and metagenome distance estimation using MinHash. Genome Biol 17, 132 (2016). https://doi.org/10.1186/s13059-016-0997-x
+
+    -
+        display-text: |
+            Parks, Donovan H et al. “CheckM: assessing the quality of microbial genomes recovered from isolates, single cells, and metagenomes.” Genome research vol. 25,7 (2015): 1043-55. doi:10.1101/gr.186072.114
+
+    -
+        display-text: |
+            Microbial species delineation using whole genome sequences. Neha J. Varghese; Supratim Mukherjee; Natalia Ivanova; Konstantinos T. Konstantinidis; Kostas Mavrommatis; Nikos C. Kyrpides; Amrita Pati. Nucleic Acids Research 2015; doi: 10.1093/nar/gkv657
+
+    -
+        display-text: |
+            Kurtz, S., Phillippy, A., Delcher, A.L. et al. Versatile and open software for comparing large genomes. Genome Biol 5, R12 (2004). https://doi.org/10.1186/gb-2004-5-2-r12
+
+            
+
+
+
+
