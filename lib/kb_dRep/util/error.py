@@ -1,7 +1,0 @@
-
-
-
-class NonZeroReturnException(Exception):
-    pass
-
-

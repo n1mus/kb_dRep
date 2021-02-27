@@ -1,2 +1,0 @@
-Do not delete the ones for 'SURF-B'. These bins and work directories are used by tests that
-skip lengthy/difficult parts of the code, such as downloading, uploading, running dRep, etc.

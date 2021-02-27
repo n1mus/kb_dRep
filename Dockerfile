@@ -100,6 +100,8 @@ ENV PYTHONWARNINGS=ignore
 
 RUN pip install pypdf2==1.26.0 dotmap==1.3.14
 
+RUN pip install pipenv coverage pytest-cov python-coveralls flake8  
+
 
 # -----------------------------------------
 
