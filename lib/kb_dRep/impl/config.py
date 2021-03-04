@@ -13,6 +13,16 @@ config = dict(
 
 app = DotMap(config) # global
 
-def reset(app: DotMap):
+def reset_globals():
     app.clear()
     app.update(config)
+
+
+
+def ref_leaf(ref):
+    return ref.split(';')[-1]
+
+def file_safe_ref(ref):
+    return ref.replace('/', '.')
+
+TRANSFORM_NAME_SEP = '__' # separate UPA, object names,bin name

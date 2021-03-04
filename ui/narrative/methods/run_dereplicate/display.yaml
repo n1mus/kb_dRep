@@ -25,7 +25,7 @@ suggestions:
 # Configure the display and description of parameters
 #
 parameters :
-    genomes_refs :
+    obj_refs :
        ui-name : |
            Binned contigs
        short-hint : |
@@ -147,6 +147,16 @@ parameters :
               checkM_method
          short-hint : |
               checkM method
+    output_as_assembly :
+          ui-name : |
+              Output as AssemblySet
+          short-hint: |
+              Output dereplicated as Assemblies in AssemblySet
+    output_suffix :
+          ui-name: |
+              Output suffix
+          short-hint: |
+              Suffix for output objects' names
 
 parameter-groups:
     filtering:

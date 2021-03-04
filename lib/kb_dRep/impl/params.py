@@ -11,14 +11,14 @@ class Params:
         'length': 50000,
         'completeness': 75,
         'contamination': 25, 
-        'ignoreGenomeQuality': "False", 
+        'ignoreGenomeQuality': False, 
         'MASH_sketch': 1000,
         'S_algorithm': 'ANImf',
         'n_PRESET': 'normal',
         'P_ani': 0.9,
         'S_ani': 0.99,
-        'SkipMash': "False", 
-        'SkipSecondary': "False",
+        'SkipMash': False, 
+        'SkipSecondary': False,
         'cov_thresh': 0.1,
         'coverage_method': 'larger',
         'clusterAlg': 'average', 
@@ -31,6 +31,8 @@ class Params:
         'warn_sim': 0.98,
         'warn_aln': 0.25,
         'checkM_method': 'lineage_wf',
+        'output_as_assembly': False,
+        'output_suffix': '.dRep',
     }
 
     FLAGS = ['ignoreGenomeQuality', 'SkipMash', 'SkipSecondary']
@@ -41,27 +43,34 @@ class Params:
         'workspace_id',
     ]
 
-    OPTIONAL = [
+    EXTRA = [
         'processors',
     ]
 
-    ALL = list(DEFAULTS.keys()) + REQUIRED + OPTIONAL
+    ALL = list(DEFAULTS.keys()) + REQUIRED + EXTRA
 
     def __init__(self, params):
         self._validate(params)
-        self.params = self.flatten(params)
+        params = self.flatten(params)
+
+        # internal transformations
+        for f in self.FLAGS:
+            if f in params:
+                params[f] = bool(params[f])
+
+        self.params = params
 
 
     def _validate(self, params):
-        if len(params['obj_upas'] == 0):
+        if len(params['obj_refs']) == 0:
             raise Exception('No input objects')
-        if len(set(params['obj_upas'])) < len(params['obj_upas']):
+        if len(set(params['obj_refs'])) < len(params['obj_refs']):
             raise Exception('Duplicate input objects') 
 
        
     def get_non_default_params_l(self):
         pl = []
-        for k, vd in self.DEFAULTS:
+        for k, vd in self.DEFAULTS.items():
             if k in self.params and self.params[k] != vd:
                 pl.append('--' + k)
                 if k not in self.FLAGS:
@@ -69,12 +78,16 @@ class Params:
         return pl
 
 
+    def __contains__(self, key):
+        return key in self.params
+
+
     def __getitem__(self, key):
         '''
         For required params (e.g., input UPAs, workspace stuff)
         '''
-        if key not in self.REQUIRED:
-            raise Exception()
+        if key not in self.REQUIRED and key not in self.EXTRA:
+            raise Exception(key)
 
         return self.params[key]
 
@@ -85,13 +98,13 @@ class Params:
         Return the user-supplied value, or the default value if none was supplied
         '''
         if key not in self.DEFAULTS:
-            raise Exception('`params.getd(x)` only applicable to params with defaults')
+            raise Exception(key)
 
         return self.params.get(key, self.DEFAULTS[key])
 
 
     def __repr__(self) -> str:
-        return 'Wrapping:\n%s' % (json.dumps(self.params, indent=4))
+        return 'params wrapper:\n%s' % (json.dumps(self.params, indent=4))
 
 
     @staticmethod

@@ -23,6 +23,8 @@ RUN pip install --upgrade pip==19.3.1
 RUN pip install drep==2.4.2
 
 
+
+
 # MASH
 RUN curl --location https://github.com/marbl/Mash/releases/download/v2.2/mash-Linux64-v2.2.tar > mash.tar && \
     tar xf mash.tar && \ 
@@ -100,7 +102,9 @@ ENV PYTHONWARNINGS=ignore
 
 RUN pip install pypdf2==1.26.0 dotmap==1.3.14
 
+RUN pip install drep==3.1.0
 RUN pip install pipenv coverage pytest-cov python-coveralls flake8  
+RUN pip install numpy==1.15.4
 
 
 # -----------------------------------------

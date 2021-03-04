@@ -13,14 +13,11 @@ from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.WorkspaceClient import Workspace
 from installed_clients.MetagenomeUtilsClient import MetagenomeUtils
+from installed_clients.AssemblyUtilClient import AssemblyUtil
 
-from .util import report
-from .util.dprint import dprint
-from .util.kbase_obj import BinnedContigs
-from .util import config
-from .util.config import app, reset
-from .util.error import * # custom exceptions, facilitates testing/failures
-from .util import message # warnings, exceptions. facilitates testing
+from .util.debug import dprint
+from .impl.config import app, reset_globals
+from .impl.workflow import do_workflow
 
 #END_HEADER
 
@@ -56,11 +53,13 @@ class kb_dRep:
         workspace_url = config['workspace-url']
         shared_folder = config['scratch']
         
+        reset_globals()
         app.update({ 
             'shared_folder': config['scratch'], 
             'ws': Workspace(workspace_url),
             'dfu': DataFileUtil(callback_url),
             'mgu': MetagenomeUtils(callback_url),
+            'au': AssemblyUtil(callback_url),
             'kbr': KBaseReport(callback_url),
         })
 

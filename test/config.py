@@ -1,6 +1,7 @@
 import os
 import time
 import unittest
+from unittest.mock import patch
 from configparser import ConfigParser
 import sys
 import subprocess
@@ -13,6 +14,16 @@ from kb_dRep.kb_dRepServer import MethodContext
 from kb_dRep.authclient import KBaseAuth as _KBaseAuth
 
 from kb_dRep.kb_dRepImpl import kb_dRep
+
+
+do_patch = True # toggle patching for tests that can run independently of it
+
+if do_patch:
+    patch_ = patch
+    patch_dict_ = patch.dict
+else:
+    patch_ = lambda *a, **k: lambda f: f
+    patch_dict_ = lambda *a, **k: lambda f: f
 
 
 class BaseTest(unittest.TestCase):
@@ -50,35 +61,7 @@ class BaseTest(unittest.TestCase):
         suffix = int(time.time() * 1000)
         cls.wsName = "kb_dRep_" + str(suffix)
         cls.wsId = cls.wsClient.create_workspace({'workspace': cls.wsName})[0]                      
-        cls.params_ws = {                                                                           
+        cls.ws = {                                                                           
             'workspace_id': cls.wsId,                                                               
             'workspace_name': cls.wsName,                                                           
-            } 
-        # decompress tarballs
-        #cls.subproc_run('cd %s; for f in %s; do tar xzf "$f"; done' % (cls.testData_dir, os.path.join(cls.testData_dir, '*.tar.gz')))
-        #cls.subproc_run('rm %s' % os.path.join(cls.testData_dir, '*.tar.gz'))
-        #cls.subproc_run('ls %s' % cls.testData_dir)
-        #cls.list_tests()
-
-    @classmethod
-    @where_am_i
-    def tearDownClass(cls):
-        if hasattr(cls, 'wsName'):
-            cls.wsClient.delete_workspace({'workspace': cls.wsName})
-            print('Test workspace was deleted')
-
-    '''
-    @where_am_i
-    def setUp(self):
-        # copy in testing bin/work dirs
-        cmd = "cp -r %s/* %s" % (self.testData_dir, self.scratch)
-        self.subproc_run(cmd)
-        self.list_tests()
-
-    @where_am_i
-    def tearDown(self):
-        # clear testing bin/work dirs
-        self.subproc_run(f"rm -rf {os.path.join(self.scratch, 'SURF-B.M*')}")
-        self.subproc_run(f"rm -rf {os.path.join(self.scratch, 'capybaraGut.M*')}")
-
-    '''
+        } 
