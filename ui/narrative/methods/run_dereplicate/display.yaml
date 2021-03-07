@@ -1,7 +1,7 @@
 #
 # define display information
 #
-name: Dereplicate genomes with dRep
+name: Dereplicate genomes with dRep - v3.1.0
 
 tooltip: |
     Dereplicate genomes based on ANI and quality
@@ -27,9 +27,9 @@ suggestions:
 parameters :
     obj_refs :
        ui-name : |
-           Binned contigs
+           BinnedContigs, Assemblies, or Genomes
        short-hint : |
-           Genomes or binned contigs to be dereplicated
+           BinnedContigs, Assemblies, or Genomes
     length :
         ui-name : |
            length

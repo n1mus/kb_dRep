@@ -106,7 +106,7 @@ class kb_dRep:
         # return variables are: output
         #BEGIN run_dereplicate
 
-        dprint('params')
+        logging.info(params)
         dprint('ls -a /data/CHECKM_DATA', run='cli')
 
 

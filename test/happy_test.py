@@ -19,7 +19,7 @@ local = {
 class Test(cfg.BaseTest):
 
 
-    #@patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
+    @patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
     @patch('kb_dRep.impl.workflow.run_check', new=get_mock_run_check('potpourri'))
     def test(self):
         ret = self.serviceImpl.run_dereplicate(

@@ -7,7 +7,7 @@ import json
 
 class Params:
 
-    DEFAULTS = {
+    TOOL_DEFAULTS = {
         'length': 50000,
         'completeness': 75,
         'contamination': 25, 
@@ -34,6 +34,10 @@ class Params:
         'size_weight': 0,
         #--
         'processors': 6,
+    }
+
+    DEFAULTS = {
+        **TOOL_DEFAULTS,
         #--
         'output_as_assembly': False,
         'output_suffix': '.dRep',
@@ -54,7 +58,7 @@ class Params:
         'workspace_id',
     ]
 
-    ALL = REQUIRED + list(DEFAULTS.keys()) + REQUIRED
+    ALL = REQUIRED + list(DEFAULTS.keys()) + PARAM_GROUPS 
 
     def __init__(self, params):
         self._validate(params)
@@ -81,7 +85,7 @@ class Params:
        
     def get_non_default_tool_params(self):
         pl = []
-        for k, vd in self.DEFAULTS.items():
+        for k, vd in self.TOOL_DEFAULTS.items():
             if k in self.params and self.params[k] != vd:
                 pl.append('--' + k)
                 if k not in self.FLAGS:

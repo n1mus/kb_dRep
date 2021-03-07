@@ -9,7 +9,7 @@ import config
 class Test(config.BaseTest):
 
     def test_dup_input(self):
-        with raises():
+        with raises(Exception):
             ret = self.serviceImpl.run_dereplicate(
                 self.ctx, {
                     **self.ws,
@@ -19,7 +19,7 @@ class Test(config.BaseTest):
 
    
     def test_nothing_passes_filtering(self):
-        with raises(match='filtering'):
+        with raises(Exception, match='filtering'):
             ret = self.serviceImpl.run_dereplicate(
                 self.ctx, {
                     **self.params_ws,

@@ -1,4 +1,4 @@
-TARGET_TESTS = .
+TARGET_TESTS = happy_test.py params_test.py
 SERVICE = kb_drep
 SERVICE_CAPS = kb_dRep
 SPEC_FILE = kb_dRep.spec
