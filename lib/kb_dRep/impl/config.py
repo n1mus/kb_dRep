@@ -25,4 +25,4 @@ def ref_leaf(ref):
 def file_safe_ref(ref):
     return ref.replace('/', '.')
 
-TRANSFORM_NAME_SEP = '__' # separate UPA, object names,bin name
+TRANSFORM_NAME_SEP = '__' # separate UPA, object names, bin name

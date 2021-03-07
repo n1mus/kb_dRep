@@ -127,21 +127,6 @@ parameters :
              size_weight
          short-hint: |
              Weight of log(genome size) in genome scoring formula
-    warn_dist:
-        ui-name: |
-             warn_dist
-        short-hint:
-             How far from the threshold to throw cluster warnings
-    warn_sim:
-        ui-name: |
-             warn_sim
-        short-hint: |
-             Similarity threshold for warnings between dereplicated genomes
-    warn_aln:
-        ui-name: |
-             warn_aln
-        short-hint: |
-             Minimum aligned fraction for warnings between dereplicated genomes (ANIn)
     checkM_method :
          ui-name : |
               checkM_method
@@ -185,10 +170,6 @@ parameter-groups:
             <p>Based off of the formula:</p>
             <p>A*Completeness - B*Contamination + C*(Contamination * (strain_heterogeneity/100)) + D*log(N50) + E*log(size)</p>
             <p>A = completeness_weight; B = contamination_weight; C = strain_heterogeneity_weight; D = N50_weight; E = size_weight</p>
-    warnings:
-        ui-name: |
-            WARNINGS
-        short-hint: |
 
 
 description : |

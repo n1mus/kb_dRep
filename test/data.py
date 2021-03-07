@@ -21,7 +21,7 @@ from kb_dRep.impl.config import app, ref_leaf, file_safe_ref
 
 SURF_B_MaxBin2_CheckM = '34837/16/1' # bc
 SURF_B_MetaBAT2_CheckM = '34837/2/1' # bc
-SURF_B_2binners_CheckM = [SURF_B_MaxBin2_CheckM, SURF_B_MetaBAT2_CheckM]
+capybaraGut_MaxBin2_CheckM = '34837/77/2' # bc
 small_arctic_metabat = '34837/46/1' # bc
 Some_refseq_assemblies = '34837/71/1' # as
 Campylobacter_jejuni_assembly = '34837/65/4' # a

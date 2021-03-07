@@ -66,18 +66,6 @@
             "advanced": true,
             "allow_multiple": false,
             "with_border": true
-        },
-        {
-            "id": "warnings",
-            "parameters": [
-                "warn_dist",
-                "warn_sim",
-                "warn_aln"
-            ],
-            "optional": false,
-            "advanced": true,
-            "allow_multiple": false,
-            "with_border": true
         }
     ],
     "parameters": [
@@ -452,51 +440,6 @@
             }
         },
         {
-            "id": "warn_dist",
-            "optional": false,
-            "advanced": true,
-            "allow_multiple": false,
-            "default_values": [
-                "0.25"
-            ],
-            "field_type": "text",
-            "text_options": {
-                "validate_as": "float",
-                "min_float": "0",
-                "max_float": "1"
-            }
-        },
-        {
-            "id": "warn_sim",
-            "optional": false,
-            "advanced": true,
-            "allow_multiple": false,
-            "default_values": [
-                "0.98"
-            ],
-            "field_type": "text",
-            "text_options": {
-                "validate_as": "float",
-                "min_float": "0",
-                "max_float": "1"
-            }
-        },
-        {
-            "id": "warn_aln",
-            "optional": false,
-            "advanced": true,
-            "allow_multiple": false,
-            "default_values": [
-                "0.25"
-            ],
-            "field_type": "text",
-            "text_options": {
-                "validate_as": "float",
-                "min_float": "0",
-                "max_float": "1"
-            }
-        },
-        {
             "id": "checkM_method",
             "optional": false,
             "advanced": true,
@@ -577,10 +520,6 @@
                     "target_property": "scoring"
                 },
                 {
-                    "input_parameter": "warnings",
-                    "target_property": "warnings"
-                },
-                {
                     "input_parameter": "obj_refs",
                     "target_property": "obj_refs",
                     "target_type_transform": "list<ref>"
@@ -596,6 +535,10 @@
                 {
                     "input_parameter": "output_suffix",
                     "target_property": "output_suffix"
+                },
+                {
+                    "constant_value": 16,
+                    "target_property": "processors"
                 }
             ],
             "output_mapping": [

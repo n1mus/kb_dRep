@@ -57,14 +57,11 @@ def do_workflow(params):
         if type_.startswith('KBaseMetagenomes.BinnedContigs'):
             obj = BinnedContigs(upa)
 
-        elif type_.startswith('KBaseSets.GenomeSet'):
-            obj = GenomeSet(upa, type='KBaseSets.GenomeSet')
+        elif type_.startswith('KBaseSets.GenomeSet') or type_.startswith('KBaseSearch.GenomeSet'):
+            obj = GenomeSet(ref=upa)
  
-        elif type_.startswith('KBaseSearch.GenomeSet'):
-            obj = GenomeSet(upa, type='KBaseSearch.GenomeSet')
-                    
         elif type_.startswith('KBaseSets.AssemblySet'):
-            obj = AssemblySet(upa)
+            obj = AssemblySet(ref=upa)
             
         elif type_.startswith('KBaseGenomes.Genome'):
             obj = Genome(upa)
@@ -100,41 +97,21 @@ def do_workflow(params):
 
     #
     ##
-    ###
-    #### params
-    #####
-
-
-    dRep_params_l = app.params.get_non_default_params_l()
-
-    #
-    if 'processors' in params:
-        num_proc = params['processors'] # non-Narrative calls
-    else: # TODO detect environment to assign different default for Narrative / non-Narrative
-        num_proc = 8 # Narrative calls
-
-
-
-    #
-    ##
     ### run dRep
     ####
     #####
 
-
+    dRep_params_l = params.get_non_default_tool_params()
 
     dRep_cmd = ([
-        'dRep',
-        'dereplicate',
+        'dRep dereplicate',
         dRep_dir,
         '--genomes'
     ]
-    + pooled_bins_fn_l
+    + pooled_bins_fp_l
     + dRep_params_l
     + [
         '--debug',
-        '--processors',
-        str(num_proc),
     ])
 
     dRep_cmd = ' '.join(dRep_cmd)
@@ -173,11 +150,14 @@ def do_workflow(params):
     if params.getd('output_as_assembly'):
         assembly_ref_l = []
         for obj in objs:
-            assembly_ref_l.extend(
-                obj.get_derep_assembly_refs()
-            )
+            if obj.TYPE == 'KBaseMetagenomes.BinnedContigs':
+                obj.save_derep_as_assemblies(params['workspace_name'])
+            assembly_ref_l.extend(obj.get_derep_assembly_refs())
         assembly_ref_l = uniq(assembly_ref_l)
-        ref = AssemblySet(ref_l=assembly_ref_l).save('Assemblies' + params.getd('output_suffix'))
+        ref = AssemblySet(ref_l=assembly_ref_l).save(
+            'Assemblies' + params.getd('output_suffix'),
+            params['workspace_id']
+        )
 
         objects_created.append(
             dict(
@@ -192,7 +172,10 @@ def do_workflow(params):
         # genome types
         genome_ref_l = aggregate_derep_element_refs(genome_l, genome_set_l)
         if len(genome_ref_l) > 0:
-            ref = GenomeSet(ref_l=genome_ref_l).save('Genomes' + params.getd('output_suffix'))
+            ref = GenomeSet(ref_l=genome_ref_l).save(
+                'Genomes' + params.getd('output_suffix'),
+                params['workspace_id']
+            )
             objects_created.append(
                 dict(
                     ref=ref,
@@ -203,7 +186,10 @@ def do_workflow(params):
         # assembly types
         assembly_ref_l = aggregate_derep_element_refs(assembly_l, assembly_set_l)
         if len(assembly_ref_l) > 0:
-            ref = AssemblySet(ref_l=assembly_ref_l).save('Assemblies' + params.getd('output_suffix'))
+            ref = AssemblySet(ref_l=assembly_ref_l).save(
+                'Assemblies' + params.getd('output_suffix'),
+                params['workspace_id']
+            )
             objects_created.append(
                 dict(
                     ref=ref,
@@ -214,16 +200,16 @@ def do_workflow(params):
         # binned contigs types
         for binned_contigs in binned_contigs_l:
             if not binned_contigs.is_fully_dereplicated():
-                ref = binned_contigs.save_dereplicated(binned_contigs.name + params.getd('output_suffix'))
+                ref = binned_contigs.save_dereplicated(
+                    binned_contigs.name + params.getd('output_suffix'),
+                    params['workspace_id']
+                )
                 objects_created.append(
                     dict(
                         ref=ref,
                         description=description,
                     )
                 )
-
-
-
 
 
     #
@@ -234,8 +220,6 @@ def do_workflow(params):
 
     hb = report.HTMLBuilder(dRep_dir, report_dir)
     report_fp = hb.write()
-
-
 
 
     #

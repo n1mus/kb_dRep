@@ -11,26 +11,30 @@ class Params:
         'length': 50000,
         'completeness': 75,
         'contamination': 25, 
+        #--
         'ignoreGenomeQuality': False, 
-        'MASH_sketch': 1000,
+        'checkM_method': 'lineage_wf',
+        #--
         'S_algorithm': 'ANImf',
-        'n_PRESET': 'normal',
-        'P_ani': 0.9,
-        'S_ani': 0.99,
+        'MASH_sketch': 1000,
         'SkipMash': False, 
         'SkipSecondary': False,
+        'n_PRESET': 'normal',
+        #--
+        'P_ani': 0.9,
+        'S_ani': 0.99,
         'cov_thresh': 0.1,
         'coverage_method': 'larger',
         'clusterAlg': 'average', 
+        #--
         'completeness_weight': 1,
         'contamination_weight': 5,
         'strain_heterogeneity_weight': 1, 
         'N50_weight': 0.5,
         'size_weight': 0,
-        'warn_dist': 0.25, 
-        'warn_sim': 0.98,
-        'warn_aln': 0.25,
-        'checkM_method': 'lineage_wf',
+        #--
+        'processors': 6,
+        #--
         'output_as_assembly': False,
         'output_suffix': '.dRep',
     }
@@ -43,11 +47,7 @@ class Params:
         'workspace_id',
     ]
 
-    EXTRA = [
-        'processors',
-    ]
-
-    ALL = list(DEFAULTS.keys()) + REQUIRED + EXTRA
+    ALL = list(DEFAULTS.keys()) + REQUIRED
 
     def __init__(self, params):
         self._validate(params)
@@ -67,8 +67,12 @@ class Params:
         if len(set(params['obj_refs'])) < len(params['obj_refs']):
             raise Exception('Duplicate input objects') 
 
+        for k, v in params.items():
+            if k not in self.ALL:
+                raise Exception(k)
+
        
-    def get_non_default_params_l(self):
+    def get_non_default_tool_params(self):
         pl = []
         for k, vd in self.DEFAULTS.items():
             if k in self.params and self.params[k] != vd:
@@ -78,15 +82,11 @@ class Params:
         return pl
 
 
-    def __contains__(self, key):
-        return key in self.params
-
-
     def __getitem__(self, key):
         '''
         For required params (e.g., input UPAs, workspace stuff)
         '''
-        if key not in self.REQUIRED and key not in self.EXTRA:
+        if key not in self.REQUIRED:
             raise Exception(key)
 
         return self.params[key]

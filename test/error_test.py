@@ -3,11 +3,10 @@ from unittest.mock import patch
 from pytest import raises
 
 
-from . import config as cfg
+import config
 
 
-
-class Test(cfg.BaseTest):
+class Test(config.BaseTest):
 
     def test_dup_input(self):
         with raises():

@@ -8,13 +8,17 @@ import subprocess
 import re
 import tarfile
 import logging
+import uuid
 
 from installed_clients.WorkspaceClient import Workspace
 from kb_dRep.kb_dRepServer import MethodContext
 from kb_dRep.authclient import KBaseAuth as _KBaseAuth
 
+from kb_dRep.util.debug import dprint
 from kb_dRep.kb_dRepImpl import kb_dRep
 
+
+WORK_DIR = '/kb/module/work/tmp'
 
 do_patch = True # toggle patching for tests that can run independently of it
 
@@ -25,6 +29,26 @@ else:
     patch_ = lambda *a, **k: lambda f: f
     patch_dict_ = lambda *a, **k: lambda f: f
 
+def get_test_dir(name='test_dir_'):
+    test_dir = os.path.join(WORK_DIR, name + str(uuid.uuid4()))
+    os.mkdir(test_dir)
+    return test_dir
+
+def get_cfg():
+    config_file = os.environ.get('KB_DEPLOYMENT_CONFIG', None)
+    cfg = {}
+    config = ConfigParser()
+    config.read(config_file)
+    for nameval in config.items('kb_dRep'):
+        cfg[nameval[0]] = nameval[1]
+    return cfg
+
+def get_ws_client():
+    cfg = get_cfg()
+    wsClient = Workspace(cfg['workspace-url'])
+    return wsClient
+
+
 
 class BaseTest(unittest.TestCase):
 
@@ -33,7 +57,7 @@ class BaseTest(unittest.TestCase):
         token = os.environ.get('KB_AUTH_TOKEN', None)
         config_file = os.environ.get('KB_DEPLOYMENT_CONFIG', None)
         cls.cfg = {}
-        config = ConfigParser() # does not handle inline comments! or endofline spaces
+        config = ConfigParser()
         config.read(config_file)
         for nameval in config.items('kb_dRep'):
             cls.cfg[nameval[0]] = nameval[1]
@@ -65,3 +89,11 @@ class BaseTest(unittest.TestCase):
             'workspace_id': cls.wsId,                                                               
             'workspace_name': cls.wsName,                                                           
         } 
+
+    @classmethod
+    def tearDownClass(cls):
+        if hasattr(cls, 'wsName'):
+            cls.wsClient.delete_workspace({'workspace': cls.wsName})
+            print('Test workspace was deleted')
+
+

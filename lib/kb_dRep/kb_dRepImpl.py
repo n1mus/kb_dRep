@@ -58,7 +58,7 @@ class kb_dRep:
             'shared_folder': config['scratch'], 
             'ws': Workspace(workspace_url),
             'dfu': DataFileUtil(callback_url),
-            'mgu': MetagenomeUtils(callback_url),
+            'mgu': MetagenomeUtils(callback_url, service_ver='dev'),
             'au': AssemblyUtil(callback_url),
             'kbr': KBaseReport(callback_url),
         })
