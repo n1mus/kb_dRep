@@ -41,13 +41,20 @@ class Params:
 
     FLAGS = ['ignoreGenomeQuality', 'SkipMash', 'SkipSecondary']
 
+    PARAM_GROUPS = [
+        'filtering',
+        'genome_comparison',
+        'clustering',
+        'scoring',
+    ]
+
     REQUIRED = [
         'obj_refs',
         'workspace_name',
         'workspace_id',
     ]
 
-    ALL = list(DEFAULTS.keys()) + REQUIRED
+    ALL = REQUIRED + list(DEFAULTS.keys()) + REQUIRED
 
     def __init__(self, params):
         self._validate(params)

@@ -59,7 +59,6 @@ build-test-script:
 	#echo 'python -m nose --with-coverage --cover-package=$(SERVICE_CAPS) --cover-html --cover-html-dir=/kb/module/work/test_coverage --nocapture  --nologcapture $(TARGET_TESTS)' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 	echo 'pytest  --verbose -s --cov=$$lib --cov-config=coveragerc_sdk --cov-report=html $(TARGET_TESTS)' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 	echo 'mv .coverage /kb/module/work/' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
-	echo 'rm -r /kb/module/work/test_coverage' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 	echo 'mv htmlcov /kb/module/work/test_coverage' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)	
 	chmod +x $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 
