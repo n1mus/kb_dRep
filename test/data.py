@@ -19,18 +19,25 @@ from kb_dRep.util.debug import dprint
 from kb_dRep.impl.config import app, ref_leaf, file_safe_ref
 
 
-SURF_B_MaxBin2_CheckM = '34837/16/1' # bc
-SURF_B_MetaBAT2_CheckM = '34837/2/1' # bc
-capybaraGut_MaxBin2_CheckM = '34837/77/2' # bc
-small_arctic_metabat = '34837/46/1' # bc
-Some_refseq_assemblies = '34837/71/1' # as
+
+Rhodobacter_sphaeroides_2_4_1_assembly = '79/4/1' # a
+Escherichia_coli_K_12_MG1655_assembly = '79/10/1' # a
+Shewanella_amazonensis_SB2B_assembly = '79/13/1' # a
 Campylobacter_jejuni_assembly = '34837/65/4' # a
-Escherichia_coli_Sakai_assembly = '34837/70/1' # a
+Caulobacter_vibrioides_assembly = '34837/66/3' # a
+Coxiella_burnetii_assembly = '34837/67/2' # a
 Escherichia_coli_K_12_assembly = '34837/69/1' # a
-Some_genomes = '34837/73/1' # gs
+Escherichia_coli_Sakai_assembly = '34837/70/1' # a
 Escherichia_coli_K_12_MG1655 = '34837/60/1' # g
 Rhodobacter_sphaeroides_2_4_1 = '34837/61/1' # g
-
+Shewanella_amazonensis_SB2B = '34837/62/1' # g
+Some_refseq_assemblies = '34837/71/1' # as
+Some_genomes = '34837/73/1' # gs
+Escherichia_genome_set = '34837/75/1' # gs
+SURF_B_MetaBAT2_CheckM = '34837/2/1' # bc
+SURF_B_MaxBin2_CheckM = '34837/16/1' # bc
+small_arctic_metabat = '34837/46/1' # bc
+capybaraGut_MaxBin2_CheckM = '34837/77/2' # bc
 
 TEST_DATA_DIR = '/kb/module/test/data'
 WORK_DIR = '/kb/module/work/tmp'

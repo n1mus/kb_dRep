@@ -3,7 +3,7 @@ import logging
 import uuid
 
 from .params import Params
-from .config import app
+from .config import app, ref_leaf
 from .kb_obj import Assembly, AssemblySet, Genome, GenomeSet, BinnedContigs
 from . import report
 from ..util.cli import run_check
@@ -17,7 +17,6 @@ def do_workflow(params):
 
     app.update({
         'run_dir': os.path.join(app.shared_folder, 'run_kb_dRep_' + str(uuid.uuid4())), # folder dedicated to this API-method run
-        'warnings': [],
         'params': params,
     })
 
@@ -54,19 +53,19 @@ def do_workflow(params):
             'objects': [{'ref': upa}]
         })['infos'][0][2]
 
-        if type_.startswith('KBaseMetagenomes.BinnedContigs'):
+        if type_.startswith(BinnedContigs.TYPE):
             obj = BinnedContigs(upa)
 
-        elif type_.startswith('KBaseSets.GenomeSet') or type_.startswith('KBaseSearch.GenomeSet'):
+        elif type_.startswith(GenomeSet.TYPE) or type_.startswith(GenomeSet.LEGACY_TYPE):
             obj = GenomeSet(ref=upa)
  
-        elif type_.startswith('KBaseSets.AssemblySet'):
+        elif type_.startswith(AssemblySet.TYPE):
             obj = AssemblySet(ref=upa)
             
-        elif type_.startswith('KBaseGenomes.Genome'):
+        elif type_.startswith(Genome.TYPE):
             obj = Genome(upa)
 
-        elif type_.startswith('KBaseGenomeAnnotations.Assembly'):
+        elif type_.startswith(Assembly.TYPE):
             obj = Assembly(upa)
 
         else:
@@ -138,78 +137,8 @@ def do_workflow(params):
     ####
     #####
 
-    derep_l = os.listdir(
-        os.path.join(dRep_dir, 'dereplicated_genomes')
-    )
-    for obj in objs:
-        obj.identify_dereplicated(derep_l)
+    objects_created = save_results(objs, params, dRep_dir)
 
-    objects_created = []
-    description = 'Dereplication results'
-
-    if params.getd('output_as_assembly'):
-        assembly_ref_l = []
-        for obj in objs:
-            if obj.TYPE == 'KBaseMetagenomes.BinnedContigs':
-                obj.save_derep_as_assemblies(params['workspace_name'])
-            assembly_ref_l.extend(obj.get_derep_assembly_refs())
-        assembly_ref_l = uniq(assembly_ref_l)
-        ref = AssemblySet(ref_l=assembly_ref_l).save(
-            'Assemblies' + params.getd('output_suffix'),
-            params['workspace_id']
-        )
-
-        objects_created.append(
-            dict(
-                ref=ref,
-                description=description,
-            )
-        )
-
-    else:
-        genome_l, assembly_l, genome_set_l, assembly_set_l, binned_contigs_l = partition_by_type(objs)
-
-        # genome types
-        genome_ref_l = aggregate_derep_element_refs(genome_l, genome_set_l)
-        if len(genome_ref_l) > 0:
-            ref = GenomeSet(ref_l=genome_ref_l).save(
-                'Genomes' + params.getd('output_suffix'),
-                params['workspace_id']
-            )
-            objects_created.append(
-                dict(
-                    ref=ref,
-                    description=description,
-                )
-            )
-
-        # assembly types
-        assembly_ref_l = aggregate_derep_element_refs(assembly_l, assembly_set_l)
-        if len(assembly_ref_l) > 0:
-            ref = AssemblySet(ref_l=assembly_ref_l).save(
-                'Assemblies' + params.getd('output_suffix'),
-                params['workspace_id']
-            )
-            objects_created.append(
-                dict(
-                    ref=ref,
-                    description=description,
-                )
-            )
-
-        # binned contigs types
-        for binned_contigs in binned_contigs_l:
-            if not binned_contigs.is_fully_dereplicated():
-                ref = binned_contigs.save_dereplicated(
-                    binned_contigs.name + params.getd('output_suffix'),
-                    params['workspace_id']
-                )
-                objects_created.append(
-                    dict(
-                        ref=ref,
-                        description=description,
-                    )
-                )
 
 
     #
@@ -239,14 +168,13 @@ def do_workflow(params):
     }]
 
     report_params = {
-            'warnings': app.warnings,
-            'direct_html_link_index': 0,
-            'html_links': html_links,
-            'file_links': file_links,
-            'report_object_name': 'kb_dRep_report',
-            'workspace_id': params['workspace_id'],
-            'objects_created': objects_created
-            }
+        'direct_html_link_index': 0,
+        'html_links': html_links,
+        'file_links': file_links,
+        'report_object_name': 'kb_dRep_report',
+        'workspace_id': params['workspace_id'],
+        'objects_created': objects_created,
+    }
 
     report_output = app.kbr.create_extended_report(report_params)
 
@@ -259,32 +187,117 @@ def do_workflow(params):
     return output
 
 
+def save_results(objs, params, dRep_dir):
+    derep_l = os.listdir(
+        os.path.join(dRep_dir, 'dereplicated_genomes')
+    )
+    for obj in objs:
+        obj.identify_dereplicated(derep_l)
+
+    objects_created = []
+    description = 'Dereplication results'
+
+    if params.getd('output_as_assembly'):
+        assembly_ref_l = []
+        for obj in objs:
+            if obj.TYPE == BinnedContigs.TYPE:
+                obj.save_derep_as_assemblies(params['workspace_name'])
+            assembly_ref_l.extend(obj.get_derep_assembly_refs())
+        assembly_ref_l = uniq_refs(assembly_ref_l)
+        ref = AssemblySet(ref_l=assembly_ref_l).save(
+            'Assemblies' + params.getd('output_suffix'),
+            params['workspace_id']
+        )
+
+        objects_created.append(
+            dict(
+                ref=ref,
+                description=description,
+            )
+        )
+
+    else:
+        assembly_l, genome_l, assembly_set_l, genome_set_l, binned_contigs_l = partition_by_type(objs)
+
+        # assembly types
+        assembly_ref_l = aggregate_derep_element_refs(assembly_l, assembly_set_l)
+        if len(assembly_ref_l) > 0:
+            ref = AssemblySet(ref_l=assembly_ref_l).save(
+                'Assemblies' + params.getd('output_suffix'),
+                params['workspace_id']
+            )
+            objects_created.append(
+                dict(
+                    ref=ref,
+                    description=description,
+                )
+            )
+
+        # genome types
+        genome_ref_l = aggregate_derep_element_refs(genome_l, genome_set_l)
+        if len(genome_ref_l) > 0:
+            ref = GenomeSet(ref_l=genome_ref_l).save(
+                'Genomes' + params.getd('output_suffix'),
+                params['workspace_id']
+            )
+            objects_created.append(
+                dict(
+                    ref=ref,
+                    description=description,
+                )
+            )
+
+        # binned contigs types
+        for binned_contigs in binned_contigs_l:
+            if not binned_contigs.is_fully_dereplicated():
+                ref = binned_contigs.save_dereplicated(
+                    binned_contigs.name + params.getd('output_suffix'),
+                    params['workspace_id']
+                )
+                objects_created.append(
+                    dict(
+                        ref=ref,
+                        description=description,
+                    )
+                )
+
+    return objects_created
+
+
 def aggregate_derep_element_refs(star_l, star_set_l):
-    '''
+    """
     :params star_l: genome or assembly list
     :params star_set_l: genome set or assembly set list
-    '''
+    """
 
     star_ref_l = [
-        star.ref for star in star_l
+        star.ref for star in star_l if star.in_derep
     ] + [
         ref 
         for star_set in star_set_l
         for ref in star_set.get_derep_member_refs() 
     ]
 
-    return uniq(star_ref_l)
+    return uniq_refs(star_ref_l)
+
 
 def partition_by_type(objs):
-    genome_l = [obj for obj in objs if obj.TYPE == 'KBaseGenomes.Genome']
-    assembly_l = [obj for obj in objs if obj.TYPE == 'KBaseGenomeAnnotations.Assembly']
-    genome_set_l = [obj for obj in objs if obj.TYPE == 'KBaseSets.GenomeSet' or obj.TYPE == 'KBaseSearch.GenomeSet']
-    assembly_set_l = [obj for obj in objs if obj.TYPE == 'KBaseSets.AssemblySet']
-    binned_contigs_l = [obj for obj in objs if obj.TYPE == 'KBaseMetagenomes.BinnedContigs']
+    assembly_l = [obj for obj in objs if obj.TYPE == Assembly.TYPE]
+    genome_l = [obj for obj in objs if obj.TYPE == Genome.TYPE]
+    assembly_set_l = [obj for obj in objs if obj.TYPE == AssemblySet.TYPE]
+    genome_set_l = [obj for obj in objs if obj.TYPE == GenomeSet.TYPE or obj.TYPE == GenomeSet.LEGACY_TYPE]
+    binned_contigs_l = [obj for obj in objs if obj.TYPE == BinnedContigs.TYPE]
 
-    return genome_l, assembly_l, genome_set_l, assembly_set_l, binned_contigs_l
+    return assembly_l, genome_l, assembly_set_l, genome_set_l, binned_contigs_l
 
 
-def uniq(l):
-    return sorted(list(set(l)))
+def uniq_refs(l):
+    d = {} # ref leaf to shortest ref path
+
+    for e in l:
+        lf = ref_leaf(e)
+        if lf not in d or e.count(';') < d[lf].count(';'):
+            d[lf] = e 
+
+    return list(d.values())
 

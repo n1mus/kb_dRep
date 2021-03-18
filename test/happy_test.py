@@ -17,11 +17,9 @@ local = {
 
 
 class Test(cfg.BaseTest):
-
-
     @patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
     @patch('kb_dRep.impl.workflow.run_check', new=get_mock_run_check('potpourri'))
-    def test(self):
+    def test_potpourri_outputMixed(self):
         ret = self.serviceImpl.run_dereplicate(
             self.ctx, {
                 **self.ws,
@@ -34,6 +32,26 @@ class Test(cfg.BaseTest):
                     Some_genomes,
                     Rhodobacter_sphaeroides_2_4_1,
                 ],
+                'output_as_assembly': 0,
+            }
+        )
+
+    @patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
+    @patch('kb_dRep.impl.workflow.run_check', new=get_mock_run_check('potpourri'))
+    def test_potpourri_outputAssembly(self):
+        ret = self.serviceImpl.run_dereplicate(
+            self.ctx, {
+                **self.ws,
+                **local,
+                'obj_refs': [
+                    capybaraGut_MaxBin2_CheckM,
+                    Some_refseq_assemblies,
+                    Campylobacter_jejuni_assembly,
+                    Escherichia_coli_Sakai_assembly,
+                    Some_genomes,
+                    Rhodobacter_sphaeroides_2_4_1,
+                ],
+                'output_as_assembly': 1,
             }
         )
 

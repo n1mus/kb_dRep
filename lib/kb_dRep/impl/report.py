@@ -1,18 +1,10 @@
 import os
 import shutil
-import json
-import uuid
 
-import pandas as pd
-import numpy as np
 from PyPDF2 import PdfFileReader
 
 from ..util.debug import dprint
 from .config import app
-
-
-
-
 
 
 class HTMLBuilder():
@@ -21,7 +13,6 @@ class HTMLBuilder():
         self.dRep_dir = dRep_dir
         self.report_dir = report_dir
         self.replacements = {}
-
 
     def _build_figures(self):
         figures_dir = os.path.join(self.report_dir, 'figures')
@@ -48,12 +39,12 @@ class HTMLBuilder():
                 continue
 
             button_l.append(
-                '''<button class="tablinks %s" onclick="openTab(event, '%s')">%s</button>'''  
+                '''<button class="tablinks %s" onclick="openTab(event, '%s')">%s</button>'''
                 % (
                     'active' if id == display_first else '',
-                    id, 
+                    id,
                     title,
-                ) 
+                )
             )
 
             content_l.append(
@@ -68,11 +59,9 @@ class HTMLBuilder():
         self.replacements['BUTTONS_TAG'] = '\n'.join(button_l)
         self.replacements['CONTENT_TAG'] = '\n'.join(content_l)
 
-
     def write(self):
         self._build_figures()
 
-        
         REPORT_HTML_TEMPLATE_FLPTH = '/kb/module/lib/kb_dRep/template/report.html'
         html_fp = os.path.join(app.report_dir, 'report.html')
 
@@ -84,25 +73,5 @@ class HTMLBuilder():
                         dst_fh.write(self.replacements[s].strip() + '\n')
                     else:
                         dst_fh.write(line)
-        
 
         return html_fp
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

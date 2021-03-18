@@ -10,7 +10,7 @@ from kb_dRep.impl import config
 from kb_dRep.impl.kb_obj import Assembly, AssemblySet, Genome, GenomeSet, BinnedContigs
 from kb_dRep.impl.config import app
 from kb_dRep.util.debug import dprint
-from config import get_test_dir, get_ws_client
+from config import get_test_dir, get_ws_client, assert_unordered_equals
 from data import *
 
 EMPTY_DIR = get_test_dir('empty_dir')
@@ -71,9 +71,12 @@ def test_AssemblySet(test_dir, ws):
     assert ast.get_derep_assembly_refs() == []
 
     # Create
+    ref_l=[Campylobacter_jejuni_assembly, Escherichia_coli_Sakai_assembly]
     with patch.dict(mock_target, values=mock_ins):
         ast = AssemblySet(ref_l=[Campylobacter_jejuni_assembly, Escherichia_coli_Sakai_assembly])
-    ast.save('Assemblies.dRep', ws['workspace_id'])
+    upa_new = ast.save('Assemblies.dRep', ws['workspace_id'])
+    ast_ = AssemblySet(ref=upa_new)
+    assert_unsorted_equals(ast_.assembly_ref_l, ref_l)
 
 
 def test_GenomeSet(test_dir, ws):
@@ -95,9 +98,12 @@ def test_GenomeSet(test_dir, ws):
     assert gst.get_derep_assembly_refs() == []
 
     # Create
+    ref_l=[Some_genomes + upa for upa in [Escherichia_coli_K_12_MG1655, Rhodobacter_sphaeroides_2_4_1]]
     with patch.dict(mock_target, values=mock_ins):
-        gst = GenomeSet(ref_l=[Escherichia_coli_K_12_MG1655, Rhodobacter_sphaeroides_2_4_1])
-    gst.save('Genomes.dRep', ws['workspace_id'])
+        gst = GenomeSet(ref_l=ref_l)
+    upa_new = gst.save('Genomes.dRep', ws['workspace_id'])
+    gst_ = GenomeSet(ref=upa_new)
+    assert_unsorted_equals(gst_.genome_ref_l, ref_l)
 
 
 def test_BinnedContigs(test_dir, ws):
@@ -110,14 +116,14 @@ def test_BinnedContigs(test_dir, ws):
         )
     #
     bc.identify_dereplicated(os.listdir(test_dir))
-    bc.save_derep_as_assemblies(ws['workspace_name'])
     assert bc.is_fully_dereplicated() is False
+    bc.save_derep_as_assemblies(ws['workspace_name'])
     assert len(bc.get_derep_assembly_refs()) == len(bc.bid_l)
     bc.save_dereplicated('BinnedContigs1.dRep', ws['workspace_id'])
     #
-    bc.identify_dereplicated(os.listdir(EMPTY_DIR)) #
-    bc.save_derep_as_assemblies(ws['workspace_name'])
+    bc.identify_dereplicated(os.listdir(EMPTY_DIR))
     assert bc.is_fully_dereplicated() is True
+    bc.save_derep_as_assemblies(ws['workspace_name'])
     assert len(bc.get_derep_assembly_refs()) == 0
 
     test_dir = get_test_dir()
@@ -125,11 +131,13 @@ def test_BinnedContigs(test_dir, ws):
         os.path.join(test_dir, bc._get_transformed_bid(bc.bid_l[0]))
     ).touch()
     #
-    bc.identify_dereplicated(os.listdir(test_dir)) #
-    bc.save_derep_as_assemblies(ws['workspace_name'])
+    bc.identify_dereplicated(os.listdir(test_dir))
     assert bc.is_fully_dereplicated() is False
+    bc.save_derep_as_assemblies(ws['workspace_name'])
     assert len(bc.get_derep_assembly_refs()) == 1
-    bc.save_dereplicated('BinnedContigs0.dRep', ws['workspace_id'])
+    upa_new = bc.save_dereplicated('BinnedContigs0.dRep', ws['workspace_id'])
+    bc_ = BinnedContigs(upa_new) # CoaC issue
+    assert bc_.bid_l == bc.derep_bid_l
 
 
 

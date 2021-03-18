@@ -7,10 +7,7 @@ import sys
 class NonZeroReturnException(Exception): pass
 
 
-
-
-
-def run_check(cmd: str, shell=True):
+def run_check(cmd: str, shell=False):
     logging.info('Running cmd `%s`' % cmd)
     t0 = time.time() 
     

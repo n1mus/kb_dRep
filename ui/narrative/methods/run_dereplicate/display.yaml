@@ -29,107 +29,90 @@ parameters :
        ui-name : |
            BinnedContigs, Assemblies, or Genomes
        short-hint : |
-           BinnedContigs, Assemblies, or Genomes
+           BinnedContigs, AssemblySet, Assembly, GenomeSet, Genome objects
     length :
         ui-name : |
-           length
+           Minimum genome length
         short-hint : |
            Minimum genome length
     completeness :
         ui-name : |
-           completeness
+           Minimum genome completeness
         short-hint : |
            Minimum genome completeness
     contamination :
         ui-name : |
-           contamination
+           Maximum genome contamination
         short-hint : |
            Maximum genome contamination
-    ignoreGenomeQuality :
-        ui-name: |
-           ignoreGenomeQuality
-        short-hint : |
-           (NOT RECOMMENDED) Don't run checkM or do any quality filtering
-        long-hint : |
-           (NOT RECOMMENDED) Don't run checkM or do any quality filtering. This is useful for use with bacteriophages or eukaryotes or things where checkM scoring does not work. Will only choose genomes based on length and N50
     MASH_sketch :
         ui-name : |
-            MASH_sketch
+            MASH sketch size
         short-hint : |
             MASH sketch size
     S_algorithm :
         ui-name : |
-            S_algorithm
+            Algorithm for secondary clustering comparisons
         short-hint: |
             Algorithm for secondary clustering comparisons
     n_PRESET :
         ui-name : |
-            n_PRESET
+            Presets to pass to nucmer
         short-hint: |
             Presets to pass to nucmer
     P_ani :
         ui-name: |
-            P_ani
+            ANI threshold to form primary (MASH) clusters
         short-hint: |
             ANI threshold to form primary (MASH) clusters
     S_ani:
         ui-name: |
-            S_ani
+            ANI threshold to form secondary clusters
         short-hint: |
             ANI threshold to form secondary clusters
-    SkipMash:
-        ui-name: |
-            SkipMash
-        short-hint: |
-            Skip MASH clustering, just do secondary clustering on all genomes
-    SkipSecondary:
-        ui-name: |
-            SkipSecondary
-        short-hint: |
-            Skip secondary clustering, just perform MASH clustering
     cov_thresh:
         ui-name: |
-            cov_thresh
+            Minimum level of overlap between genomes when doing secondary comparisons
         short-hint: |
             Minimum level of overlap between genomes when doing secondary comparisons
     coverage_method:
         ui-name: |
-            coverage_method
+            Method to calculate coverage of an alignment
         short-hint: |
             Method to calculate coverage of an alignment (for ANIn/ANImf only; gANI can only do larger method)
     clusterAlg:
          ui-name: |
-            clusterAlg
+             Algorithm to cluster genomes (passed to scipy.cluster.hierarchy.linkage)
          short-hint: |
              Algorithm to cluster genomes (passed to scipy.cluster.hierarchy.linkage)
     completeness_weight:
          ui-name: |
-             completeness_weight
+             Completeness weight
          short-hint: |
              Completeness weight in genome scoring formula
     contamination_weight:
          ui-name: |
-             contamination_weight
+             Contamination weight
          short-hint: |
              Contamination weight in genome scoring formula
     strain_heterogeneity_weight:
          ui-name: |
-             strain_heterogeneity_weight
+             Strain heterogeneity weight
          short-hint: |
              Strain heterogeneity weight in genome scoring formula
     N50_weight:
          ui-name: |
-             N50_weight
+             N50 weight
          short-hint: |
              Weight of log(genome N50) in genome scoring formula
     size_weight:
          ui-name: |
-             size_weight
+             Size weight
          short-hint: |
              Weight of log(genome size) in genome scoring formula
     checkM_method :
          ui-name : |
-              checkM_method
+              checkM method
          short-hint : |
               checkM method
     output_as_assembly :

@@ -29,10 +29,12 @@ else:
     patch_ = lambda *a, **k: lambda f: f
     patch_dict_ = lambda *a, **k: lambda f: f
 
+
 def get_test_dir(name='test_dir_'):
     test_dir = os.path.join(WORK_DIR, name + str(uuid.uuid4()))
     os.mkdir(test_dir)
     return test_dir
+
 
 def get_cfg():
     config_file = os.environ.get('KB_DEPLOYMENT_CONFIG', None)
@@ -43,11 +45,11 @@ def get_cfg():
         cfg[nameval[0]] = nameval[1]
     return cfg
 
+
 def get_ws_client():
     cfg = get_cfg()
     wsClient = Workspace(cfg['workspace-url'])
     return wsClient
-
 
 
 class BaseTest(unittest.TestCase):
@@ -97,3 +99,9 @@ class BaseTest(unittest.TestCase):
             print('Test workspace was deleted')
 
 
+
+def assert_unordered_equals(l0, l1):
+    assert sorted(l0) == sorted(l1)
+
+def list_minus(l0, l1):
+    return [x for x in l0 if x not in l1]

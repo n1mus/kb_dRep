@@ -39,7 +39,7 @@ class kb_dRep:
     ######################################### noqa
     VERSION = "1.0.0"
     GIT_URL = "https://github.com/n1mus/dRep"
-    GIT_COMMIT_HASH = "454f2e70090adc6d2e67e73ed1fff3d93e1392ad"
+    GIT_COMMIT_HASH = "9a5fb0e0c6794809b95ea1ddf6727fe73f2d8777"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -71,34 +71,26 @@ class kb_dRep:
 
     def run_dereplicate(self, ctx, params):
         """
-        :param params: instance of type "params_dereplicate" (All optional
-           except `genomes_refs` * (mostly same as original dRep parameters))
-           -> structure: parameter "genomes_refs" of list of type "ws_ref"
-           (Workspace reference in the form D/D/D * @id ws), parameter
-           "filtering" of type "params_filtering" (All optional * (same as
-           original dRep parameters)) -> structure: parameter "length" of
-           Long, parameter "completeness" of Double, parameter
-           "contamination" of Double, parameter "ignoreGenomeQuality" of type
-           "bool" ('True' or 'False'), parameter "genome_comparison" of type
-           "params_genome_comparison" (All optional * (same as original dRep
-           parameters)) -> structure: parameter "MASH_sketch" of Long,
+        :param params: instance of type "dRepParams" (All optional except
+           `obj_refs`, `workspace_name`, and `workspace_id`) -> structure:
+           parameter "obj_refs" of list of type "ws_ref" (* @id ws),
+           parameter "filtering" of type "filtering" -> structure: parameter
+           "length" of Long, parameter "completeness" of Double, parameter
+           "contamination" of Double, parameter "genome_comparison" of type
+           "genome_comparison" -> structure: parameter "MASH_sketch" of Long,
            parameter "S_algorithm" of String, parameter "n_PRESET" of String,
-           parameter "clustering" of type "params_clustering" (All optional *
-           (same as original dRep parameters)) -> structure: parameter
-           "P_ani" of Double, parameter "S_ani" of Double, parameter
-           "SkipMash" of type "bool" ('True' or 'False'), parameter
-           "SkipSecondary" of type "bool" ('True' or 'False'), parameter
-           "cov_thresh" of Double, parameter "coverage_method" of String,
-           parameter "clusterAlg" of String, parameter "scoring" of type
-           "params_scoring" (All optional * (same as original dRep
-           parameters)) -> structure: parameter "completeness_weight" of
+           parameter "clustering" of type "clustering" -> structure:
+           parameter "P_ani" of Double, parameter "S_ani" of Double,
+           parameter "cov_thresh" of Double, parameter "coverage_method" of
+           String, parameter "clusterAlg" of String, parameter "scoring" of
+           type "scoring" -> structure: parameter "completeness_weight" of
            Double, parameter "contamination_weight" of Double, parameter
            "strain_heterogeneity_weight" of Double, parameter "N50_weight" of
-           Double, parameter "size_weight" of Double, parameter "warnings" of
-           type "params_warnings" (All optional * (same as original dRep
-           parameters)) -> structure: parameter "warn_dist" of Double,
-           parameter "warn_sim" of Double, parameter "warn_aln" of Double,
-           parameter "checkM_method" of String
+           Double, parameter "size_weight" of Double, parameter
+           "checkM_method" of String, parameter "processors" of Long,
+           parameter "output_as_assembly" of type "bool" (0 or 1), parameter
+           "output_suffix" of String, parameter "workspace_name" of String,
+           parameter "workspace_id" of Long
         :returns: instance of type "ReportResults" -> structure: parameter
            "report_name" of String, parameter "report_ref" of String
         """

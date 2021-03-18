@@ -3,3 +3,4 @@ test_local
 *.py.bak*
 __pycache__/
 test/data/
+.idea/

@@ -1,21 +1,19 @@
 import os
-import re
 import shutil
 import logging
 
-import pandas as pd
-import drep
-
 from ..util.debug import dprint
-from .config import app, ref_leaf, file_safe_ref, TRANSFORM_NAME_SEP
-from ..util.misc import add_root
+from .config import app, file_safe_ref, TRANSFORM_NAME_SEP
 
 '''
 pool_into
 identify_dereplicated
-is_empty -> is_fully_dereplicated
-save
+is_fully_dereplicated
+get_derep_assembly_refs
+get_derep_member_refs
+save, save_dereplicated
 '''
+
 
 class Obj:
     def _validate_set_init_params(self, **kw):
@@ -32,9 +30,11 @@ class Obj:
         self.name = obj['data'][0]['info'][1]
         self.obj = obj['data'][0]['data']
 
+
 class Indiv:
     def _get_transformed_name(self):
         return file_safe_ref(self.ref.split(';')[-1]) + TRANSFORM_NAME_SEP + self.name
+
 
 class Set:
     def _create(self, ref_l):
@@ -47,16 +47,16 @@ class Set:
         )
 
     def save(self, name, workspace_id):
-        '''
+        """
         Called by GenomeSet and AssemblySet, and all obj refs are already rooted
-        '''
+        """
         info = app.dfu.save_objects({
             'id': workspace_id,
             'objects': [{
                 'type': self.TYPE,
                 'data': self.obj.copy(),
                 'name': name,
-             }]
+            }]
         })[0]
 
         upa_new = "%s/%s/%s" % (info[6], info[0], info[4])
@@ -69,11 +69,11 @@ class GenomeSet(Obj, Set):
     LEGACY_TYPE = 'KBaseSearch.GenomeSet'
 
     def __init__(self, **kw):
-        '''
+        """
         Input refs must be rooted
         :params ref: if given, load mode
         :params ref_l: if given, create mode
-        '''
+        """
         self.ref = None
         self.name = None
         self.obj = None
@@ -132,7 +132,6 @@ class GenomeSet(Obj, Set):
             if genome.assembly._get_transformed_name() in derep_l:
                 self.derep_genome_l.append(genome)
 
-
     def get_derep_member_refs(self):
         return [g.ref for g in self.derep_genome_l]
 
@@ -144,10 +143,10 @@ class AssemblySet(Obj, Set):
     TYPE = 'KBaseSets.AssemblySet'
 
     def __init__(self, **kw):
-        '''
+        """
         :params ref: if given, load mode
         :params ref_l: if given, create mode
-        '''
+        """
         self.ref = None
         self.name = None
         self.obj = None
@@ -164,7 +163,6 @@ class AssemblySet(Obj, Set):
 
         elif ref_l is not None:
             self._create(ref_l)
-
 
     def _load(self, ref):
         self.assembly_ref_l = [
@@ -193,7 +191,7 @@ class AssemblySet(Obj, Set):
     def get_derep_assembly_refs(self):
         return [a.ref for a in self.derep_assembly_l]
 
-      
+
 class Genome(Obj, Indiv):
     TYPE = 'KBaseGenomes.Genome'
 
@@ -208,7 +206,6 @@ class Genome(Obj, Indiv):
         super()._load(ref)
         self._load()
 
-
     def _load(self):
         self.assembly_ref = self.ref + ';' + self.obj['assembly_ref']
         self.assembly = Assembly(self.assembly_ref)
@@ -222,10 +219,11 @@ class Genome(Obj, Indiv):
 
     def get_derep_assembly_refs(self):
         return self.assembly.get_derep_assembly_refs()
-    
+
 
 class Assembly(Obj, Indiv):
-    TYPE = 'KBaseGenomeAnnotatations.Assembly'
+    TYPE = 'KBaseGenomeAnnotations.Assembly'
+
     def __init__(self, ref):
         self.ref = None
         self.name = None
@@ -246,16 +244,16 @@ class Assembly(Obj, Indiv):
 
     def pool_into(self, pooled_dir):
         dst_fp = os.path.join(
-            pooled_dir, 
+            pooled_dir,
             os.path.basename(self.assembly_fp)
         )
 
         if os.path.exists(dst_fp):
-            logging.warn('Skipping pooling redundant FASTA for UPA: %s, name: %s' % (self.ref, self.name))
+            logging.warning('Skipping pooling redundant FASTA for UPA: %s, name: %s' % (self.ref, self.name))
             return
-        
+
         shutil.copyfile(
-            self.assembly_fp, 
+            self.assembly_fp,
             dst_fp,
         )
 
@@ -263,17 +261,17 @@ class Assembly(Obj, Indiv):
         self.in_derep = self._get_transformed_name() in derep_l
 
     def get_derep_assembly_refs(self):
-        return [self.ref] if self.in_derep else [] 
+        return [self.ref] if self.in_derep else []
 
 
 class BinnedContigs(Obj):
     TYPE = 'KBaseMetagenomes.BinnedContigs'
 
     def __init__(self, ref):
-        '''
+        """
         :params ref: load mode
         :params obj: create mode
-        '''
+        """
         self.ref = None
         self.name = None
         self.obj = None
@@ -288,7 +286,7 @@ class BinnedContigs(Obj):
     def _load(self):
         self.bid_l = [d['bid'] for d in self.obj['bins']]
 
-        self.bins_dir =  app.mgu.binned_contigs_to_file({
+        self.bins_dir = app.mgu.binned_contigs_to_file({
             'input_ref': self.ref,
             'save_to_shock': 0
         })['bin_file_directory']
@@ -296,11 +294,10 @@ class BinnedContigs(Obj):
     def _get_transformed_bid(self, bid):
         return file_safe_ref(self.ref) + TRANSFORM_NAME_SEP + self.name + TRANSFORM_NAME_SEP + bid
 
-
     def pool_into(self, pooled_dir):
         for bid in self.bid_l:
             shutil.copyfile(
-                os.path.join(self.bins_dir, bid), 
+                os.path.join(self.bins_dir, bid),
                 os.path.join(pooled_dir, self._get_transformed_bid(bid))
             )
 
@@ -334,8 +331,9 @@ class BinnedContigs(Obj):
 
     def save_dereplicated(self, name, workspace_id):
         obj_new = self.obj.copy()
-        add_root(obj_new, self.ref)
-        drop_bid_l = [b for b in self.bid_l if b not in self.derep_bid_l]  
+        obj_new['assembly_ref'] = self.ref + ';' + obj_new['assembly_ref']
+
+        drop_bid_l = [b for b in self.bid_l if b not in self.derep_bid_l]
 
         for i, bin in enumerate(self.obj['bins']):
             bid = bin['bid']
@@ -349,11 +347,9 @@ class BinnedContigs(Obj):
                 'type': self.TYPE,
                 'data': obj_new,
                 'name': name,
-             }]
+            }]
         })[0]
 
         upa_new = '%s/%s/%s' % (info[6], info[0], info[4])
 
-        return upa_new   
-
-
+        return upa_new
