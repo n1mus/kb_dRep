@@ -156,9 +156,13 @@ def mock_mgu_binned_contigs_to_file(params):
 
     return {'bin_file_directory': work_dir}
 
+def mock_mgu_remove_bins_from_binned_contig(params):
+    return {'new_binned_contig_ref': 'bc/bins/removed'}
+
 def get_mock_mgu():
     mock_mgu = create_autospec(MetagenomeUtils, instance=True, spec_set=True)
     mock_mgu.binned_contigs_to_file.side_effect = mock_mgu_binned_contigs_to_file
+    mock_mgu.remove_bins_from_binned_contig.side_effect = mock_mgu_remove_bins_from_binned_contig
     return mock_mgu
 mock_mgu = get_mock_mgu()
 

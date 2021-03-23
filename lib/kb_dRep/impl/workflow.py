@@ -252,7 +252,7 @@ def save_results(objs, params, dRep_dir):
             if not binned_contigs.is_fully_dereplicated():
                 ref = binned_contigs.save_dereplicated(
                     binned_contigs.name + params.getd('output_suffix'),
-                    params['workspace_id']
+                    params['workspace_name']
                 )
                 objects_created.append(
                     dict(

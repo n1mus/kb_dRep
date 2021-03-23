@@ -125,7 +125,7 @@ def test_BinnedContigs(test_dir, ws):
     assert bc.is_fully_dereplicated() is False
     bc.save_derep_as_assemblies(ws['workspace_name'])
     assert len(bc.get_derep_assembly_refs()) == len(bc.bid_l)
-    upa_new = bc.save_dereplicated('BinnedContigs1.dRep', ws['workspace_id'])
+    upa_new = bc.save_dereplicated('BinnedContigs1.dRep', ws['workspace_name'])
     bc_ = BinnedContigs(upa_new)
     assert bc_.bid_l == bc.bid_l
     assert bc_.obj['bins'] == bc.obj['bins']
@@ -145,7 +145,7 @@ def test_BinnedContigs(test_dir, ws):
     assert bc.is_fully_dereplicated() is False
     bc.save_derep_as_assemblies(ws['workspace_name'])
     assert len(bc.get_derep_assembly_refs()) == 1
-    upa_new = bc.save_dereplicated('BinnedContigs0.dRep', ws['workspace_id'])
+    upa_new = bc.save_dereplicated('BinnedContigs0.dRep', ws['workspace_name'])
     bc_ = BinnedContigs(upa_new)
     assert bc_.bid_l == bc.derep_bid_l
     assert bc_.obj['bins'] == [bc.obj['bins'][0]]
@@ -161,9 +161,11 @@ def test_BinnedContigs_save_dereplicated(ws, kb_clients):
             os.path.join(test_dir, bc._get_transformed_bid(bc.bid_l[0]))
         ).touch()
         bc.identify_dereplicated(os.listdir(test_dir))
-        bc.save_dereplicated('BinnedContigs0.dRep', ws['workspace_id'])
-        obj_new = kb_clients['dfu'].save_objects.call_args[0][0]['objects'][0]['data']
-        assert obj_new['bins'] == [bc.obj['bins'][0]]
-        assert obj_new['total_contig_len'] == bc.obj['bins'][0]['sum_contig_len']
+        bc.save_dereplicated('BinnedContigs0.dRep', ws['workspace_name'])
+        drop_bid_l = kb_clients['mgu'].remove_bins_from_binned_contig.call_args[0][0]['bins_to_remove']
+        assert_unordered_equals(
+            drop_bid_l,
+            ['Bin.009.fasta', 'Bin.012.fasta']
+        )
 
 

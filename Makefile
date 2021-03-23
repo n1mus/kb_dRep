@@ -1,4 +1,4 @@
-TARGET_TESTS = workflow_test.py::test_partition_by_type
+TARGET_TESTS = kb_obj_test.py::test_BinnedContigs_save_dereplicated
 SERVICE = kb_drep
 SERVICE_CAPS = kb_dRep
 SPEC_FILE = kb_dRep.spec

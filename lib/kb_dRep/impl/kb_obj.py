@@ -31,7 +31,7 @@ class Obj:
         self.name = obj['data'][0]['info'][1]
         self.obj = obj['data'][0]['data']
 
-    def __lt__(self, other: Obj):
+    def __lt__(self, other):
         """Testing"""
         return self.ref < other.ref
 
@@ -332,27 +332,14 @@ class BinnedContigs(Obj):
         else: 
             return self.assembly_ref_l
 
-    def save_dereplicated(self, name, workspace_id):
-        obj_new = copy.deepcopy(self.obj)
-        obj_new['assembly_ref'] = self.ref + ';' + obj_new['assembly_ref']
-
+    def save_dereplicated(self, name, workspace_name):
         drop_bid_l = [b for b in self.bid_l if b not in self.derep_bid_l]
+        
+        upa_new = app.mgu.remove_bins_from_binned_contig({
+            'old_binned_contig_ref': self.ref,
+            'bins_to_remove': drop_bid_l,
+            'output_binned_contig_name': name,
+            'workspace_name': workspace_name,
+        })['new_binned_contig_ref']
 
-        for i, bin in list(enumerate(self.obj['bins']))[::-1]:
-            bid = bin['bid']
-            if bid in drop_bid_l:
-                del obj_new['bins'][i]
-                obj_new['total_contig_len'] -= bin['sum_contig_len']
-
-        info = app.dfu.save_objects({
-            'id': workspace_id,
-            'objects': [{
-                'type': self.TYPE,
-                'data': obj_new,
-                'name': name,
-            }]
-        })[0]
-
-        upa_new = '%s/%s/%s' % (info[6], info[0], info[4])
-
-        return upa_new, obj_new
+        return upa_new
