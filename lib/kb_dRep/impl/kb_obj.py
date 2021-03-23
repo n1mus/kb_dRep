@@ -1,6 +1,7 @@
 import os
 import shutil
 import logging
+import copy
 
 from ..util.debug import dprint
 from .config import app, file_safe_ref, TRANSFORM_NAME_SEP
@@ -29,6 +30,10 @@ class Obj:
 
         self.name = obj['data'][0]['info'][1]
         self.obj = obj['data'][0]['data']
+
+    def __lt__(self, other: Obj):
+        """Testing"""
+        return self.ref < other.ref
 
 
 class Indiv:
@@ -64,168 +69,11 @@ class Set:
         return upa_new
 
 
-class GenomeSet(Obj, Set):
-    TYPE = 'KBaseSets.GenomeSet'
-    LEGACY_TYPE = 'KBaseSearch.GenomeSet'
-
-    def __init__(self, **kw):
-        """
-        Input refs must be rooted
-        :params ref: if given, load mode
-        :params ref_l: if given, create mode
-        """
-        self.ref = None
-        self.name = None
-        self.obj = None
-        self.ref_l = None
-        self.genome_ref_l = None
-        self.genome_l = None
-        self.derep_genome_l = None
-
-        self._validate_set_init_params(**kw)
-        ref, ref_l = kw.get('ref'), kw.get('ref_l')
-
-        if ref is not None:
-            super()._load(ref)
-            self._load()
-
-        elif ref_l is not None:
-            self._create(ref_l)
-
-    def _detect_type(self):
-        if 'items' in self.obj:
-            return self.TYPE
-        elif 'elements' in self.obj:
-            return self.LEGACY_TYPE
-        else:
-            raise Exception()
-
-    def _load(self):
-        if self._detect_type() == self.TYPE:
-            self.genome_ref_l = [
-                self.ref + ';' + el['ref']
-                for el in self.obj['items']
-            ]
-        elif self._detect_type() == self.LEGACY_TYPE:
-            for el in self.obj['elements'].values():
-                if 'data' in el and el['data'] is not None:
-                    raise NotImplementedError('Embedded Genome in GenomeSet not supported')
-
-            self.genome_ref_l = [
-                self.ref + ';' + el['ref']
-                for el in self.obj['elements'].values()
-            ]
-
-        self.genome_l = []
-        for ref in self.genome_ref_l:
-            self.genome_l.append(
-                Genome(ref)
-            )
-
-    def pool_into(self, pooled_dir):
-        for g in self.genome_l:
-            g.pool_into(pooled_dir)
-
-    def identify_dereplicated(self, derep_l):
-        self.derep_genome_l = []
-        for genome in self.genome_l:
-            if genome.assembly._get_transformed_name() in derep_l:
-                self.derep_genome_l.append(genome)
-
-    def get_derep_member_refs(self):
-        return [g.ref for g in self.derep_genome_l]
-
-    def get_derep_assembly_refs(self):
-        return [g.assembly.ref for g in self.derep_genome_l]
-
-
-class AssemblySet(Obj, Set):
-    TYPE = 'KBaseSets.AssemblySet'
-
-    def __init__(self, **kw):
-        """
-        :params ref: if given, load mode
-        :params ref_l: if given, create mode
-        """
-        self.ref = None
-        self.name = None
-        self.obj = None
-        self.assembly_ref_l = None
-        self.assembly_l = None
-        self.derep_assembly_l = None
-
-        self._validate_set_init_params(**kw)
-        ref, ref_l = kw.get('ref'), kw.get('ref_l')
-
-        if ref is not None:
-            super()._load(ref)
-            self._load(ref)
-
-        elif ref_l is not None:
-            self._create(ref_l)
-
-    def _load(self, ref):
-        self.assembly_ref_l = [
-            d['ref']
-            for d in self.obj['items']
-        ]
-
-        self.assembly_l = [
-            Assembly(ref)
-            for ref in self.assembly_ref_l
-        ]
-
-    def pool_into(self, pooled_dir):
-        for assembly in self.assembly_l:
-            assembly.pool_into(pooled_dir)
-
-    def identify_dereplicated(self, derep_l):
-        self.derep_assembly_l = []
-        for assembly in self.assembly_l:
-            if assembly._get_transformed_name() in derep_l:
-                self.derep_assembly_l.append(assembly)
-
-    def get_derep_member_refs(self):
-        return [a.ref for a in self.derep_assembly_l]
-
-    def get_derep_assembly_refs(self):
-        return [a.ref for a in self.derep_assembly_l]
-
-
-class Genome(Obj, Indiv):
-    TYPE = 'KBaseGenomes.Genome'
-
-    def __init__(self, ref):
-        self.ref = None
-        self.name = None
-        self.obj = None
-        self.assembly_ref = None
-        self.assembly = None
-        self.in_derep = None
-
-        super()._load(ref)
-        self._load()
-
-    def _load(self):
-        self.assembly_ref = self.ref + ';' + self.obj['assembly_ref']
-        self.assembly = Assembly(self.assembly_ref)
-
-    def pool_into(self, pooled_dir):
-        self.assembly.pool_into(pooled_dir)
-
-    def identify_dereplicated(self, derep_l):
-        self.assembly.identify_dereplicated(derep_l)
-        self.in_derep = self.assembly.in_derep
-
-    def get_derep_assembly_refs(self):
-        return self.assembly.get_derep_assembly_refs()
-
-
 class Assembly(Obj, Indiv):
     TYPE = 'KBaseGenomeAnnotations.Assembly'
 
     def __init__(self, ref):
-        self.ref = None
+        self.ref = None # full path if from Genome, AssemblySet, or GenomeSet
         self.name = None
         self.obj = None
         self.assembly_fp = None
@@ -262,6 +110,158 @@ class Assembly(Obj, Indiv):
 
     def get_derep_assembly_refs(self):
         return [self.ref] if self.in_derep else []
+
+
+class Genome(Obj, Indiv):
+    TYPE = 'KBaseGenomes.Genome'
+
+    def __init__(self, ref):
+        self.ref = None # full path if from GenomeSet
+        self.name = None
+        self.obj = None
+        self.assembly = None
+        self.in_derep = None
+
+        super()._load(ref)
+        self._load()
+
+    def _load(self):
+        self.assembly = Assembly(self.ref + ';' + self.obj['assembly_ref'])
+
+    def pool_into(self, pooled_dir):
+        self.assembly.pool_into(pooled_dir)
+
+    def identify_dereplicated(self, derep_l):
+        self.assembly.identify_dereplicated(derep_l)
+        self.in_derep = self.assembly.in_derep
+
+    def get_derep_assembly_refs(self):
+        return self.assembly.get_derep_assembly_refs()
+
+
+class AssemblySet(Obj, Set):
+    TYPE = 'KBaseSets.AssemblySet'
+
+    def __init__(self, **kw):
+        """
+        :params ref: if given, load mode
+        :params ref_l: if given, create mode
+        """
+        self.ref = None
+        self.name = None
+        self.obj = None
+        self.assembly_l = None
+        self.derep_assembly_l = None
+
+        self._validate_set_init_params(**kw)
+        ref, ref_l = kw.get('ref'), kw.get('ref_l')
+
+        if ref is not None:
+            super()._load(ref)
+            self._load(ref)
+
+        elif ref_l is not None:
+            self._create(ref_l)
+
+    def _load(self, ref):
+        assembly_ref_l = [
+            d['ref']
+            for d in self.obj['items']
+        ]
+
+        self.assembly_l = [
+            Assembly(self.ref + ';' + ref)
+            for ref in assembly_ref_l
+        ]
+
+    def pool_into(self, pooled_dir):
+        for assembly in self.assembly_l:
+            assembly.pool_into(pooled_dir)
+
+    def identify_dereplicated(self, derep_l):
+        self.derep_assembly_l = []
+        for assembly in self.assembly_l:
+            if assembly._get_transformed_name() in derep_l:
+                self.derep_assembly_l.append(assembly)
+
+    def get_derep_member_refs(self):
+        return [a.ref for a in self.derep_assembly_l]
+
+    def get_derep_assembly_refs(self):
+        return [a.ref for a in self.derep_assembly_l]
+
+
+class GenomeSet(Obj, Set):
+    TYPE = 'KBaseSets.GenomeSet'
+    LEGACY_TYPE = 'KBaseSearch.GenomeSet'
+
+    def __init__(self, **kw):
+        """
+        Input refs must be rooted
+        :params ref: if given, load mode
+        :params ref_l: if given, create mode
+        """
+        self.ref = None
+        self.name = None
+        self.obj = None
+        self.genome_l = None
+        self.derep_genome_l = None
+
+        self._validate_set_init_params(**kw)
+        ref, ref_l = kw.get('ref'), kw.get('ref_l')
+
+        if ref is not None:
+            super()._load(ref)
+            self._load()
+
+        elif ref_l is not None:
+            self._create(ref_l)
+
+    def _detect_type(self):
+        if 'items' in self.obj:
+            return self.TYPE
+        elif 'elements' in self.obj:
+            return self.LEGACY_TYPE
+        else:
+            raise Exception()
+
+    def _load(self):
+        if self._detect_type() == self.TYPE:
+            genome_ref_l = [
+                el['ref']
+                for el in self.obj['items']
+            ]
+        elif self._detect_type() == self.LEGACY_TYPE:
+            for el in self.obj['elements'].values():
+                if 'data' in el and el['data'] is not None:
+                    raise NotImplementedError('Embedded Genome in GenomeSet not supported')
+
+            genome_ref_l = [
+                el['ref']
+                for el in self.obj['elements'].values()
+            ]
+
+        self.genome_l = []
+        for ref in genome_ref_l:
+            self.genome_l.append(
+                Genome(self.ref + ';' + ref)
+            )
+
+    def pool_into(self, pooled_dir):
+        for g in self.genome_l:
+            g.pool_into(pooled_dir)
+
+    def identify_dereplicated(self, derep_l):
+        self.derep_genome_l = []
+        for genome in self.genome_l:
+            if genome.assembly._get_transformed_name() in derep_l:
+                self.derep_genome_l.append(genome)
+
+    def get_derep_member_refs(self):
+        return [g.ref for g in self.derep_genome_l]
+
+    def get_derep_assembly_refs(self):
+        return [g.assembly.ref for g in self.derep_genome_l]
 
 
 class BinnedContigs(Obj):
@@ -327,15 +327,18 @@ class BinnedContigs(Obj):
             self.assembly_ref_l.append(ref)
 
     def get_derep_assembly_refs(self):
-        return self.assembly_ref_l
+        if self.assembly_ref_l is None: 
+            raise Exception()
+        else: 
+            return self.assembly_ref_l
 
     def save_dereplicated(self, name, workspace_id):
-        obj_new = self.obj.copy()
+        obj_new = copy.deepcopy(self.obj)
         obj_new['assembly_ref'] = self.ref + ';' + obj_new['assembly_ref']
 
         drop_bid_l = [b for b in self.bid_l if b not in self.derep_bid_l]
 
-        for i, bin in enumerate(self.obj['bins']):
+        for i, bin in list(enumerate(self.obj['bins']))[::-1]:
             bid = bin['bid']
             if bid in drop_bid_l:
                 del obj_new['bins'][i]
@@ -352,4 +355,4 @@ class BinnedContigs(Obj):
 
         upa_new = '%s/%s/%s' % (info[6], info[0], info[4])
 
-        return upa_new
+        return upa_new, obj_new

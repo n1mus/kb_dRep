@@ -63,9 +63,11 @@ def test_AssemblySet(test_dir, ws):
         assert os.path.exists(
             os.path.join(test_dir, a.assembly_fp)
         )
+    # nothing dereplicated out
     ast.identify_dereplicated(os.listdir(test_dir))
     assert ast.get_derep_member_refs() == ast.assembly_ref_l
     assert ast.get_derep_assembly_refs() == ast.assembly_ref_l
+    # everything dereplicated out
     ast.identify_dereplicated(os.listdir(EMPTY_DIR))
     assert ast.get_derep_member_refs() == []
     assert ast.get_derep_assembly_refs() == []
@@ -76,7 +78,7 @@ def test_AssemblySet(test_dir, ws):
         ast = AssemblySet(ref_l=[Campylobacter_jejuni_assembly, Escherichia_coli_Sakai_assembly])
     upa_new = ast.save('Assemblies.dRep', ws['workspace_id'])
     ast_ = AssemblySet(ref=upa_new)
-    assert_unsorted_equals(ast_.assembly_ref_l, ref_l)
+    assert_unordered_equals(ast_.assembly_ref_l, ref_l)
 
 
 def test_GenomeSet(test_dir, ws):
@@ -90,20 +92,24 @@ def test_GenomeSet(test_dir, ws):
         assert os.path.exists(
             os.path.join(test_dir, os.path.basename(g.assembly.assembly_fp))
         )
+    ## nothing dereplicated out
     gst.identify_dereplicated(os.listdir(test_dir))
     assert gst.get_derep_member_refs() == gst.genome_ref_l
     assert gst.get_derep_assembly_refs() == [g.assembly.ref for g in gst.genome_l]
+    ## everything dereplicated out
     gst.identify_dereplicated(os.listdir(EMPTY_DIR))
     assert gst.get_derep_member_refs() == []
     assert gst.get_derep_assembly_refs() == []
+    ## all but one dereplicated out
+
 
     # Create
-    ref_l=[Some_genomes + upa for upa in [Escherichia_coli_K_12_MG1655, Rhodobacter_sphaeroides_2_4_1]]
+    ref_l=[Some_genomes + ';' + upa for upa in [Escherichia_coli_K_12_MG1655, Rhodobacter_sphaeroides_2_4_1]]
     with patch.dict(mock_target, values=mock_ins):
         gst = GenomeSet(ref_l=ref_l)
     upa_new = gst.save('Genomes.dRep', ws['workspace_id'])
     gst_ = GenomeSet(ref=upa_new)
-    assert_unsorted_equals(gst_.genome_ref_l, ref_l)
+    assert_unordered_equals(gst_.genome_ref_l, ref_l)
 
 
 def test_BinnedContigs(test_dir, ws):
@@ -114,32 +120,50 @@ def test_BinnedContigs(test_dir, ws):
         assert os.path.exists(
             os.path.join(test_dir, bc._get_transformed_bid(bid))
         )
-    #
+    ## nothing dereplicated out
     bc.identify_dereplicated(os.listdir(test_dir))
     assert bc.is_fully_dereplicated() is False
     bc.save_derep_as_assemblies(ws['workspace_name'])
     assert len(bc.get_derep_assembly_refs()) == len(bc.bid_l)
-    bc.save_dereplicated('BinnedContigs1.dRep', ws['workspace_id'])
-    #
+    upa_new = bc.save_dereplicated('BinnedContigs1.dRep', ws['workspace_id'])
+    bc_ = BinnedContigs(upa_new)
+    assert bc_.bid_l == bc.bid_l
+    assert bc_.obj['bins'] == bc.obj['bins']
+
+    ## everything dereplicated out
     bc.identify_dereplicated(os.listdir(EMPTY_DIR))
     assert bc.is_fully_dereplicated() is True
     bc.save_derep_as_assemblies(ws['workspace_name'])
     assert len(bc.get_derep_assembly_refs()) == 0
 
+    ## all but one dereplicated out
     test_dir = get_test_dir()
     Path(
         os.path.join(test_dir, bc._get_transformed_bid(bc.bid_l[0]))
     ).touch()
-    #
     bc.identify_dereplicated(os.listdir(test_dir))
     assert bc.is_fully_dereplicated() is False
     bc.save_derep_as_assemblies(ws['workspace_name'])
     assert len(bc.get_derep_assembly_refs()) == 1
     upa_new = bc.save_dereplicated('BinnedContigs0.dRep', ws['workspace_id'])
-    bc_ = BinnedContigs(upa_new) # CoaC issue
+    bc_ = BinnedContigs(upa_new)
     assert bc_.bid_l == bc.derep_bid_l
+    assert bc_.obj['bins'] == [bc.obj['bins'][0]]
+    assert bc_.obj['total_contig_len'] == bc.obj['bins'][0]['sum_contig_len']
 
 
-
+def test_BinnedContigs_save_dereplicated(ws, kb_clients):
+    with patch.dict(mock_target, values=kb_clients):
+        bc = BinnedContigs(SURF_B_MaxBin2_CheckM)   
+        # all but two dereplicated out
+        test_dir = get_test_dir()
+        Path(
+            os.path.join(test_dir, bc._get_transformed_bid(bc.bid_l[0]))
+        ).touch()
+        bc.identify_dereplicated(os.listdir(test_dir))
+        bc.save_dereplicated('BinnedContigs0.dRep', ws['workspace_id'])
+        obj_new = kb_clients['dfu'].save_objects.call_args[0][0]['objects'][0]['data']
+        assert obj_new['bins'] == [bc.obj['bins'][0]]
+        assert obj_new['total_contig_len'] == bc.obj['bins'][0]['sum_contig_len']
 
 

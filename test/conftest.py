@@ -3,6 +3,7 @@ import uuid
 import pytest
 
 from config import get_test_dir, get_ws_client
+from data import *
 
 
 @pytest.fixture
@@ -20,4 +21,9 @@ def ws():
     } 
     ws_client.delete_workspace({'workspace': ws_name})
 
- 
+@pytest.fixture
+def kb_clients():
+    kb_clients = {'dfu': get_mock_dfu(), 'mgu': get_mock_mgu(), 'au': get_mock_au()}
+    return kb_clients
+
+

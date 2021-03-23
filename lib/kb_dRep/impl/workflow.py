@@ -91,7 +91,7 @@ def do_workflow(params):
     pooled_bins_fn_l = os.listdir(pooled_bins_dir)
     pooled_bins_fp_l = [os.path.join(pooled_bins_dir, fn) for fn in os.listdir(pooled_bins_dir)]
 
-    dprint("os.listdir(pooled_bins_dir)")
+    dprint("os.listdir(pooled_bins_dir)", max_lines=None)
 
 
     #
@@ -292,6 +292,9 @@ def partition_by_type(objs):
 
 
 def uniq_refs(l):
+    '''
+    For multiple paths to an UPA, take shortest one
+    '''
     d = {} # ref leaf to shortest ref path
 
     for e in l:

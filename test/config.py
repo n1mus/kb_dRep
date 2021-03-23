@@ -11,6 +11,9 @@ import logging
 import uuid
 
 from installed_clients.WorkspaceClient import Workspace
+from installed_clients.DataFileUtilClient import DataFileUtil
+from installed_clients.AssemblyUtilClient import AssemblyUtil
+from installed_clients.MetagenomeUtilsClient import MetagenomeUtils
 from kb_dRep.kb_dRepServer import MethodContext
 from kb_dRep.authclient import KBaseAuth as _KBaseAuth
 
@@ -45,6 +48,17 @@ def get_cfg():
         cfg[nameval[0]] = nameval[1]
     return cfg
 
+def get_dfu():
+    dfu = DataFileUtil(os.environ['SDK_CALLBACK_URL'])
+    return dfu
+
+def get_au():
+    au = AssemblyUtil(os.environ['SDK_CALLBACK_URL'])
+    return au
+
+def get_mgu():
+    mgu = MetagenomeUtils(os.environ['SDK_CALLBACK_URL'])
+    return mgu
 
 def get_ws_client():
     cfg = get_cfg()

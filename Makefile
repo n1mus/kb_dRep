@@ -1,4 +1,4 @@
-TARGET_TESTS = happy_test.py::Test::test_potpourri_outputAssembly#workflow_test.py::test_save_results
+TARGET_TESTS = workflow_test.py::test_partition_by_type
 SERVICE = kb_drep
 SERVICE_CAPS = kb_dRep
 SPEC_FILE = kb_dRep.spec

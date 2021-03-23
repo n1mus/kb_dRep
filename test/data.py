@@ -17,6 +17,7 @@ from installed_clients.WorkspaceClient import Workspace
 from kb_dRep.util.cli import run_check
 from kb_dRep.util.debug import dprint
 from kb_dRep.impl.config import app, ref_leaf, file_safe_ref
+from config import get_dfu, get_au, get_mgu
 
 
 
@@ -40,34 +41,50 @@ small_arctic_metabat = '34837/46/1' # bc
 capybaraGut_MaxBin2_CheckM = '34837/77/2' # bc
 
 TEST_DATA_DIR = '/kb/module/test/data'
+GET_OBJECTS_DIR = TEST_DATA_DIR + '/get_objects'
+FASTA_DIR = TEST_DATA_DIR + '/fasta'
 WORK_DIR = '/kb/module/work/tmp'
+CACHE_DIR = WORK_DIR + '/cache_test_data'
 
 ## MOCK DFU ##
 
 
 def mock_dfu_save_objects(params):
-    params_str = str(params)
-    if len(params_str) > 100: params_str = params_str[:100] + ' ...'
-    logging.info('Mocking `dfu.save_objects` with `params=%s`' % params_str)
+    logging.info('Mocking `dfu.save_objects` with `params=%s`' % str(params)[:100])
 
     return [['mock', 1, 2, 3, 'dfu', 5, 'save_objects']] # UPA made from pos 6/0/4
 
 def mock_dfu_get_objects(params):
-    logging.info('Mocking `dfu.get_objects` with `params=%s`' % str(params))
+    logging.info('Mocking `dfu.get_objects` with `params=%s`' % params)
 
     upa = ref_leaf(params['object_refs'][0])
-    data_dir = os.path.join(TEST_DATA_DIR, 'get_objects')
+    fp = _glob_upa(GET_OBJECTS_DIR, upa)
 
-    fp = _glob_upa(data_dir, upa)
+    # Download and cache
+    if fp is None:
+        logging.info('Calling in cache mode `dfu.get_objects`')
 
-    with open(fp) as fh:
-        obj = json.load(fh)
+        dfu = get_dfu()
+        obj = dfu.get_objects(params)
+        fp = os.path.join(
+            mkcache(GET_OBJECTS_DIR),
+            file_safe_ref(upa) + '__' + obj['data'][0]['info'][1] + '.json'
+        )
+        with open(fp, 'w') as fh: json.dump(obj, fh)
+        return obj
 
-    return obj
+    # Pull from cache
+    else:
+        with open(fp) as fh:
+            obj = json.load(fh)
+        return obj
 
-mock_dfu = create_autospec(DataFileUtil, instance=True, spec_set=True)
-mock_dfu.save_objects.side_effect = mock_dfu_save_objects
-mock_dfu.get_objects.side_effect = mock_dfu_get_objects
+def get_mock_dfu():
+    mock_dfu = create_autospec(DataFileUtil, instance=True, spec_set=True)
+    mock_dfu.save_objects.side_effect = mock_dfu_save_objects
+    mock_dfu.get_objects.side_effect = mock_dfu_get_objects
+    return mock_dfu
+mock_dfu = get_mock_dfu()
 
 
 ## MOCK AU ##
@@ -76,23 +93,40 @@ mock_dfu.get_objects.side_effect = mock_dfu_get_objects
 def mock_au_get_assembly_as_fasta(params):
     logging.info('Mocking au.get_assembly_as_fasta(%s)' % str(params))
 
-    data_dir = os.path.join(TEST_DATA_DIR, 'fasta/assembly')
     upa = ref_leaf(params['ref'])
-    dst_fn = params['filename']
+    work_fn = params['filename']
 
-    src_fp = _glob_upa(data_dir, upa)
-    dst_fp = _house_mock_in_work_dir(src_fp, dst_fn)
+    save_fp = _glob_upa(FASTA_DIR, upa)
 
-    return {'path': dst_fp}
+    # Download and cache
+    if save_fp is None:
+        logging.info('Calling in cache mode `au.get_assembly_as_fasta`')
+
+        au = get_au()
+        work_fp = au.get_assembly_as_fasta(params)['path']
+        save_fp = os.path.join(
+            mkcache(FASTA_DIR),
+            file_safe_ref(upa) + '.fa'
+        )
+        shutil.copyfile(work_fp, save_fp)
+
+    # Pull from cache
+    else:
+        work_fp = _house_mock_in_work_dir(save_fp, work_fn)
+
+    return {'path': work_fp}
 
 def mock_au_save_assembly_from_fasta(params):
     logging.info('Mocking au.save_assembly_from_fasta(%s)' % str(params))
 
     return 'au/save/assembly'
 
-mock_au = create_autospec(AssemblyUtil, instance=True, spec_set=True)
-mock_au.get_assembly_as_fasta.side_effect = mock_au_get_assembly_as_fasta
-mock_au.save_assembly_from_fasta.side_effect = mock_au_save_assembly_from_fasta
+def get_mock_au():
+    mock_au = create_autospec(AssemblyUtil, instance=True, spec_set=True)
+    mock_au.get_assembly_as_fasta.side_effect = mock_au_get_assembly_as_fasta
+    mock_au.save_assembly_from_fasta.side_effect = mock_au_save_assembly_from_fasta
+    return mock_au
+mock_au = get_mock_au()
 
 
 
@@ -103,16 +137,30 @@ mock_au.save_assembly_from_fasta.side_effect = mock_au_save_assembly_from_fasta
 def mock_mgu_binned_contigs_to_file(params):
     logging.info('Mocking mgu.file_to_binned_contigs(%s)' % str(params))
 
-    data_dir = os.path.join(TEST_DATA_DIR, 'fasta/binned_contigs')
     upa = ref_leaf(params['input_ref'])
+    save_dir = _glob_upa(FASTA_DIR, upa)
 
-    src_dir = _glob_upa(data_dir, upa)
-    dst_dir = _house_mock_in_work_dir(src_dir)
+    if save_dir is None:
+        logging.info('Calling in cache mode `mgu.file_to_binned_contigs`')
 
-    return {'bin_file_directory': dst_dir}
+        mgu = get_mgu()
+        work_dir = mgu.binned_contigs_to_file(params)['bin_file_directory']
+        save_dir = os.path.join(
+            mkcache(FASTA_DIR),
+            file_safe_ref(upa)
+        )
+        shutil.copytree(work_dir, save_dir)
 
-mock_mgu = create_autospec(MetagenomeUtils, instance=True, spec_set=True)
-mock_mgu.binned_contigs_to_file.side_effect = mock_mgu_binned_contigs_to_file
+    else:
+        work_dir = _house_mock_in_work_dir(save_dir)
+
+    return {'bin_file_directory': work_dir}
+
+def get_mock_mgu():
+    mock_mgu = create_autospec(MetagenomeUtils, instance=True, spec_set=True)
+    mock_mgu.binned_contigs_to_file.side_effect = mock_mgu_binned_contigs_to_file
+    return mock_mgu
+mock_mgu = get_mock_mgu()
 
 
 ## MOCK RUN_CHECK ##
@@ -152,9 +200,16 @@ mock_kbr.create_extended_report.side_effect = mock_create_extended_report
 
 ## UTIL ##
 
+def mkcache(dir):
+    dir = dir.replace(TEST_DATA_DIR, CACHE_DIR)
+    os.makedirs(dir, exist_ok=True)
+    return dir
+
 def _glob_upa(data_dir, upa):
     p_l = list(Path(data_dir).glob(file_safe_ref(upa) + '*'))
-    if len(p_l) != 1:
+    if len(p_l) == 0:
+        return None
+    elif len(p_l) > 1:
         raise Exception(upa)
 
     src_p = str(p_l[0])
