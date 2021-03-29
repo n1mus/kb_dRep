@@ -4,7 +4,7 @@ import logging
 import copy
 
 from ..util.debug import dprint
-from .config import app, file_safe_ref, TRANSFORM_NAME_SEP
+from .config import app, file_safe_ref, ref_leaf, TRANSFORM_NAME_SEP
 
 '''
 pool_into
@@ -21,9 +21,7 @@ class Obj:
         assert 'ref' in kw or 'ref_l' in kw
         assert not ('ref' in kw and 'ref_l' in kw)
 
-    def _load(self, ref):
-        self.ref = ref
-
+    def _load_full(self, ref):
         obj = app.dfu.get_objects({
             'object_refs': [self.ref]
         })
@@ -31,9 +29,18 @@ class Obj:
         self.name = obj['data'][0]['info'][1]
         self.obj = obj['data'][0]['data']
 
+    def _load_metadata(self, ref):
+        oi = app.ws.get_object_info3({
+            'objects': [{'ref': ref}],
+            'includeMetadata': 1,
+        })
+
+        self.name = oi['infos'][0][1]
+        self.metadata = oi['infos'][0][10]
+
     def __lt__(self, other):
         """Testing"""
-        return self.ref < other.ref
+        return ref_leaf(self.ref) < ref_leaf(other.ref)
 
 
 class Indiv:
@@ -73,13 +80,13 @@ class Assembly(Obj, Indiv):
     TYPE = 'KBaseGenomeAnnotations.Assembly'
 
     def __init__(self, ref):
-        self.ref = None # full path if from Genome, AssemblySet, or GenomeSet
+        self.ref = ref # full path if from Genome, AssemblySet, or GenomeSet
         self.name = None
-        self.obj = None
+        self.metadata = None
         self.assembly_fp = None
         self.in_derep = None
 
-        super()._load(ref)
+        super()._load_metadata(ref)
         self._load()
 
     def _load(self):
@@ -116,13 +123,13 @@ class Genome(Obj, Indiv):
     TYPE = 'KBaseGenomes.Genome'
 
     def __init__(self, ref):
-        self.ref = None # full path if from GenomeSet
+        self.ref = ref # full path if from GenomeSet
         self.name = None
         self.obj = None
         self.assembly = None
         self.in_derep = None
 
-        super()._load(ref)
+        super()._load_full(ref)
         self._load()
 
     def _load(self):
@@ -136,7 +143,7 @@ class Genome(Obj, Indiv):
         self.in_derep = self.assembly.in_derep
 
     def get_derep_assembly_refs(self):
-        return self.assembly.get_derep_assembly_refs()
+        return [self.assembly.ref] if self.in_derep else []
 
 
 class AssemblySet(Obj, Set):
@@ -147,7 +154,7 @@ class AssemblySet(Obj, Set):
         :params ref: if given, load mode
         :params ref_l: if given, create mode
         """
-        self.ref = None
+        self.ref = kw.get('ref') 
         self.name = None
         self.obj = None
         self.assembly_l = None
@@ -157,7 +164,7 @@ class AssemblySet(Obj, Set):
         ref, ref_l = kw.get('ref'), kw.get('ref_l')
 
         if ref is not None:
-            super()._load(ref)
+            super()._load_full(ref)
             self._load(ref)
 
         elif ref_l is not None:
@@ -201,7 +208,7 @@ class GenomeSet(Obj, Set):
         :params ref: if given, load mode
         :params ref_l: if given, create mode
         """
-        self.ref = None
+        self.ref = kw.get('ref')
         self.name = None
         self.obj = None
         self.genome_l = None
@@ -211,7 +218,7 @@ class GenomeSet(Obj, Set):
         ref, ref_l = kw.get('ref'), kw.get('ref_l')
 
         if ref is not None:
-            super()._load(ref)
+            super()._load_full(ref)
             self._load()
 
         elif ref_l is not None:
@@ -272,15 +279,15 @@ class BinnedContigs(Obj):
         :params ref: load mode
         :params obj: create mode
         """
-        self.ref = None
+        self.ref = ref
         self.name = None
         self.obj = None
         self.bid_l = None
         self.bins_dir = None
         self.derep_bid_l = None
-        self.assembly_ref_l = None
+        self.derep_assembly_ref_l = None
 
-        super()._load(ref)
+        super()._load_full(ref)
         self._load()
 
     def _load(self):
@@ -311,7 +318,9 @@ class BinnedContigs(Obj):
         return len(self.derep_bid_l) == 0
 
     def save_derep_as_assemblies(self, workspace_name):
-        self.assembly_ref_l = []
+        if not self.derep_bid_l: raise Exception(self.derep_bid_l)
+
+        self.derep_assembly_ref_l = []
 
         for bid in self.derep_bid_l:
             ref = app.au.save_assembly_from_fasta(
@@ -319,18 +328,18 @@ class BinnedContigs(Obj):
                     file=dict(
                         path=os.path.join(self.bins_dir, bid)
                     ),
-                    assembly_name=self.name + '_' + bid,
+                    assembly_name=self.name + TRANSFORM_NAME_SEP + bid,
                     workspace_name=workspace_name,
-                    type='metagenome',
+                    type='MAG',
                 )
             )
-            self.assembly_ref_l.append(ref)
+            self.derep_assembly_ref_l.append(ref)
 
     def get_derep_assembly_refs(self):
-        if self.assembly_ref_l is None: 
+        if not self.derep_assembly_ref_l: 
             raise Exception()
         else: 
-            return self.assembly_ref_l
+            return self.derep_assembly_ref_l
 
     def save_dereplicated(self, name, workspace_name):
         drop_bid_l = [b for b in self.bid_l if b not in self.derep_bid_l]

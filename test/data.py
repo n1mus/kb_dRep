@@ -29,19 +29,73 @@ Caulobacter_vibrioides_assembly = '34837/66/3' # a
 Coxiella_burnetii_assembly = '34837/67/2' # a
 Escherichia_coli_K_12_assembly = '34837/69/1' # a
 Escherichia_coli_Sakai_assembly = '34837/70/1' # a
+Staphylcoccus_aureus_assembly = '34837/100/3' # a
+Salmonella_enterica_assembly = '34837/101/2' # a
+Shigella_flexneri_assembly = '34837/102/1' # a
+Klebsiella_pneumoniae_assembly = '43623/9/3' # a
+Mycobacterium_tuberculosis_assembly = '43623/24/2' # a
+Acinetobacter_pitii_assembly = '43623/39/2' # a
+#---
 Escherichia_coli_K_12_MG1655 = '34837/60/1' # g
 Rhodobacter_sphaeroides_2_4_1 = '34837/61/1' # g
 Shewanella_amazonensis_SB2B = '34837/62/1' # g
-Some_refseq_assemblies = '34837/71/1' # as
-Some_genomes = '34837/73/1' # gs
-Escherichia_genome_set = '34837/75/1' # gs
+Klebsiella_pneumoniae = '34837/107/3' # g
+Mycobacterium_tuberculosis = '34837/108/2' # g
+Acinetobacter_pitii = '34837/109/2' # g
+#---
+Some_refseq_assemblies = '34837/71/1' # ast
+S_assemblies = '34837/105/1' # ast
+#---
+Some_genomes = '34837/73/1' # gst
+Escherichia_genome_set = '34837/75/1' # gst
+AMK_genomes = '34837/110/1' # ast
+#---
 SURF_B_MetaBAT2_CheckM = '34837/2/1' # bc
 SURF_B_MaxBin2_CheckM = '34837/16/1' # bc
 small_arctic_metabat = '34837/46/1' # bc
 capybaraGut_MaxBin2_CheckM = '34837/77/2' # bc
 
+
+all_upas = [
+    Rhodobacter_sphaeroides_2_4_1_assembly,
+    Escherichia_coli_K_12_MG1655_assembly,
+    Shewanella_amazonensis_SB2B_assembly,
+    Campylobacter_jejuni_assembly,
+    Caulobacter_vibrioides_assembly,
+    Coxiella_burnetii_assembly,
+    Escherichia_coli_K_12_assembly,
+    Escherichia_coli_Sakai_assembly,
+    Staphylcoccus_aureus_assembly,
+    Salmonella_enterica_assembly,
+    Shigella_flexneri_assembly,
+    Acinetobacter_pitii_assembly,
+    Mycobacterium_tuberculosis_assembly,
+    Klebsiella_pneumoniae_assembly,
+    #---
+    Escherichia_coli_K_12_MG1655,
+    Rhodobacter_sphaeroides_2_4_1,
+    Shewanella_amazonensis_SB2B,
+    Acinetobacter_pitii,
+    Mycobacterium_tuberculosis,
+    Klebsiella_pneumoniae,
+    #---
+    Some_refseq_assemblies,
+    S_assemblies,
+    #---
+    Some_genomes,
+    Escherichia_genome_set,
+    AMK_genomes,
+    #---
+    SURF_B_MetaBAT2_CheckM,
+    SURF_B_MaxBin2_CheckM,
+    small_arctic_metabat,
+    capybaraGut_MaxBin2_CheckM,
+]
+
+
 TEST_DATA_DIR = '/kb/module/test/data'
 GET_OBJECTS_DIR = TEST_DATA_DIR + '/get_objects'
+GET_OBJECT_INFO3_DIR = TEST_DATA_DIR + '/get_object_info3'
 FASTA_DIR = TEST_DATA_DIR + '/fasta'
 WORK_DIR = '/kb/module/work/tmp'
 CACHE_DIR = WORK_DIR + '/cache_test_data'
@@ -50,12 +104,12 @@ CACHE_DIR = WORK_DIR + '/cache_test_data'
 
 
 def mock_dfu_save_objects(params):
-    logging.info('Mocking `dfu.save_objects` with `params=%s`' % str(params)[:100])
+    logging.info('Mocking dfu.save_objects(%s)' % str(params)[:200] + '...' if len(str(params)) > 200 else params)
 
     return [['mock', 1, 2, 3, 'dfu', 5, 'save_objects']] # UPA made from pos 6/0/4
 
 def mock_dfu_get_objects(params):
-    logging.info('Mocking `dfu.get_objects` with `params=%s`' % params)
+    logging.info('Mocking dfu.get_objects(%s)' % params)
 
     upa = ref_leaf(params['object_refs'][0])
     fp = _glob_upa(GET_OBJECTS_DIR, upa)
@@ -78,6 +132,31 @@ def mock_dfu_get_objects(params):
         with open(fp) as fh:
             obj = json.load(fh)
         return obj
+
+'''
+def mock_ws_get_object_info3(params):
+    logging.info('Mocking dfu.get_object_info3(%s)' % params)
+
+    upa = ref_leaf(params['objects'][0]['ref'])
+    fp = _glob_upa(GET_OBJECT_INFO3_DIR, upa)
+
+    if fp is None:
+        logging.info('Calling in cache mode `dfu.get_object_info3`')
+
+        dfu = get_dfu()
+        oi = dfu.get_object_info3(params)
+        fp = os.path.join(
+            mkcache(GET_OBJECT_INFO3_DIR),
+            file_safe_ref(upa) + '__' + oi['infos'][0][1] + '.json'
+        )
+        with open(fp, 'w') as fh: json.dump(oi, fh)
+        return obj
+
+    else:
+        with open(fp) as fh:
+            oi = json.load(fh)
+        return oi
+'''
 
 def get_mock_dfu():
     mock_dfu = create_autospec(DataFileUtil, instance=True, spec_set=True)
@@ -118,8 +197,9 @@ def mock_au_get_assembly_as_fasta(params):
 
 def mock_au_save_assembly_from_fasta(params):
     logging.info('Mocking au.save_assembly_from_fasta(%s)' % str(params))
-
-    return 'au/save/assembly'
+    
+    new_assembly_name = params['assembly_name']
+    return 'au/save_fasta_as_assembly/%s' % new_assembly_name
 
 def get_mock_au():
     mock_au = create_autospec(AssemblyUtil, instance=True, spec_set=True)

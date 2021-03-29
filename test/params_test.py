@@ -16,7 +16,7 @@ def test():
 
     assert p.get_non_default_tool_params() == []
     assert p.getd('output_as_assembly') is True
-    assert p.getd('output_suffix') == '.dRep'
+    assert p.getd('output_name') == 'dRep'
 
     p = Params({
         **required,
@@ -28,12 +28,12 @@ def test():
         'warn_dist': 0.25,
         'processors': 8,
         'output_as_assembly': 1,
-        'output_suffix': '.dRep0',
+        'output_name': 'dRep0',
     })
 
     assert sorted(p.get_non_default_tool_params()) == sorted(['--length', '40000', '--SkipSecondary', '--processors', '8'])
     assert p.getd('output_as_assembly') is True
-    assert p.getd('output_suffix') == '.dRep0'       
+    assert p.getd('output_name') == 'dRep0'       
 
     p = Params({
         **required,
@@ -63,13 +63,13 @@ def test():
         },
         "checkM_method": "lineage_wf",
         "output_as_assembly": 1,
-        "output_suffix": ".dRep",
+        "output_name": "dRep",
         "processors": 16,
     })
 
     assert sorted(p.get_non_default_tool_params()) == sorted(['--processors', '16'])
     assert p.getd('output_as_assembly') is True
-    assert p.getd('output_suffix') == '.dRep'
+    assert p.getd('output_name') == 'dRep'
 
     
 

@@ -8,7 +8,7 @@ import pytest
 from kb_dRep.kb_dRepImpl import kb_dRep
 from kb_dRep.impl import config
 from kb_dRep.impl.kb_obj import Assembly, AssemblySet, Genome, GenomeSet, BinnedContigs
-from kb_dRep.impl.config import app
+from kb_dRep.impl.config import app, TRANSFORM_NAME_SEP
 from kb_dRep.util.debug import dprint
 from config import get_test_dir, get_ws_client, assert_unordered_equals
 from data import *
@@ -33,7 +33,6 @@ def test_Assembly(test_dir):
     a.identify_dereplicated(os.listdir(EMPTY_DIR))
     assert a.in_derep is False
     assert a.get_derep_assembly_refs() == []
-    
 
 
 def test_Genome(test_dir):
@@ -52,9 +51,9 @@ def test_Genome(test_dir):
     assert g.get_derep_assembly_refs() == []
 
 
-def test_AssemblySet(test_dir, ws):
+def test_AssemblySet(test_dir, ws, kb_clients):
     # Load
-    with patch.dict(mock_target, values=mock_ins):
+    with patch.dict(mock_target, values=kb_clients):
         ast = AssemblySet(ref=Some_refseq_assemblies)
     for a in ast.assembly_l:
         assert os.path.exists(a.assembly_fp)
@@ -65,25 +64,37 @@ def test_AssemblySet(test_dir, ws):
         )
     # nothing dereplicated out
     ast.identify_dereplicated(os.listdir(test_dir))
-    assert ast.get_derep_member_refs() == ast.assembly_ref_l
-    assert ast.get_derep_assembly_refs() == ast.assembly_ref_l
+    assert ast.get_derep_member_refs() == [a.ref for a in ast.assembly_l]
+    assert ast.get_derep_assembly_refs() == [a.ref for a in ast.assembly_l]
     # everything dereplicated out
     ast.identify_dereplicated(os.listdir(EMPTY_DIR))
     assert ast.get_derep_member_refs() == []
     assert ast.get_derep_assembly_refs() == []
 
     # Create
-    ref_l=[Campylobacter_jejuni_assembly, Escherichia_coli_Sakai_assembly]
-    with patch.dict(mock_target, values=mock_ins):
-        ast = AssemblySet(ref_l=[Campylobacter_jejuni_assembly, Escherichia_coli_Sakai_assembly])
-    upa_new = ast.save('Assemblies.dRep', ws['workspace_id'])
-    ast_ = AssemblySet(ref=upa_new)
-    assert_unordered_equals(ast_.assembly_ref_l, ref_l)
+    with patch.dict(mock_target, values=kb_clients):
+        ref_l = [Campylobacter_jejuni_assembly, Escherichia_coli_Sakai_assembly]
+        ast = AssemblySet(ref_l=ref_l)
+        ast.save('dRep_run_assemblies', ws['workspace_id'])
+        save_objects_params = kb_clients['dfu'].save_objects.call_args[0][0]
+        assert save_objects_params == {
+            'id': ws['workspace_id'],
+            'objects': [{
+                'type': 'KBaseSets.AssemblySet',
+                'data': {
+                    'description': 'Dereplication results',
+                    'items': [
+                        {'ref': Campylobacter_jejuni_assembly},
+                        {'ref': Escherichia_coli_Sakai_assembly},
+                    ],
+                },
+                'name': 'dRep_run_assemblies',
+            }]
+        }
 
-
-def test_GenomeSet(test_dir, ws):
+def test_GenomeSet(test_dir, ws, kb_clients):
     # Load
-    with patch.dict(mock_target, values=mock_ins):
+    with patch.dict(mock_target, values=kb_clients):
         gst = GenomeSet(ref=Some_genomes)
     for g in gst.genome_l:
         assert os.path.exists(g.assembly.assembly_fp)
@@ -94,47 +105,76 @@ def test_GenomeSet(test_dir, ws):
         )
     ## nothing dereplicated out
     gst.identify_dereplicated(os.listdir(test_dir))
-    assert gst.get_derep_member_refs() == gst.genome_ref_l
+    assert gst.get_derep_member_refs() == [g.ref for g in gst.genome_l]
     assert gst.get_derep_assembly_refs() == [g.assembly.ref for g in gst.genome_l]
     ## everything dereplicated out
     gst.identify_dereplicated(os.listdir(EMPTY_DIR))
     assert gst.get_derep_member_refs() == []
     assert gst.get_derep_assembly_refs() == []
-    ## all but one dereplicated out
-
 
     # Create
-    ref_l=[Some_genomes + ';' + upa for upa in [Escherichia_coli_K_12_MG1655, Rhodobacter_sphaeroides_2_4_1]]
-    with patch.dict(mock_target, values=mock_ins):
+    with patch.dict(mock_target, values=kb_clients):
+        ref_l=[Some_genomes + ';' + Escherichia_coli_K_12_MG1655, Rhodobacter_sphaeroides_2_4_1]
         gst = GenomeSet(ref_l=ref_l)
-    upa_new = gst.save('Genomes.dRep', ws['workspace_id'])
-    gst_ = GenomeSet(ref=upa_new)
-    assert_unordered_equals(gst_.genome_ref_l, ref_l)
+        gst.save('dRep_run_genomes', ws['workspace_id'])
+        save_objects_params = kb_clients['dfu'].save_objects.call_args[0][0]
+        assert save_objects_params == {
+            'id': ws['workspace_id'],
+            'objects': [{
+                'type': 'KBaseSets.GenomeSet',
+                'data': {
+                    'description': 'Dereplication results',
+                    'items': [
+                        {'ref': Some_genomes + ';' + Escherichia_coli_K_12_MG1655},
+                        {'ref': Rhodobacter_sphaeroides_2_4_1},
+                    ],
+                },
+                'name': 'dRep_run_genomes',
+            }]
+        }
 
 
-def test_BinnedContigs(test_dir, ws):
-    with patch.dict(mock_target, values=mock_ins):
+def test_BinnedContigs(test_dir, ws, kb_clients):
+    with patch.dict(mock_target, values=kb_clients):
         bc = BinnedContigs(SURF_B_MaxBin2_CheckM)
     bc.pool_into(test_dir)
     for bid in bc.bid_l:
         assert os.path.exists(
             os.path.join(test_dir, bc._get_transformed_bid(bid))
         )
+
     ## nothing dereplicated out
     bc.identify_dereplicated(os.listdir(test_dir))
     assert bc.is_fully_dereplicated() is False
-    bc.save_derep_as_assemblies(ws['workspace_name'])
-    assert len(bc.get_derep_assembly_refs()) == len(bc.bid_l)
-    upa_new = bc.save_dereplicated('BinnedContigs1.dRep', ws['workspace_name'])
-    bc_ = BinnedContigs(upa_new)
-    assert bc_.bid_l == bc.bid_l
-    assert bc_.obj['bins'] == bc.obj['bins']
+    kb_clients['au'].reset_mock()
+    with patch.dict(mock_target, values=kb_clients):
+        bc.save_derep_as_assemblies(ws['workspace_name'])
+    au_save_assembly_from_fasta_params = [
+        c[0][0] for c in 
+        kb_clients['au'].save_assembly_from_fasta.call_args_list
+    ]
+    expected = [
+        dict(
+            file=dict(
+                path=os.path.join(bc.bins_dir, bid)
+            ),
+            assembly_name=bc.name + TRANSFORM_NAME_SEP + bid,
+            workspace_name=ws['workspace_name'],
+            type='MAG',
+        )
+        for bid in bc.derep_bid_l
+    ]
+    assert au_save_assembly_from_fasta_params == expected
 
+    with patch.dict(mock_target, values=kb_clients):
+        bc = BinnedContigs(SURF_B_MaxBin2_CheckM)
     ## everything dereplicated out
     bc.identify_dereplicated(os.listdir(EMPTY_DIR))
     assert bc.is_fully_dereplicated() is True
-    bc.save_derep_as_assemblies(ws['workspace_name'])
-    assert len(bc.get_derep_assembly_refs()) == 0
+    with pytest.raises(Exception, match=r'\[\]'):
+        bc.save_derep_as_assemblies(ws['workspace_name'])
+    with pytest.raises(Exception):
+        bc.get_derep_assembly_refs()
 
     ## all but one dereplicated out
     test_dir = get_test_dir()
@@ -143,16 +183,27 @@ def test_BinnedContigs(test_dir, ws):
     ).touch()
     bc.identify_dereplicated(os.listdir(test_dir))
     assert bc.is_fully_dereplicated() is False
-    bc.save_derep_as_assemblies(ws['workspace_name'])
-    assert len(bc.get_derep_assembly_refs()) == 1
-    upa_new = bc.save_dereplicated('BinnedContigs0.dRep', ws['workspace_name'])
-    bc_ = BinnedContigs(upa_new)
-    assert bc_.bid_l == bc.derep_bid_l
-    assert bc_.obj['bins'] == [bc.obj['bins'][0]]
-    assert bc_.obj['total_contig_len'] == bc.obj['bins'][0]['sum_contig_len']
+    kb_clients['au'].reset_mock()
+    with patch.dict(mock_target, values=kb_clients):
+        bc.save_derep_as_assemblies(ws['workspace_name'])
+    au_save_assembly_from_fasta_params = [
+        c[0][0] for c in 
+        kb_clients['au'].save_assembly_from_fasta.call_args_list
+    ]
+    expected = [
+        dict(
+            file=dict(
+                path=os.path.join(bc.bins_dir, bid)
+            ),
+            assembly_name=bc.name + TRANSFORM_NAME_SEP + bid,
+            workspace_name=ws['workspace_name'],
+            type='MAG',
+        )
+        for bid in bc.derep_bid_l
+    ]
+    assert au_save_assembly_from_fasta_params == expected
 
-
-def test_BinnedContigs_save_dereplicated(ws, kb_clients):
+    ##
     with patch.dict(mock_target, values=kb_clients):
         bc = BinnedContigs(SURF_B_MaxBin2_CheckM)   
         # all but two dereplicated out

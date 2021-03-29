@@ -41,7 +41,7 @@ class Params:
     DEFAULTS = {
         **TOOL_DEFAULTS,
         'output_as_assembly': True,
-        'output_suffix': '.dRep',
+        'output_name': 'dRep',
     }
 
     FLAGS = ['ignoreGenomeQuality', 'SkipMash', 'SkipSecondary', 'output_as_assembly']

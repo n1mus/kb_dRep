@@ -115,7 +115,8 @@ class BaseTest(unittest.TestCase):
 
 
 def assert_unordered_equals(l0, l1):
-    assert sorted(l0) == sorted(l1)
+    assert sorted(l0) == sorted(l1), \
+        '\n`%s`\nvs\n`%s`' % (sorted(l0), sorted(l1))
 
 def list_minus(l0, l1):
     return [x for x in l0 if x not in l1]

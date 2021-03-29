@@ -1,4 +1,4 @@
-TARGET_TESTS = kb_obj_test.py::test_BinnedContigs_save_dereplicated
+TARGET_TESTS = -vv kb_obj_test.py::test_BinnedContigs
 SERVICE = kb_drep
 SERVICE_CAPS = kb_dRep
 SPEC_FILE = kb_dRep.spec

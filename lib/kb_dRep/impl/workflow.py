@@ -198,32 +198,28 @@ def save_results(objs, params, dRep_dir):
     description = 'Dereplication results'
 
     if params.getd('output_as_assembly'):
-        assembly_ref_l = []
-        for obj in objs:
-            if obj.TYPE == BinnedContigs.TYPE:
-                obj.save_derep_as_assemblies(params['workspace_name'])
-            assembly_ref_l.extend(obj.get_derep_assembly_refs())
-        assembly_ref_l = uniq_refs(assembly_ref_l)
+        assembly_ref_l = aggregate_derep_assembly_refs(objs, params['workspace_name'])
+
         ref = AssemblySet(ref_l=assembly_ref_l).save(
-            'Assemblies' + params.getd('output_suffix'),
+            params.getd('output_name') + '_assemblies',
             params['workspace_id']
         )
 
-        objects_created.append(
+        objects_created = [
             dict(
                 ref=ref,
                 description=description,
             )
-        )
+        ]
 
     else:
         assembly_l, genome_l, assembly_set_l, genome_set_l, binned_contigs_l = partition_by_type(objs)
 
         # assembly types
-        assembly_ref_l = aggregate_derep_element_refs(assembly_l, assembly_set_l)
+        assembly_ref_l = aggregate_derep_member_refs(assembly_l, assembly_set_l)
         if len(assembly_ref_l) > 0:
             ref = AssemblySet(ref_l=assembly_ref_l).save(
-                'Assemblies' + params.getd('output_suffix'),
+                params.getd('output_name') + '_assemblies',
                 params['workspace_id']
             )
             objects_created.append(
@@ -234,10 +230,10 @@ def save_results(objs, params, dRep_dir):
             )
 
         # genome types
-        genome_ref_l = aggregate_derep_element_refs(genome_l, genome_set_l)
+        genome_ref_l = aggregate_derep_member_refs(genome_l, genome_set_l)
         if len(genome_ref_l) > 0:
             ref = GenomeSet(ref_l=genome_ref_l).save(
-                'Genomes' + params.getd('output_suffix'),
+                params.getd('output_name') + '_genomes',
                 params['workspace_id']
             )
             objects_created.append(
@@ -251,7 +247,7 @@ def save_results(objs, params, dRep_dir):
         for binned_contigs in binned_contigs_l:
             if not binned_contigs.is_fully_dereplicated():
                 ref = binned_contigs.save_dereplicated(
-                    binned_contigs.name + params.getd('output_suffix'),
+                    params.getd('output_name') + '_' + binned_contigs.name,
                     params['workspace_name']
                 )
                 objects_created.append(
@@ -264,7 +260,19 @@ def save_results(objs, params, dRep_dir):
     return objects_created
 
 
-def aggregate_derep_element_refs(star_l, star_set_l):
+def aggregate_derep_assembly_refs(objs, workspace_name):
+    assembly_ref_l = []
+    
+    for obj in objs:
+        if obj.TYPE == BinnedContigs.TYPE:
+            obj.save_derep_as_assemblies(workspace_name)
+        assembly_ref_l.extend(obj.get_derep_assembly_refs())
+
+    assembly_ref_l = uniq_refs(assembly_ref_l)
+    return assembly_ref_l
+
+
+def aggregate_derep_member_refs(star_l, star_set_l):
     """
     :params star_l: genome or assembly list
     :params star_set_l: genome set or assembly set list

@@ -439,11 +439,11 @@
             }
         },
         {
-            "id": "output_suffix",
+            "id": "output_name",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
-            "default_values": [ ".dRep" ],
+            "default_values": [ "dRep" ],
             "field_type": "text",
             "text_options": {
                 "is_output_name": true
@@ -494,8 +494,8 @@
                     "target_property": "output_as_assembly"
                 },
                 {
-                    "input_parameter": "output_suffix",
-                    "target_property": "output_suffix"
+                    "input_parameter": "output_name",
+                    "target_property": "output_name"
                 },
                 {
                     "constant_value": 16,

@@ -120,11 +120,11 @@ parameters :
               Output as AssemblySet
           short-hint: |
               Output dereplicated as Assemblies in AssemblySet
-    output_suffix :
+    output_name :
           ui-name: |
-              Output suffix
+              Output name
           short-hint: |
-              Suffix for output objects' names
+              Output objects' names
 
 parameter-groups:
     filtering:

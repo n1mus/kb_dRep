@@ -14,12 +14,37 @@ local = {
     'processors': 8, # Narrative uses 8, the more the better
     'checkM_method': 'taxonomy_wf', # default `lineage_wf` uses 40GB memory, `taxonomy_wf` uses <16GB
 }
+kb_clients = {'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr}
 
 
 class Test(cfg.BaseTest):
     @patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
-    @patch('kb_dRep.impl.workflow.run_check', new=get_mock_run_check('potpourri'))
-    def test_potpourri_outputMixed(self):
+    @patch('kb_dRep.impl.workflow.run_check', new=get_mock_run_check('potpourriExtended'))
+    def test_potpourriExtended_outputMixed(self):
+        ret = self.serviceImpl.run_dereplicate(
+            self.ctx, {
+                **self.ws,
+                **local,
+                'obj_refs': all_upas,
+                'output_as_assembly': 0,
+            }
+        )
+
+    @patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
+    @patch('kb_dRep.impl.workflow.run_check', new=get_mock_run_check('potpourriExtended'))
+    def test_potpourriExtended_outputAssembly(self):
+        ret = self.serviceImpl.run_dereplicate(
+            self.ctx, {
+                **self.ws,
+                **local,
+                'obj_refs': all_upas,
+                'output_as_assembly': 1,
+            }
+        )
+
+    @patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
+    @patch('kb_dRep.impl.workflow.run_check', new=get_mock_run_check('potpourriMinimal'))
+    def test_potpourriMinimal_outputMixed(self):
         ret = self.serviceImpl.run_dereplicate(
             self.ctx, {
                 **self.ws,
@@ -37,8 +62,8 @@ class Test(cfg.BaseTest):
         )
 
     @patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
-    @patch('kb_dRep.impl.workflow.run_check', new=get_mock_run_check('potpourri'))
-    def test_potpourri_outputAssembly(self):
+    @patch('kb_dRep.impl.workflow.run_check', new=get_mock_run_check('potpourriMinimal'))
+    def test_potpourriMinimal_outputAssembly(self):
         ret = self.serviceImpl.run_dereplicate(
             self.ctx, {
                 **self.ws,
@@ -54,6 +79,7 @@ class Test(cfg.BaseTest):
                 'output_as_assembly': 1,
             }
         )
+
 
     @patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
     @patch.dict('kb_dRep.impl.workflow.app', values={'kbr': mock_kbr})
