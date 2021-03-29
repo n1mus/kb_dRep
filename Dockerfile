@@ -95,11 +95,6 @@ RUN checkm data setRoot /data/CHECKM_DATA
 
 
 
-ENV PYTHONUNBUFFERED=True
-
-# for sklearn
-ENV PYTHONWARNINGS=ignore
-
 RUN pip install pypdf2==1.26.0 dotmap==1.3.14
 
 RUN pip install drep==3.1.0

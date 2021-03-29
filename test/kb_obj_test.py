@@ -166,9 +166,9 @@ def test_BinnedContigs(test_dir, ws, kb_clients):
     ]
     assert au_save_assembly_from_fasta_params == expected
 
+    ## everything dereplicated out
     with patch.dict(mock_target, values=kb_clients):
         bc = BinnedContigs(SURF_B_MaxBin2_CheckM)
-    ## everything dereplicated out
     bc.identify_dereplicated(os.listdir(EMPTY_DIR))
     assert bc.is_fully_dereplicated() is True
     with pytest.raises(Exception, match=r'\[\]'):
@@ -203,10 +203,9 @@ def test_BinnedContigs(test_dir, ws, kb_clients):
     ]
     assert au_save_assembly_from_fasta_params == expected
 
-    ##
+    ## all but two dereplicated out
     with patch.dict(mock_target, values=kb_clients):
         bc = BinnedContigs(SURF_B_MaxBin2_CheckM)   
-        # all but two dereplicated out
         test_dir = get_test_dir()
         Path(
             os.path.join(test_dir, bc._get_transformed_bid(bc.bid_l[0]))
@@ -220,3 +219,17 @@ def test_BinnedContigs(test_dir, ws, kb_clients):
         )
 
 
+def test_save_unmocked(test_dir, ws, kb_clients):
+    ref_l = [Campylobacter_jejuni_assembly, Escherichia_coli_Sakai_assembly]
+    ast = AssemblySet(ref_l=ref_l)
+    ast.save('dRep_run_assemblies', ws['workspace_id'])
+
+    ref_l=[Some_genomes + ';' + Escherichia_coli_K_12_MG1655, Rhodobacter_sphaeroides_2_4_1]
+    gst = GenomeSet(ref_l=ref_l)
+    gst.save('dRep_run_genomes', ws['workspace_id'])
+
+    bc = BinnedContigs(SURF_B_MaxBin2_CheckM)
+    bc.pool_into(test_dir)
+    bc.identify_dereplicated(os.listdir(test_dir))
+    bc.save_derep_as_assemblies(ws['workspace_name'])
+    bc.save_dereplicated('BinnedContigs0.dRep', ws['workspace_name'])

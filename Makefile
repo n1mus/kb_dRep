@@ -1,4 +1,6 @@
-TARGET_TESTS = -vv kb_obj_test.py::test_BinnedContigs
+UNIT_TESTS = kb_obj_test.py params_test.py workflow_test.py
+INTEGRATION_TESTS = happy_test.py error_test.py
+TARGET_TESTS = happy_test.py::Test::test_potpourriMinimal_outputMixed
 SERVICE = kb_drep
 SERVICE_CAPS = kb_dRep
 SPEC_FILE = kb_dRep.spec
@@ -57,7 +59,7 @@ build-test-script:
 	echo 'export PYTHONPATH=$$script_dir/../$(LIB_DIR):$$PATH:$$PYTHONPATH' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 	echo 'cd $$script_dir/../$(TEST_DIR)' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 	#echo 'python -m nose --with-coverage --cover-package=$(SERVICE_CAPS) --cover-html --cover-html-dir=/kb/module/work/test_coverage --nocapture  --nologcapture $(TARGET_TESTS)' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
-	echo 'pytest  --verbose -s --cov=$$lib --cov-config=coveragerc_sdk --cov-report=html $(TARGET_TESTS)' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
+	echo 'pytest  -vv -s --cov=$$lib --cov-config=coveragerc_sdk --cov-report=html $(TARGET_TESTS)' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 	echo 'mv .coverage /kb/module/work/' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)
 	echo 'mv htmlcov /kb/module/work/test_coverage' >> $(TEST_DIR)/$(TEST_SCRIPT_NAME)	
 	chmod +x $(TEST_DIR)/$(TEST_SCRIPT_NAME)
