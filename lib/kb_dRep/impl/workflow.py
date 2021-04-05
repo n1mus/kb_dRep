@@ -265,6 +265,8 @@ def aggregate_derep_assembly_refs(objs, workspace_name):
     
     for obj in objs:
         if obj.TYPE == BinnedContigs.TYPE:
+            if obj.is_fully_dereplicated():
+                continue
             obj.save_derep_as_assemblies(workspace_name)
         assembly_ref_l.extend(obj.get_derep_assembly_refs())
 
@@ -300,9 +302,9 @@ def partition_by_type(objs):
 
 
 def uniq_refs(l):
-    '''
+    """
     For multiple paths to an UPA, take shortest one
-    '''
+    """
     d = {} # ref leaf to shortest ref path
 
     for e in l:
@@ -312,3 +314,16 @@ def uniq_refs(l):
 
     return list(d.values())
 
+
+def uniq_genomes_by_assembly_ref(l):
+    """
+    For multiple genomes pointing to same assembly, choose one (deterministic)
+    """
+    d = {}
+
+    for genome in l:
+        lf = ref_leaf(genome.assembly.ref)
+        if not lf in d or genome < d[lf]:
+            d[lf] = e
+
+    return list(d.values())

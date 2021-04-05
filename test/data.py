@@ -133,6 +133,17 @@ def mock_dfu_get_objects(params):
             obj = json.load(fh)
         return obj
 
+
+
+def get_mock_dfu():
+    mock_dfu = create_autospec(DataFileUtil, instance=True, spec_set=True)
+    mock_dfu.save_objects.side_effect = mock_dfu_save_objects
+    mock_dfu.get_objects.side_effect = mock_dfu_get_objects
+    return mock_dfu
+mock_dfu = get_mock_dfu()
+
+
+## MOCK WS ##
 '''
 def mock_ws_get_object_info3(params):
     logging.info('Mocking dfu.get_object_info3(%s)' % params)
@@ -157,14 +168,6 @@ def mock_ws_get_object_info3(params):
             oi = json.load(fh)
         return oi
 '''
-
-def get_mock_dfu():
-    mock_dfu = create_autospec(DataFileUtil, instance=True, spec_set=True)
-    mock_dfu.save_objects.side_effect = mock_dfu_save_objects
-    mock_dfu.get_objects.side_effect = mock_dfu_get_objects
-    return mock_dfu
-mock_dfu = get_mock_dfu()
-
 
 ## MOCK AU ##
 

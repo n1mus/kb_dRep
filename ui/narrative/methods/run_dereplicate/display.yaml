@@ -117,14 +117,14 @@ parameters :
               checkM method
     output_as_assembly :
           ui-name : |
-              Output as AssemblySet
+              Output as Assemblies
           short-hint: |
-              Output dereplicated as Assemblies in AssemblySet
+              Check to output dereplicated as Assemblies in AssemblySet. Uncheck to output dereplicated as original types.
     output_name :
           ui-name: |
               Output name
           short-hint: |
-              Output objects' names
+              Output name(s) prefix. Will be appended with '_assemblies', '_genomes', etc.
 
 parameter-groups:
     filtering:
