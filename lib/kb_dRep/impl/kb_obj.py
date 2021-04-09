@@ -9,9 +9,11 @@ from .config import app, file_safe_ref, ref_leaf, TRANSFORM_NAME_SEP
 '''
 pool_into
 identify_dereplicated
-is_fully_dereplicated
 get_derep_assembly_refs
 get_derep_member_refs
+
+get_in_derep
+is_fully_dereplicated
 save, save_dereplicated
 '''
 
@@ -21,7 +23,7 @@ class Obj:
         assert 'ref' in kw or 'ref_l' in kw
         assert not ('ref' in kw and 'ref_l' in kw)
 
-    def _load_full(self, ref):
+    def _load_full(self):
         obj = app.dfu.get_objects({
             'object_refs': [self.ref]
         })
@@ -29,9 +31,9 @@ class Obj:
         self.name = obj['data'][0]['info'][1]
         self.obj = obj['data'][0]['data']
 
-    def _load_metadata(self, ref):
+    def _load_metadata(self):
         oi = app.ws.get_object_info3({
-            'objects': [{'ref': ref}],
+            'objects': [{'ref': self.ref}],
             'includeMetadata': 1,
         })
 
@@ -45,7 +47,7 @@ class Obj:
 
 class Indiv:
     def _get_transformed_name(self):
-        return file_safe_ref(self.ref.split(';')[-1]) + TRANSFORM_NAME_SEP + self.name
+        return file_safe_ref(self.ref) + TRANSFORM_NAME_SEP + self.name
 
 
 class Set:
@@ -86,7 +88,7 @@ class Assembly(Obj, Indiv):
         self.assembly_fp = None
         self.in_derep = None
 
-        super()._load_metadata(ref)
+        super()._load_metadata()
         self._load()
 
     def _load(self):
@@ -104,8 +106,7 @@ class Assembly(Obj, Indiv):
         )
 
         if os.path.exists(dst_fp):
-            logging.warning('Skipping pooling redundant FASTA for UPA: %s, name: %s' % (self.ref, self.name))
-            return
+            raise Exception('%s, %s' % (self.ref, self.name))
 
         shutil.copyfile(
             self.assembly_fp,
@@ -115,8 +116,15 @@ class Assembly(Obj, Indiv):
     def identify_dereplicated(self, derep_l):
         self.in_derep = self._get_transformed_name() in derep_l
 
+    def get_in_derep(self):
+        if self.in_derep is None: raise Exception('%s, %s' % (self.ref, self.name))
+        return self.in_derep
+
     def get_derep_assembly_refs(self):
-        return [self.ref] if self.in_derep else []
+        return [self.ref] if self.get_in_derep() else []
+
+    def get_derep_member_refs(self):
+        return self.get_derep_assembly_refs()
 
 
 class Genome(Obj, Indiv):
@@ -127,9 +135,8 @@ class Genome(Obj, Indiv):
         self.name = None
         self.obj = None
         self.assembly = None
-        self.in_derep = None
 
-        super()._load_full(ref)
+        super()._load_full()
         self._load()
 
     def _load(self):
@@ -140,10 +147,12 @@ class Genome(Obj, Indiv):
 
     def identify_dereplicated(self, derep_l):
         self.assembly.identify_dereplicated(derep_l)
-        self.in_derep = self.assembly.in_derep
 
     def get_derep_assembly_refs(self):
-        return [self.assembly.ref] if self.in_derep else []
+        return self.assembly.get_derep_assembly_refs() 
+
+    def get_derep_member_refs(self):
+        return [self.ref] if self.assembly.get_in_derep() else []
 
 
 class AssemblySet(Obj, Set):
@@ -158,19 +167,18 @@ class AssemblySet(Obj, Set):
         self.name = None
         self.obj = None
         self.assembly_l = None
-        self.derep_assembly_l = None
 
         self._validate_set_init_params(**kw)
         ref, ref_l = kw.get('ref'), kw.get('ref_l')
 
         if ref is not None:
-            super()._load_full(ref)
-            self._load(ref)
+            super()._load_full()
+            self._load()
 
         elif ref_l is not None:
             self._create(ref_l)
 
-    def _load(self, ref):
+    def _load(self):
         assembly_ref_l = [
             d['ref']
             for d in self.obj['items']
@@ -186,16 +194,14 @@ class AssemblySet(Obj, Set):
             assembly.pool_into(pooled_dir)
 
     def identify_dereplicated(self, derep_l):
-        self.derep_assembly_l = []
         for assembly in self.assembly_l:
-            if assembly._get_transformed_name() in derep_l:
-                self.derep_assembly_l.append(assembly)
-
-    def get_derep_member_refs(self):
-        return [a.ref for a in self.derep_assembly_l]
+            assembly.identify_dereplicated(derep_l)
 
     def get_derep_assembly_refs(self):
-        return [a.ref for a in self.derep_assembly_l]
+        return [a.ref for a in self.assembly_l if a.get_in_derep()]
+
+    def get_derep_member_refs(self):
+        return self.get_derep_assembly_refs()
 
 
 class GenomeSet(Obj, Set):
@@ -204,7 +210,6 @@ class GenomeSet(Obj, Set):
 
     def __init__(self, **kw):
         """
-        Input refs must be rooted
         :params ref: if given, load mode
         :params ref_l: if given, create mode
         """
@@ -212,13 +217,12 @@ class GenomeSet(Obj, Set):
         self.name = None
         self.obj = None
         self.genome_l = None
-        self.derep_genome_l = None
 
         self._validate_set_init_params(**kw)
         ref, ref_l = kw.get('ref'), kw.get('ref_l')
 
         if ref is not None:
-            super()._load_full(ref)
+            super()._load_full()
             self._load()
 
         elif ref_l is not None:
@@ -259,16 +263,14 @@ class GenomeSet(Obj, Set):
             g.pool_into(pooled_dir)
 
     def identify_dereplicated(self, derep_l):
-        self.derep_genome_l = []
-        for genome in self.genome_l:
-            if genome.assembly._get_transformed_name() in derep_l:
-                self.derep_genome_l.append(genome)
+        for g in self.genome_l:
+            g.identify_dereplicated(derep_l)
 
     def get_derep_member_refs(self):
-        return [g.ref for g in self.derep_genome_l]
+        return [g.ref for g in self.genome_l if g.assembly.get_in_derep()]
 
     def get_derep_assembly_refs(self):
-        return [g.assembly.ref for g in self.derep_genome_l]
+        return [g.assembly.ref for g in self.genome_l if g.assembly.get_in_derep()]
 
 
 class BinnedContigs(Obj):
@@ -287,7 +289,7 @@ class BinnedContigs(Obj):
         self.derep_bid_l = None
         self.derep_assembly_ref_l = None
 
-        super()._load_full(ref)
+        super()._load_full()
         self._load()
 
     def _load(self):
@@ -301,12 +303,16 @@ class BinnedContigs(Obj):
     def _get_transformed_bid(self, bid):
         return file_safe_ref(self.ref) + TRANSFORM_NAME_SEP + self.name + TRANSFORM_NAME_SEP + bid
 
+    def _pool_bin_into(self, bid, pooled_dir):
+        """Testing"""
+        shutil.copyfile(
+            os.path.join(self.bins_dir, bid),
+            os.path.join(pooled_dir, self._get_transformed_bid(bid))
+        )
+
     def pool_into(self, pooled_dir):
         for bid in self.bid_l:
-            shutil.copyfile(
-                os.path.join(self.bins_dir, bid),
-                os.path.join(pooled_dir, self._get_transformed_bid(bid))
-            )
+            self._pool_bin_into(bid, pooled_dir)
 
     def identify_dereplicated(self, derep_l):
         self.derep_bid_l = []

@@ -46,32 +46,7 @@ def do_workflow(params):
     ####
     #####
 
-    objs = []
-    for upa in params['obj_refs']:
-
-        type_ = app.ws.get_object_info3({
-            'objects': [{'ref': upa}]
-        })['infos'][0][2]
-
-        if type_.startswith(BinnedContigs.TYPE):
-            obj = BinnedContigs(upa)
-
-        elif type_.startswith(GenomeSet.TYPE) or type_.startswith(GenomeSet.LEGACY_TYPE):
-            obj = GenomeSet(ref=upa)
- 
-        elif type_.startswith(AssemblySet.TYPE):
-            obj = AssemblySet(ref=upa)
-            
-        elif type_.startswith(Genome.TYPE):
-            obj = Genome(upa)
-
-        elif type_.startswith(Assembly.TYPE):
-            obj = Assembly(upa)
-
-        else:
-            raise Exception(type_)
-
-        objs.append(obj)
+    objs = load_objs(params['obj_refs'])
 
 
 
@@ -109,9 +84,7 @@ def do_workflow(params):
     ]
     + pooled_bins_fp_l
     + dRep_params_l
-    + [
-        '--debug',
-    ])
+    )
 
     dRep_cmd = ' '.join(dRep_cmd)
 
@@ -187,6 +160,35 @@ def do_workflow(params):
     return output
 
 
+def load_objs(refs):
+    objs = []
+    for ref in refs:
+
+        type_ = app.ws.get_object_info3({
+            'objects': [{'ref': ref}]
+        })['infos'][0][2]
+
+        if type_.startswith(BinnedContigs.TYPE):
+            obj = BinnedContigs(ref)
+
+        elif type_.startswith(GenomeSet.TYPE) or type_.startswith(GenomeSet.LEGACY_TYPE):
+            obj = GenomeSet(ref=ref)
+ 
+        elif type_.startswith(AssemblySet.TYPE):
+            obj = AssemblySet(ref=ref)
+            
+        elif type_.startswith(Genome.TYPE):
+            obj = Genome(ref)
+
+        elif type_.startswith(Assembly.TYPE):
+            obj = Assembly(ref)
+
+        else:
+            raise Exception(type_)
+
+        objs.append(obj)
+
+
 def save_results(objs, params, dRep_dir):
     derep_l = os.listdir(
         os.path.join(dRep_dir, 'dereplicated_genomes')
@@ -216,7 +218,7 @@ def save_results(objs, params, dRep_dir):
         assembly_l, genome_l, assembly_set_l, genome_set_l, binned_contigs_l = partition_by_type(objs)
 
         # assembly types
-        assembly_ref_l = aggregate_derep_member_refs(assembly_l, assembly_set_l)
+        assembly_ref_l = aggregate_derep_member_refs(assembly_l + assembly_set_l)
         if len(assembly_ref_l) > 0:
             ref = AssemblySet(ref_l=assembly_ref_l).save(
                 params.getd('output_name') + '_assemblies',
@@ -230,7 +232,7 @@ def save_results(objs, params, dRep_dir):
             )
 
         # genome types
-        genome_ref_l = aggregate_derep_member_refs(genome_l, genome_set_l)
+        genome_ref_l = aggregate_derep_member_refs(genome_l + genome_set_l)
         if len(genome_ref_l) > 0:
             ref = GenomeSet(ref_l=genome_ref_l).save(
                 params.getd('output_name') + '_genomes',
@@ -270,25 +272,15 @@ def aggregate_derep_assembly_refs(objs, workspace_name):
             obj.save_derep_as_assemblies(workspace_name)
         assembly_ref_l.extend(obj.get_derep_assembly_refs())
 
-    assembly_ref_l = uniq_refs(assembly_ref_l)
     return assembly_ref_l
 
 
-def aggregate_derep_member_refs(star_l, star_set_l):
-    """
-    :params star_l: genome or assembly list
-    :params star_set_l: genome set or assembly set list
-    """
+def aggregate_derep_member_refs(objs):
+    member_ref_l = []
+    for obj in objs:
+        member_ref_l.extend(obj.get_derep_member_refs())
 
-    star_ref_l = [
-        star.ref for star in star_l if star.in_derep
-    ] + [
-        ref 
-        for star_set in star_set_l
-        for ref in star_set.get_derep_member_refs() 
-    ]
-
-    return uniq_refs(star_ref_l)
+    return member_ref_l
 
 
 def partition_by_type(objs):
@@ -300,30 +292,3 @@ def partition_by_type(objs):
 
     return assembly_l, genome_l, assembly_set_l, genome_set_l, binned_contigs_l
 
-
-def uniq_refs(l):
-    """
-    For multiple paths to an UPA, take shortest one
-    """
-    d = {} # ref leaf to shortest ref path
-
-    for e in l:
-        lf = ref_leaf(e)
-        if lf not in d or e.count(';') < d[lf].count(';'):
-            d[lf] = e 
-
-    return list(d.values())
-
-
-def uniq_genomes_by_assembly_ref(l):
-    """
-    For multiple genomes pointing to same assembly, choose one (deterministic)
-    """
-    d = {}
-
-    for genome in l:
-        lf = ref_leaf(genome.assembly.ref)
-        if not lf in d or genome < d[lf]:
-            d[lf] = e
-
-    return list(d.values())

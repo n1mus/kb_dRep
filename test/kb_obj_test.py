@@ -28,11 +28,13 @@ def test_Assembly(test_dir):
         os.path.join(test_dir, os.path.basename(a.assembly_fp))
     )
     a.identify_dereplicated(os.listdir(test_dir))
-    assert a.in_derep is True
+    assert a.get_in_derep() is True
     assert a.get_derep_assembly_refs() == [a.ref]
+    assert a.get_derep_member_refs() == [a.ref]
     a.identify_dereplicated(os.listdir(EMPTY_DIR))
-    assert a.in_derep is False
+    assert a.get_in_derep() is False
     assert a.get_derep_assembly_refs() == []
+    assert a.get_derep_member_refs() == []
 
 
 def test_Genome(test_dir):
@@ -44,11 +46,13 @@ def test_Genome(test_dir):
         os.path.join(test_dir, os.path.basename(g.assembly.assembly_fp))
     )
     g.identify_dereplicated(os.listdir(test_dir))
-    assert g.in_derep is True
+    assert g.get_in_derep() is True
     assert g.get_derep_assembly_refs() == [g.assembly.ref]
+    assert g.get_derep_member_refs() == [g.ref]
     g.identify_dereplicated(os.listdir(EMPTY_DIR))
-    assert g.in_derep is False
+    assert g.get_in_derep() is False
     assert g.get_derep_assembly_refs() == []
+    assert g.get_derep_member_refs() == []
 
 
 def test_AssemblySet(test_dir, ws, kb_clients):
@@ -60,7 +64,7 @@ def test_AssemblySet(test_dir, ws, kb_clients):
     ast.pool_into(test_dir)
     for a in ast.assembly_l:
         assert os.path.exists(
-            os.path.join(test_dir, a.assembly_fp)
+            os.path.join(test_dir, os.path.basename(a.assembly_fp))
         )
     # nothing dereplicated out
     ast.identify_dereplicated(os.listdir(test_dir))

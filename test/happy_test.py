@@ -41,7 +41,7 @@ class Test(cfg.BaseTest):
             }
         )
 
-    #@patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
+    @patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
     @patch('kb_dRep.impl.workflow.run_check', new=get_mock_run_check('potpourriMinimal'))
     def test_potpourriMinimal_outputMixed(self):
         ret = self.serviceImpl.run_dereplicate(
@@ -49,18 +49,17 @@ class Test(cfg.BaseTest):
                 **self.ws,
                 **local,
                 'obj_refs': [
-                    Campylobacter_jejuni_assembly,
                     Escherichia_coli_Sakai_assembly,
-                    Some_refseq_assemblies,
                     Rhodobacter_sphaeroides_2_4_1,
+                    Some_refseq_assemblies,
                     Some_genomes,
-                    capybaraGut_MaxBin2_CheckM,
+                    SURF_B_MetaBAT2_CheckM,
                 ],
                 'output_as_assembly': 0,
             }
         )
 
-    #@patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
+    @patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
     @patch('kb_dRep.impl.workflow.run_check', new=get_mock_run_check('potpourriMinimal'))
     def test_potpourriMinimal_outputAssembly(self):
         ret = self.serviceImpl.run_dereplicate(
@@ -68,12 +67,11 @@ class Test(cfg.BaseTest):
                 **self.ws,
                 **local,
                 'obj_refs': [
-                    Campylobacter_jejuni_assembly,
                     Escherichia_coli_Sakai_assembly,
-                    Some_refseq_assemblies,
                     Rhodobacter_sphaeroides_2_4_1,
+                    Some_refseq_assemblies,
                     Some_genomes,
-                    capybaraGut_MaxBin2_CheckM,
+                    SURF_B_MetaBAT2_CheckM,
                 ],
                 'output_as_assembly': 1,
             }
@@ -82,16 +80,62 @@ class Test(cfg.BaseTest):
 
     @patch.dict('kb_dRep.impl.kb_obj.app', values={'dfu': mock_dfu, 'mgu': mock_mgu, 'au': mock_au, 'kbr': mock_kbr})
     @patch.dict('kb_dRep.impl.workflow.app', values={'kbr': mock_kbr})
-    @patch('kb_dRep.impl.workflow.run_check', new=get_mock_run_check('SURF_B_2binners_CheckM__taxwf'))
-    def test_bc(self):
+    def test_by_input_type(self):
+        # assembly
         ret = self.serviceImpl.run_dereplicate(
             self.ctx, {
                 **self.ws,
+                **local,
                 'obj_refs': [
-                    SURF_B_MaxBin2_CheckM,
-                    SURF_B_MetaBAT2_CheckM,
+                    Rhodobacter_sphaeroides_2_4_1_assembly,
+                    Escherichia_coli_K_12_MG1655_assembly,
                 ],
             }
         )
 
-# TODO don't use shell running tool, check happy test output, cache expensive API calls?, behavior same object shows up in same or different types
+        # genome
+        ret = self.serviceImpl.run_dereplicate(
+            self.ctx, {
+                **self.ws,
+                **local,
+                'obj_refs': [
+                    Escherichia_coli_K_12_MG1655,
+                    Rhodobacter_sphaeroides_2_4_1,
+                ],
+            }
+        )
+
+
+        # assemblyset
+        ret = self.serviceImpl.run_dereplicate(
+            self.ctx, {
+                **self.ws,
+                **local,
+                'obj_refs': [
+                    Some_refseq_assemblies,
+                ],
+            }
+        )
+
+        # genomeset
+        ret = self.serviceImpl.run_dereplicate(
+            self.ctx, {
+                **self.ws,
+                **local,
+                'obj_refs': [
+                    AMK_genomes,
+                ],
+            }
+        )
+
+        # binnedcontigs
+        ret = self.serviceImpl.run_dereplicate(
+            self.ctx, {
+                **self.ws,
+                **local,
+                'obj_refs': [
+                    SURF_B_MaxBin2_CheckM,
+                ],
+            }
+        )
+

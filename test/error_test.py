@@ -15,11 +15,13 @@ local = {
 class Test(config.BaseTest):
 
     def test_dup_input(self):
-        with raises(Exception):
+        with raises(Exception, match='Duplicate'):
             ret = self.serviceImpl.run_dereplicate(
                 self.ctx, {
                     **self.ws,
-                    'obj_refs': SURF_B_2binners_CheckM * 2
+                    'obj_refs': [
+                        Rhodobacter_sphaeroides_2_4_1
+                    ] * 2
                 }
             )
 
@@ -29,11 +31,13 @@ class Test(config.BaseTest):
             ret = self.serviceImpl.run_dereplicate(
                 self.ctx, {
                     **self.params_ws,
-                    'obj_refs': small_arctic_metabat,
-                    'checkM_method': 'taxonomy_wf', # need this?
-                    }
-                 )
-            
+                    'obj_refs': [
+                        small_arctic_metabat
+                    ],
+                    'checkM_method': 'taxonomy_wf',
+                }
+             )
+        
 
 
     @pytest.mark.skip(reason='this works but option is removed')
