@@ -4,6 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from kb_dRep.impl.kb_obj import BinnedContigs, GenomeSet, AssemblySet, Genome, Assembly
+from kb_dRep.impl.params import Params
 from config import get_test_dir, get_ws_client
 from data import *
 
@@ -60,8 +61,8 @@ def objs(kb_clients):
             GenomeSet(ref=Some_genomes),
             GenomeSet(ref=Escherichia_genome_set),
             GenomeSet(ref=AMK_genomes),
-            BinnedContigs(SURF_B_MaxBin2_CheckM),
             BinnedContigs(SURF_B_MetaBAT2_CheckM),
+            BinnedContigs(SURF_B_MaxBin2_CheckM),
             BinnedContigs(small_arctic_metabat),
             BinnedContigs(capybaraGut_MaxBin2_CheckM),
         ]
@@ -75,3 +76,5 @@ def params(ws):
         **ws,
         'obj_refs': ['-1/-1/-1', '-2/-2/-2']
     })
+
+    return params

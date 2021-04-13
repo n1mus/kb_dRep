@@ -30,7 +30,7 @@ class Test(config.BaseTest):
         with raises(Exception, match='filtering'):
             ret = self.serviceImpl.run_dereplicate(
                 self.ctx, {
-                    **self.params_ws,
+                    **self.ws,
                     'obj_refs': [
                         small_arctic_metabat
                     ],

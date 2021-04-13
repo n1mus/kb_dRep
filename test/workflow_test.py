@@ -5,7 +5,7 @@ import pytest
 
 from kb_dRep.impl.kb_obj import BinnedContigs, GenomeSet, AssemblySet, Genome, Assembly
 from kb_dRep.impl.config import ref_leaf, app
-from kb_dRep.impl.workflow import save_results, aggregate_derep_assembly_refs, aggregate_derep_member_refs, partition_by_type
+from kb_dRep.impl.workflow import load_objs, save_results, aggregate_derep_assembly_refs, aggregate_derep_member_refs, partition_by_type
 from kb_dRep.impl.params import Params
 from data import *
 from config import assert_unordered_equals, list_minus
@@ -23,8 +23,12 @@ def test_load_objs(kb_clients):
     assert got == expected
 
 
-def test_save_results(objs, params, test_dir):
+def test_save_results(objs, params, test_dir, kb_clients):
     a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, g0, g1, g2, g3, g4, g5, ast0, ast1, gst0, gst1, gst2, bc0, bc1, bc2, bc3 = objs
+
+    dRep_dir = test_dir
+    test_dir = os.path.join(dRep_dir, 'dereplicated_genomes')
+    os.mkdir(test_dir)
 
     a1.pool_into(test_dir)
     a3.pool_into(test_dir)
@@ -49,12 +53,131 @@ def test_save_results(objs, params, test_dir):
     for obj in objs: obj.identify_dereplicated(os.listdir(test_dir))
 
     mock_dfu = kb_clients['dfu']
-    mock_mgu = kb_cilents['mgu']
+    mock_mgu = kb_clients['mgu']
     mock_au = kb_clients['au']
 
+    ## call in output_assembly mode
+
+    desc = 'Dereplication results'
+    expected_refs = [
+        Escherichia_coli_K_12_MG1655_assembly,
+        Campylobacter_jejuni_assembly,
+        Coxiella_burnetii_assembly,
+        Rhodobacter_sphaeroides_2_4_1 + ';' + Rhodobacter_sphaeroides_2_4_1_assembly,
+        Klebsiella_pneumoniae + ';' + Klebsiella_pneumoniae_assembly,
+        Acinetobacter_pitii + ';' + Acinetobacter_pitii_assembly,
+        Some_refseq_assemblies + ';' + Escherichia_coli_Sakai_assembly,
+        S_assemblies + ';' + Salmonella_enterica_assembly,
+        S_assemblies + ';' + Staphylcoccus_aureus_assembly,
+        Some_genomes + ';' + Escherichia_coli_K_12_MG1655 + ';' + Escherichia_coli_K_12_MG1655_assembly,
+        Escherichia_genome_set + ';' + Escherichia_coli_K_12_MG1655 + ';' + Escherichia_coli_K_12_MG1655_assembly,
+        AMK_genomes + ';' + Klebsiella_pneumoniae + ';' + Klebsiella_pneumoniae_assembly,
+        AMK_genomes + ';' + Acinetobacter_pitii + ';' + Acinetobacter_pitii_assembly,
+        'au/save_fasta_as_assembly/SURF-B.MEGAHIT.metabat.CheckM_Bin.018.fasta',
+        'au/save_fasta_as_assembly/SURF-B.MEGAHIT.metabat.CheckM_Bin.034.fasta',
+        'au/save_fasta_as_assembly/SURF-B.MEGAHIT.metabat.CheckM_Bin.039.fasta',
+        'au/save_fasta_as_assembly/SURF-B.MEGAHIT.metabat.CheckM_Bin.044.fasta',
+        'au/save_fasta_as_assembly/SURF-B.MEGAHIT.maxbin.CheckM_Bin.009.fasta',
+    ]
+
     with patch.dict(mock_target, kb_clients):
-        save_results(objs, params, test_dir)
+        save_results(objs, params, dRep_dir)
+    got = mock_dfu.save_objects.call_args[0][0]
+    expected = {
+        'id': params['workspace_id'],
+        'objects': [{
+            'type': AssemblySet.TYPE,
+            'data': {
+                'description': desc,
+                'items': [
+                    {'ref': ref}
+                    for ref in expected_refs
+                ],
+            },
+            'name': 'dRep_assemblies',
+        }]
+    }
+    assert got == expected
    
+
+    ## call not in output_assembly mode
+
+    mock_dfu.reset_mock()
+    mock_mgu.reset_mock()
+    
+    params.params['output_as_assembly'] = False
+    with patch.dict(mock_target, kb_clients):
+        save_results(objs, params, dRep_dir)   
+
+    expected_ast_refs = [
+        Escherichia_coli_K_12_MG1655_assembly,
+        Campylobacter_jejuni_assembly,
+        Coxiella_burnetii_assembly,
+        Some_refseq_assemblies + ';' + Escherichia_coli_Sakai_assembly,
+        S_assemblies + ';' + Salmonella_enterica_assembly,
+        S_assemblies + ';' + Staphylcoccus_aureus_assembly,
+    ]
+    expected_gst_refs = [
+        Rhodobacter_sphaeroides_2_4_1,
+        Klebsiella_pneumoniae,
+        Acinetobacter_pitii,
+        Some_genomes + ';' + Escherichia_coli_K_12_MG1655,
+        Escherichia_genome_set + ';' + Escherichia_coli_K_12_MG1655,
+        AMK_genomes + ';' + Klebsiella_pneumoniae,
+        AMK_genomes + ';' + Acinetobacter_pitii,
+    ]
+    got = [
+        c[0][0] for c in 
+        mock_dfu.save_objects.call_args_list
+    ]
+    expected = [
+        {
+            'id': params['workspace_id'],
+            'objects': [{
+                'type': AssemblySet.TYPE,
+                'data': {
+                    'description': desc,
+                    'items': [
+                        {'ref': ref}
+                        for ref in expected_ast_refs
+                    ],
+                },
+                'name': 'dRep_assemblies',
+            }]
+        }, {
+            'id': params['workspace_id'],
+            'objects': [{
+                'type': GenomeSet.TYPE,
+                'data': {
+                    'description': desc,
+                    'items': [
+                        {'ref': ref}
+                        for ref in expected_gst_refs
+                    ],
+                },
+                'name': 'dRep_genomes',
+            }]
+        }, 
+    ]
+    assert got == expected
+
+    got = [
+        c[0][0] for c in
+        mock_mgu.remove_bins_from_binned_contig.call_args_list
+    ]
+    expected = [
+        {
+            'old_binned_contig_ref': SURF_B_MetaBAT2_CheckM,
+            'bins_to_remove': ['Bin.012.fasta', 'Bin.027.fasta', 'Bin.038.fasta', 'Bin.040.fasta'],
+            'output_binned_contig_name': 'dRep_' + bc0.name,
+            'workspace_name': params['workspace_name'],
+        }, {
+            'old_binned_contig_ref': SURF_B_MaxBin2_CheckM,
+            'bins_to_remove': ['Bin.008.fasta', 'Bin.012.fasta'],
+            'output_binned_contig_name': 'dRep_' + bc1.name,
+            'workspace_name': params['workspace_name'],        }
+    ]
+    assert got == expected
 
 
 def test_aggregate_derep_assembly_refs(objs, ws, kb_clients, test_dir):

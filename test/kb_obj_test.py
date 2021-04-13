@@ -46,7 +46,6 @@ def test_Genome(test_dir):
         os.path.join(test_dir, os.path.basename(g.assembly.assembly_fp))
     )
     g.identify_dereplicated(os.listdir(test_dir))
-    assert g.get_in_derep() is True
     assert g.get_derep_assembly_refs() == [g.assembly.ref]
     assert g.get_derep_member_refs() == [g.ref]
     g.identify_dereplicated(os.listdir(EMPTY_DIR))
@@ -233,7 +232,7 @@ def test_save_unmocked(test_dir, ws, kb_clients):
     gst.save('dRep_run_genomes', ws['workspace_id'])
 
     bc = BinnedContigs(SURF_B_MaxBin2_CheckM)
-    bc.pool_into(test_dir)
+    bc._pool_bin_into(bc.bid_l[0], test_dir)
     bc.identify_dereplicated(os.listdir(test_dir))
     bc.save_derep_as_assemblies(ws['workspace_name'])
     bc.save_dereplicated('BinnedContigs0.dRep', ws['workspace_name'])

@@ -154,6 +154,7 @@ def do_workflow(params):
     output = {
         'report_name': report_output['name'],
         'report_ref': report_output['ref'],
+        'objects_created': objects_created,
     }
 
 
@@ -187,6 +188,8 @@ def load_objs(refs):
             raise Exception(type_)
 
         objs.append(obj)
+
+    return objs
 
 
 def save_results(objs, params, dRep_dir):
@@ -265,6 +268,7 @@ def save_results(objs, params, dRep_dir):
 def aggregate_derep_assembly_refs(objs, workspace_name):
     assembly_ref_l = []
     
+    dprint('[obj.name for obj in objs]')
     for obj in objs:
         if obj.TYPE == BinnedContigs.TYPE:
             if obj.is_fully_dereplicated():
