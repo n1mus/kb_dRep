@@ -2,5 +2,8 @@ test_local
 .*.sw[a-z]
 *.py.bak*
 __pycache__/
-test/data/
 .idea/
+test/data/fasta
+test/data/get_objects
+test/data/dRep_dir
+tmp/

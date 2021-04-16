@@ -1,6 +1,6 @@
 UNIT_TESTS = kb_obj_test.py params_test.py workflow_test.py
 INTEGRATION_TESTS = happy_test.py error_test.py
-TARGET_TESTS = . 
+TARGET_TESTS = .
 SERVICE = kb_drep
 SERVICE_CAPS = kb_dRep
 SPEC_FILE = kb_dRep.spec

@@ -268,7 +268,6 @@ def save_results(objs, params, dRep_dir):
 def aggregate_derep_assembly_refs(objs, workspace_name):
     assembly_ref_l = []
     
-    dprint('[obj.name for obj in objs]')
     for obj in objs:
         if obj.TYPE == BinnedContigs.TYPE:
             if obj.is_fully_dereplicated():

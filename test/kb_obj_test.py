@@ -49,7 +49,6 @@ def test_Genome(test_dir):
     assert g.get_derep_assembly_refs() == [g.assembly.ref]
     assert g.get_derep_member_refs() == [g.ref]
     g.identify_dereplicated(os.listdir(EMPTY_DIR))
-    assert g.get_in_derep() is False
     assert g.get_derep_assembly_refs() == []
     assert g.get_derep_member_refs() == []
 
@@ -225,14 +224,19 @@ def test_BinnedContigs(test_dir, ws, kb_clients):
 def test_save_unmocked(test_dir, ws, kb_clients):
     ref_l = [Campylobacter_jejuni_assembly, Escherichia_coli_Sakai_assembly]
     ast = AssemblySet(ref_l=ref_l)
-    ast.save('dRep_run_assemblies', ws['workspace_id'])
+    upa_new = ast.save('dRep_run_assemblies', ws['workspace_id'])
+
 
     ref_l=[Some_genomes + ';' + Escherichia_coli_K_12_MG1655, Rhodobacter_sphaeroides_2_4_1]
     gst = GenomeSet(ref_l=ref_l)
-    gst.save('dRep_run_genomes', ws['workspace_id'])
+    upa_new = gst.save('dRep_run_genomes', ws['workspace_id'])
 
     bc = BinnedContigs(SURF_B_MaxBin2_CheckM)
     bc._pool_bin_into(bc.bid_l[0], test_dir)
     bc.identify_dereplicated(os.listdir(test_dir))
     bc.save_derep_as_assemblies(ws['workspace_name'])
-    bc.save_dereplicated('BinnedContigs0.dRep', ws['workspace_name'])
+    upa_new = bc.save_dereplicated('BinnedContigs0.dRep', ws['workspace_name'])
+
+    assert len(bc.get_derep_assembly_refs()) == 1
+    bc_new = BinnedContigs(upa_new, get_fasta=False)
+    assert bc_new.bid_l == [bc.bid_l[0]]
